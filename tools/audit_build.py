@@ -277,7 +277,15 @@ def main() -> int:
         else:
             payload = json.loads(artifact.read_text(encoding="utf-8"))
             report = audit_payload(payload)
-            # Cross-check CSV siblings when present.
+            report["files"] = [{"path": str(p.relative_to(Path(args.root))), "bytes": p.stat().st_size}
+                               for p in sorted(artifact.parent.rglob("*")) if p.is_file()]
+            report["limitations"] = ["External URLs are not fetched; registry license labels are not legal verification.",
+                                     "Raw parquet/CTD exclusion cannot be proven from aggregate artifacts alone."]
+            for name in ("claims.csv", "gaps.csv", "atlas.duckdb"):
+                if not (artifact.parent / name).is_file():
+                    _err(report["implementation_errors"], "missing_artifact", file=name)
+            audit_site(artifact.parent / "site", Path(args.root), report)
+            report["csv"] = {}
             for name, key in (("claims.csv", "claims"), ("gaps.csv", "gaps")):
                 path = artifact.parent / name
                 if path.exists():
@@ -285,6 +293,26 @@ def main() -> int:
                         n = sum(1 for _ in csv.DictReader(f))
                     if n != report["counts"][key]:
                         _err(report["implementation_errors"], "csv_mismatch", file=name, rows=n, payload=report["counts"][key])
+                    report["csv"][key] = n
+            db = artifact.parent / "atlas.duckdb"
+            report["database"] = {"status": "not_checked", "counts": {}}
+            if db.is_file():
+                try:
+                    import duckdb  # Optional: JSON/CSV/HTML auditing remains stdlib-only.
+                except ImportError:
+                    report["limitations"].append("DuckDB unavailable; database content not audited. Run with uv run python for this check.")
+                else:
+                    try:
+                        with duckdb.connect(str(db), read_only=True) as con:
+                            for table in ("claims", "gaps", "foods", "organisms", "sources"):
+                                count = con.execute(f'SELECT count(*) FROM "{table}"').fetchone()[0]
+                                report["database"]["counts"][table] = count
+                                if count != report["counts"][table]:
+                                    _err(report["implementation_errors"], "database_count_mismatch", table=table, actual=count, expected=report["counts"][table])
+                        report["database"]["status"] = "audited_counts"
+                    except Exception as exc:
+                        report["database"]["status"] = "unreadable"
+                        _err(report["implementation_errors"], "database_unreadable", detail=str(exc))
             if not (Path(args.root) / "NOTICE.md").exists():
                 _err(report["implementation_errors"], "notice_missing")
     except Exception as e:  # noqa: BLE001

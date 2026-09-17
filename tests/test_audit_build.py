@@ -103,6 +103,19 @@ class AuditBuildTests(unittest.TestCase):
             self.assertEqual(len(report["internal_links"]["broken"]), 3)
             self.assertEqual(report["internal_links"]["external_skipped"], 1)
 
+    def test_cli_includes_internal_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / "data/build"
+            (build / "site").mkdir(parents=True)
+            (build / "atlas.json").write_text(json.dumps(payload_fixture()))
+            (build / "site/index.html").write_text('<a href="missing.html">broken</a>')
+            result = subprocess.run([sys.executable, str(TOOL), "--root", str(root)], capture_output=True, text=True)
+            report = json.loads(result.stdout)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(report["internal_links"]["checked"], 1)
+            self.assertEqual(len(report["internal_links"]["broken"]), 1)
+
     def test_unused_restricted_sources_and_independent_refs_are_not_errors(self):
         payload = payload_fixture()
         payload["sources"].append({"id": "SRC-NOT-IMPORTED", "license_class": "adapter", "claims": 0})
