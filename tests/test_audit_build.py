@@ -88,6 +88,38 @@ class AuditBuildTests(unittest.TestCase):
         broken = load_tool().audit_payload(payload)
         self.assertIn("missing_pmc", {e["code"] for e in broken["implementation_errors"]})
 
+    def test_internal_links_fragments_queries_and_traversal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            site = root / "data/build/site"
+            site.mkdir(parents=True)
+            (site / "index.html").write_text('<a href="other.html?q=1#yes">ok</a>'
+                '<a href="other.html#missing">bad</a><img src="lost.png">'
+                '<a href="https://example.org">external</a><a href="../../../../secret">escape</a>')
+            (site / "other.html").write_text('<p id="yes">Target</p>')
+            report = {"implementation_errors": [], "limitations": []}
+            load_tool().audit_site(site, root, report)
+            self.assertEqual(report["internal_links"]["checked"], 4)
+            self.assertEqual(len(report["internal_links"]["broken"]), 3)
+            self.assertEqual(report["internal_links"]["external_skipped"], 1)
+
+    def test_unused_restricted_sources_and_independent_refs_are_not_errors(self):
+        payload = payload_fixture()
+        payload["sources"].append({"id": "SRC-NOT-IMPORTED", "license_class": "adapter", "claims": 0})
+        claim = dict(payload["foods"][0]["claims"][0], ref="row:2")
+        payload["foods"][0]["claims"].append(claim)
+        payload["stats"]["accepted"] = 2
+        payload["sources"][0]["claims"] = 2
+        self.assertEqual(load_tool().audit_payload(payload)["implementation_errors"], [])
+
+    def test_cite_without_ref_and_finite_bounds_are_rejected(self):
+        payload = payload_fixture()
+        payload["sources"][0]["license_class"] = "cite"
+        payload["foods"][0]["claims"][0].update(v_max=float("inf"), curated=True, ref="")
+        report = load_tool().audit_payload(payload)
+        self.assertTrue({"source_license", "non_finite"} <= {e["code"] for e in report["implementation_errors"]})
+        json.dumps(report, allow_nan=False)
+
     def test_absent_build_is_not_misreported_as_success_or_bad_source(self):
         with tempfile.TemporaryDirectory() as directory:
             result = subprocess.run(
