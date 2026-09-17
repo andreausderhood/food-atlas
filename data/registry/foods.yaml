@@ -87,9 +87,9 @@ food:cabbage:
   default_part: head
   foodatlas_ids: [e1443, e3752]
   fdc_match: ['Cabbage, raw']
-food:cabbage.green: {level: cultivar, name: Green cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e7882, e1157], fdc_match: ['Cabbage, (common|green), raw']}
-food:cabbage.red: {level: cultivar, name: Red cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e5090, e1158], fdc_match: ['Cabbage, red, raw']}
-food:cabbage.savoy: {level: cultivar, name: Savoy cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e1220, e1692], fdc_match: ['Cabbage, savoy, raw']}
+food:cabbage.green: {level: cultivar, name: Green cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e7882, e1157], fdc_match: ['Cabbage, (common|green), raw'], bls_codes: [G342100]}
+food:cabbage.red: {level: cultivar, name: Red cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e5090, e1158], fdc_match: ['Cabbage, red, raw'], bls_codes: [G341100]}
+food:cabbage.savoy: {level: cultivar, name: Savoy cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e1220, e1692], fdc_match: ['Cabbage, savoy, raw'], bls_codes: [G343100]}
 food:cabbage.leaf: {level: part, name: Cabbage leaf, part_of: food:cabbage, part: leaf, foodatlas_ids: [e1531]}
 food:cabbage.juice: {level: form, name: Cabbage juice, derives_from: food:cabbage, process: proc:pressing, foodatlas_ids: [e4447]}
 food:sauerkraut:
@@ -99,14 +99,15 @@ food:sauerkraut:
   process: proc:lactic-fermentation
   foodatlas_ids: [e3796]
   fdc_match: ['Sauerkraut, canned, solids and liquids']
+  bls_codes: [G345100]
 food:broccoli: {level: taxon_food, name: Broccoli, derives_from: org:brassica-oleracea-italica, default_part: inflorescence, foodatlas_ids: [e1442, e3975], fdc_match: ['Broccoli, raw']}
 food:broccoli.leaf: {level: part, name: Broccoli leaf, part_of: food:broccoli, part: leaf, foodatlas_ids: [e3303]}
 food:broccoli.stalk: {level: part, name: Broccoli stalk, part_of: food:broccoli, part: stem, foodatlas_ids: [e3305]}
 food:broccoli.sprouts: {level: form, name: Broccoli sprouts, derives_from: food:broccoli, process: proc:sprouting, foodatlas_ids: [e1190]}
-food:cauliflower: {level: taxon_food, name: Cauliflower, derives_from: org:brassica-oleracea-botrytis, default_part: inflorescence, foodatlas_ids: [e1447, e4372], fdc_match: ['Cauliflower, raw']}
+food:cauliflower: {level: taxon_food, name: Cauliflower, derives_from: org:brassica-oleracea-botrytis, default_part: inflorescence, foodatlas_ids: [e1447, e4372], fdc_match: ['Cauliflower, raw'], bls_codes: [G311100]}
 food:cauliflower.leaf: {level: part, name: Cauliflower leaf, part_of: food:cauliflower, part: leaf, foodatlas_ids: [e1645]}
-food:kohlrabi: {level: taxon_food, name: Kohlrabi, derives_from: org:brassica-oleracea-gongylodes, default_part: stem, foodatlas_ids: [e1458, e7824, e1174], fdc_match: ['Kohlrabi, raw']}
+food:kohlrabi: {level: taxon_food, name: Kohlrabi, derives_from: org:brassica-oleracea-gongylodes, default_part: stem, foodatlas_ids: [e1458, e7824, e1174], fdc_match: ['Kohlrabi, raw'], bls_codes: [G331100]}
 food:kohlrabi.leaf: {level: part, name: Kohlrabi leaf, part_of: food:kohlrabi, part: leaf, foodatlas_ids: [e1173]}
-food:brussels-sprout: {level: taxon_food, name: Brussels sprout, derives_from: org:brassica-oleracea-gemmifera, default_part: axillary_bud, foodatlas_ids: [e8759], fdc_match: ['Brussels sprouts, raw']}
-food:kale: {level: taxon_food, name: Kale, derives_from: org:brassica-oleracea-acephala, default_part: leaf, foodatlas_ids: [e3460, e5175, e1520, e3461, e1525], fdc_match: ['Kale, raw']}
+food:brussels-sprout: {level: taxon_food, name: Brussels sprout, derives_from: org:brassica-oleracea-gemmifera, default_part: axillary_bud, foodatlas_ids: [e8759], fdc_match: ['Brussels sprouts, raw'], bls_codes: [G332100]}
+food:kale: {level: taxon_food, name: Kale, derives_from: org:brassica-oleracea-acephala, default_part: leaf, foodatlas_ids: [e3460, e5175, e1520, e3461, e1525], fdc_match: ['Kale, raw'], bls_codes: [G322100]}
 food:kale.frozen: {level: form, name: Frozen kale, derives_from: food:kale, process: proc:freezing, foodatlas_ids: [e8267], fdc_match: ['Kale, frozen, unprepared']}
