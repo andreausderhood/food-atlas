@@ -106,7 +106,7 @@ SRC-BZFE-SAISONKALENDER:
   publisher: "Bundeszentrum für Ernährung (BZfE)"
   url: "https://www.bzfe.de/kueche-und-alltag/einkaufen/der-saisonkalender"
   license: "Cited fact by fact"
-  license_url: "https://www.bzfe.de/impressum"
+  license_url: "https://www.bzfe.de/rechtliches/impressum"
   license_class: cite
   license_read: false
   kind: compilation
@@ -118,6 +118,7 @@ SRC-EDITORIAL:
   publisher: "Food Atlas contributors"
   url: "https://github.com/"
   license: "CC-BY-4.0"
+  license_url: "https://creativecommons.org/licenses/by/4.0/"
   license_class: ship
   license_read: true
   kind: library_editorial
