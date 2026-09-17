@@ -20,6 +20,12 @@ def register(sub):
     commands = parser.add_subparsers(dest="research_cmd", required=True)
     commands.add_parser("init", help="derive tasks from registries and existing build outputs")
     commands.add_parser("status", help="inspect queue; does not start workers")
+    claim = commands.add_parser("next", help="lease the next ready item")
+    claim.add_argument("--lease-by", required=True)
+    submit = commands.add_parser("submit", help="validate evidence and save a pending proposal")
+    submit.add_argument("file", type=Path)
+    review = commands.add_parser("review", help="inspect a proposal; does not approve or publish")
+    review.add_argument("proposal_id")
 
 
 def initialize(root: Path):
@@ -71,7 +77,16 @@ def dispatch(args, root: Path):
     try:
         if args.research_cmd == "init":
             initialize(root)
-        print(json.dumps(status(root), ensure_ascii=False, indent=2))
+        from atlas.research.lifecycle import next_item, submit, review
+        if args.research_cmd == "next":
+            result = next_item(root, args.lease_by)
+        elif args.research_cmd == "submit":
+            result = submit(root, json.loads(args.file.read_text(encoding="utf-8")))
+        elif args.research_cmd == "review":
+            result = review(root, args.proposal_id)
+        else:
+            result = status(root)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
     except (OSError, ValueError, KeyError, TypeError, yaml.YAMLError) as error:
         print(f"research: {error}", file=sys.stderr)
