@@ -4,7 +4,8 @@
 - editorial: food:apple.pomace, food:apple.cider, food:apple.dried, food:apple.sauce (narrative+sensory, SRC-EDITORIAL, descriptive only)
 - editorial: food:cabbage.green, food:cabbage.red, food:cabbage.savoy, food:cabbage.leaf, food:cabbage.juice, food:sauerkraut (narrative+sensory, SRC-EDITORIAL, descriptive only)
 - editorial: food:broccoli.leaf, food:broccoli.stalk, food:broccoli.sprouts, food:cauliflower.leaf, food:kohlrabi.leaf, food:kale.frozen (narrative+sensory, SRC-EDITORIAL, descriptive only)
-- mapping: BLS 4.0 is downloaded and loads, but 0 claims accepted — foods.yaml needs `bls_codes` mapping per pilot food. Candidates from `atlas curate bls apfel`: F110100 Apfel roh→food:apple, F120100 geschält roh→food:apple.flesh, F110400 getrocknet→food:apple.dried, F110600 Saft→food:apple.juice, F923900 Kompott ungesüßt→food:apple.sauce, P353100 Apfelwein→food:apple.cider. Verify each against fdc_match/foodon before committing; expect SRC-BLS-4.0 claims > 0 after build.
+- mapping: BLS codes for remaining pilot foods (brassicas: `atlas curate bls kohl` / `rotkohl` / `wirsing` / `brokkoli` / `blumenkohl` / `grünkohl`) — same pattern as food:apple, verify against fdc_match/foodon
+- download: khoury2016 via Dryad (manual page, 'Download full dataset') — origin/primary_region_of_diversity claims pending on it
 - kuratur: image 6 review on Spotify Explorer + Aesthetics DB repos — belongs to those repos' loops, NOT this one; skip here
 
 ## Delivered
@@ -18,7 +19,8 @@
 - `editorial: food:apple.red-delicious` — 2026-09-17 — 2dd3047
 - `editorial: food:apple.juice` — 2026-09-17 — 2dd3047
 - `editorial: food:apple.sweet-cider` — 2026-09-17 — 2dd3047
-- `loop` — 2026-09-17 — 2dd3047 — first loop delivery batch verified: 201 tests, build --no-raw, audit ok
+- `loop` — 2026-09-18 — 9a665f5, 5ac9532 — BLS mapped onto food:apple (F110100): 110 accepted nutrition claims; ingest fixed for missing Datenherkunft ('-'→unverified, honest T5); license_read via blsdb.de (CC BY 4.0, MRI attribution); 202 tests + audit green
+- `loop` — 2026-09-18 — job 6920430db1c8 scheduled (every 120m) and validated by manual fire (status ok)
 
 ## Blockers
 (none)
