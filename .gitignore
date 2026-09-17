@@ -7,4 +7,5 @@ data/raw/**
 !data/raw/**/
 !data/raw/**/SOURCE.md
 data/build/
+data/research/
 Resources/

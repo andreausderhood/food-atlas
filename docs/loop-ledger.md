@@ -20,7 +20,7 @@
 - `editorial: food:apple.juice` — 2026-09-17 — 2dd3047
 - `editorial: food:apple.sweet-cider` — 2026-09-17 — 2dd3047
 - `loop` — 2026-09-18 — 9a665f5, 5ac9532 — BLS mapped onto food:apple (F110100): 110 accepted nutrition claims; ingest fixed for missing Datenherkunft ('-'→unverified, honest T5); license_read via blsdb.de (CC BY 4.0, MRI attribution); 202 tests + audit green
-- `loop` — 2026-09-18 — job 6920430db1c8 scheduled (every 120m) and validated by manual fire (status ok)
+- `loop` — 2026-09-18 — dc79c61 — research phase-one layer delivered & committed (approval gate propose-only, task queue, 1305 queued tasks from gaps); cron now drives the research-week pipeline (docs/research-workflow.md, every 30m)
 
 ## Blockers
 (none)
