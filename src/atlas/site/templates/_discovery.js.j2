@@ -1,0 +1,67 @@
+(() => {
+'use strict';
+const byId=id=>document.getElementById(id);
+const q=byId('q'),exclude=byId('exclude'),family=byId('family'),level=byId('level'),evidence=byId('evidence'),saved=byId('saved-only');
+const research=byId('research');
+const controls=[q,exclude,family,level,evidence,research];
+const cards=[...document.querySelectorAll('#grid .card')],grid=byId('grid');
+const records=cards.map(card=>({card,research:JSON.parse(card.dataset.research||'[]'),seasons:JSON.parse(card.dataset.seasons||'[]')}));
+const normalize=text=>text.normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
+// An unfinished quoted phrase extends to the end, so typing never breaks search.
+function tokens(text){
+ return [...normalize(text).matchAll(/(-?)(?:"([^"]*)"?|([^\s"]+))/g)]
+  .map(match=>({exclude:match[1]==='-',text:(match[2]??match[3]).trim()})).filter(term=>term.text);
+}
+let view='cards';
+function restore(){
+ const params=new URLSearchParams(location.search);
+ for(const control of controls)control.value=params.get(control.id)||'';
+ saved.checked=params.get('saved')==='1';
+ view=params.get('view')==='list'?'list':'cards';
+}
+function syncURL(){
+ const url=new URL(location.href);
+ for(const control of controls){if(control.value)url.searchParams.set(control.id,control.value);else url.searchParams.delete(control.id);}
+ if(saved.checked)url.searchParams.set('saved','1');else url.searchParams.delete('saved');
+ if(view==='list')url.searchParams.set('view','list');else url.searchParams.delete('view');
+ try{history.replaceState(null,'',url);}catch(e){}
+}
+function apply(writeURL=true){
+ const terms=tokens(q.value),include=terms.filter(t=>!t.exclude).map(t=>t.text);
+ const omit=[...terms.filter(t=>t.exclude).map(t=>t.text),...tokens(exclude.value).map(t=>t.text)];
+ let count=0,unknown=0;
+ const season=window.AtlasSeason;
+ const seasonActive=!!season?.state().mode;
+ for(const record of records){
+  const {card}=record;
+  const text=normalize(card.dataset.search+' '+record.research.join(' '));
+  const matches=include.every(t=>text.includes(t))&&!omit.some(t=>text.includes(t))
+   &&(!family.value||card.dataset.family===family.value)
+   &&(!level.value||card.dataset.level===level.value)
+   &&(!evidence.value||(evidence.value==='none'?!card.dataset.tiers:card.dataset.tiers.split(',').includes(evidence.value)))
+   &&(!saved.checked||Atlas.saved().has(card.dataset.id))
+   &&(!research.value||(research.value==='unclassified'?!record.research.length:record.research.includes(research.value)));
+  const availability=seasonActive&&matches?season.evaluate(record.seasons):null;
+  if(matches&&availability==='unknown')unknown++;
+  const visible=matches&&(!seasonActive||availability==='available');
+  card.hidden=!visible;if(visible)count++;
+ }
+ byId('result-count').textContent=`${count} of ${cards.length} foods`;
+ byId('season-unknown-count').hidden=!seasonActive;
+ byId('season-unknown-count').textContent=`${unknown} otherwise matching foods have unknown seasonal availability for this region and mode; excluded, not counted as unavailable.`;
+ byId('empty').hidden=count>0;
+ byId('saved-count').textContent=`(${Atlas.saved().size})`;
+ grid.classList.toggle('list',view==='list');
+ for(const mode of ['cards','list'])byId('view-'+mode).setAttribute('aria-pressed',String(view===mode));
+ if(writeURL)syncURL();
+}
+for(const control of [...controls,saved])control.addEventListener(control===q||control===exclude?'input':'change',()=>apply());
+function reset(){for(const control of controls)control.value='';saved.checked=false;apply();q.focus();}
+byId('reset').addEventListener('click',reset);byId('empty-reset').addEventListener('click',reset);
+for(const mode of ['cards','list'])byId('view-'+mode).addEventListener('click',()=>{view=mode;apply();});
+// Shared app emits this during popstate before our restore; never overwrite that URL.
+document.addEventListener('atlas:saved',()=>apply(false));
+document.addEventListener('atlas:season',()=>apply());
+window.addEventListener('popstate',()=>{restore();apply(false);});
+restore();apply();
+})();
