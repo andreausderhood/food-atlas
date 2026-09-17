@@ -1,0 +1,36 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple
+claims:
+- group: sensory
+  field: colour
+  v: Red, green, yellow, or a mixture on the skin; the flesh is often pale cream. Colour varies with cultivar.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/apple.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: texture
+  v: Raw flesh can be crisp and juicy or softer and mealy; cooked apple can become tender or collapse
+    into a purée.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/apple.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: taste
+  v: Sweet to tart, sometimes with a floral or grassy impression. Cultivar, ripeness, and preparation
+    change the balance.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/apple.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: eli5
+  v: 'Think of apple as a whole family of crunches: two apples can look alike but taste quite different.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/apple.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: story
+  v: Picture two wedges on a plate, one tart and firm, the other mellow and soft. The interesting question
+    is not which apple wins, but which one you want for this bite.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/apple.yaml — original editorial, 2026-09-17; not measured sensory data

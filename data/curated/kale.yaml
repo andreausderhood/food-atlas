@@ -1,0 +1,37 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:kale
+claims:
+- group: sensory
+  field: colour
+  v: Leaves may be light to dark green, blue-green, or purple; appearance varies by cultivar.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/kale.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: texture
+  v: Leaves can be curly or flatter, with chewy blades and firmer ribs. Cooking can soften them; dry heat
+    can make thin edges crisp.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/kale.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: taste
+  v: Green and cabbage-like, often with some bitterness and sometimes a peppery note; preparation changes
+    the impression.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/kale.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: eli5
+  v: Kale is a leafy vegetable with plenty of folds and edges to explore. A leaf and its thick rib do
+    not feel the same.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/kale.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: story
+  v: Imagine spreading a curled leaf flat on a board. Its folds, veins, and edge become a small map of
+    textures rather than one uniform piece of green.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/kale.yaml — original editorial, 2026-09-17; not measured sensory data

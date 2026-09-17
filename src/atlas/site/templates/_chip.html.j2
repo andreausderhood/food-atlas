@@ -1,0 +1,3 @@
+{% macro chip(c, sources) -%}
+<span class="chip tier-{{ c.tier }}" title="{{ sources[c.src].title }} · {{ sources[c.src].license }}{% if c.ref %} · {{ c.ref }}{% endif %}">T{{ c.tier }} · {{ c.derivation }} · {{ c.src }}</span>
+{%- endmacro %}

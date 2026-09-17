@@ -1,0 +1,33 @@
+fdc-foundation:
+  source: SRC-FDC-FOUNDATION-2026-04
+  url: https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2026-04-30.zip
+  filename: FoodData_Central_foundation_food_csv_2026-04-30.zip
+  dest: data/raw/fdc-foundation
+  unzip: true
+fdc-srlegacy:
+  source: SRC-FDC-SRLEGACY-2018-04
+  url: https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip
+  filename: FoodData_Central_sr_legacy_food_csv_2018-04.zip
+  dest: data/raw/fdc-srlegacy
+  unzip: true
+bls:
+  source: SRC-BLS-4.0
+  url: https://blsdb.de/download
+  filename: BLS_4_0_2025_DE.zip
+  dest: data/raw/bls
+  unzip: true
+  manual: "Open https://blsdb.de/download and click 'Download BLS-Daten' (the link carries a session token)."
+khoury2016:
+  source: SRC-KHOURY-2016
+  url: https://datadryad.org/dataset/doi:10.5061/dryad.s08t2
+  filename: khoury2016-dryad.zip
+  dest: data/raw/khoury2016
+  unzip: true
+  manual: "Open the Dryad page and use 'Download full dataset'."
+foodatlas:
+  source: SRC-FOODATLAS-V4.11
+  url: https://foodatlasdownloadsstack-downloadsbucketb54b8c20-hfoegjgwag4w.s3.us-west-1.amazonaws.com/bundles/foodatlas-v4.11/foodatlas-v4.11.zip
+  filename: foodatlas-v4.11.zip
+  dest: data/raw/foodatlas
+  sha256: 591176b9d2bf669c34b2127e4e25c434978f582cd93f8e214c3675d0cb25d320
+  unzip: true

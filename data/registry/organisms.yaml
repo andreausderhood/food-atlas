@@ -1,0 +1,9 @@
+# Species and infraspecific taxa. Ranks for Brassica oleracea follow Mansfeld's World Database.
+org:malus-domestica: {name: Malus domestica, rank: species, parent: null, ncbi_taxon: 3750}
+org:brassica-oleracea: {name: Brassica oleracea, rank: species, parent: null, ncbi_taxon: 3712}
+org:brassica-oleracea-capitata: {name: Brassica oleracea convar. capitata, rank: convar, parent: org:brassica-oleracea, ncbi_taxon: null}
+org:brassica-oleracea-italica: {name: Brassica oleracea convar. italica, rank: convar, parent: org:brassica-oleracea, ncbi_taxon: null}
+org:brassica-oleracea-botrytis: {name: Brassica oleracea convar. botrytis, rank: convar, parent: org:brassica-oleracea, ncbi_taxon: null}
+org:brassica-oleracea-gongylodes: {name: Brassica oleracea convar. gongylodes, rank: convar, parent: org:brassica-oleracea, ncbi_taxon: null}
+org:brassica-oleracea-gemmifera: {name: Brassica oleracea convar. gemmifera, rank: convar, parent: org:brassica-oleracea, ncbi_taxon: null}
+org:brassica-oleracea-acephala: {name: Brassica oleracea convar. acephala, rank: convar, parent: org:brassica-oleracea, ncbi_taxon: null}

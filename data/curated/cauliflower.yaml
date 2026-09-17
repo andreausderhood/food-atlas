@@ -1,0 +1,37 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:cauliflower
+claims:
+- group: sensory
+  field: colour
+  v: Often white or cream; orange, green, and purple types also occur.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cauliflower.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: texture
+  v: Raw pieces are firm and finely grainy at the surface. Cooked pieces can range from tender to very
+    soft.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cauliflower.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: taste
+  v: Usually mild and cabbage-like, sometimes with a little sweetness or bitterness. Browning adds a toasted
+    impression.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cauliflower.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: eli5
+  v: A cauliflower looks like a cloud made of lots of little bumps. Break off a piece and you can see
+    the pattern again.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cauliflower.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: story
+  v: A pale floret is easy to overlook until you turn it over. Its branching underside makes a different
+    picture from the tightly packed surface on top.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cauliflower.yaml — original editorial, 2026-09-17; not measured sensory data

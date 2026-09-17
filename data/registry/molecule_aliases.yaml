@@ -1,0 +1,8 @@
+# FoodAtlas chemical → canonical molecule key, for duplicates the automatic keying misses.
+# Pilot nutrient grouping, NOT chemical identity equivalence; original IDs are retained.
+e13089: {key: "nutrient:fdc:1162", reason: "Generic ascorbate, CHEBI:22651, grouped under vitamin C for pilot discovery; not stereochemical equivalence."}
+e13673: {key: "nutrient:fdc:1162", reason: "Generic ascorbic acid, CHEBI:22652, grouped under vitamin C for pilot discovery; original chemical identifier retained."}
+# Automatic keys: fdc_nutrient → nutrient:fdc:<id>, else CHEBI:<id>, else PUBCHEM:<cid>, else FA:<id>.
+e64602: {key: "nutrient:fdc:1162", reason: "L-ascorbate (CHEBI:38290) is the conjugate base of L-ascorbic acid (vitamin C)"}
+e61395: {key: "nutrient:fdc:1217", reason: "L-phenylalanine is the FDC nutrient phenylalanine (1217)"}
+e61593: {key: "nutrient:fdc:1044", reason: "(-)-quinic acid is the FDC nutrient quinic acid (1044)"}

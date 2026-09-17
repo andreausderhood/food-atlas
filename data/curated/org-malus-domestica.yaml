@@ -1,0 +1,22 @@
+# NCBI species record only; no inference about Brassica infraspecific ranks.
+subject: org:malus-domestica
+claims:
+- group: identity
+  field: ncbi_taxon
+  v: 3750
+  src: SRC-NCBI-TAXONOMY
+  derivation: registry
+  ref: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=3750 — Taxonomy ID; accessed 2026-09-17
+- group: identity
+  field: scientific_name
+  v: Malus domestica
+  src: SRC-NCBI-TAXONOMY
+  derivation: registry
+  ref: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=3750 — current name (canonical binomial
+    only; authority omitted); accessed 2026-09-17
+- group: identity
+  field: rank
+  v: species
+  src: SRC-NCBI-TAXONOMY
+  derivation: registry
+  ref: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=3750 — Rank; accessed 2026-09-17

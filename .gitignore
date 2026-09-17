@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+data/raw/**
+!data/raw/**/
+!data/raw/**/SOURCE.md
+data/build/
+Resources/

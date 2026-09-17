@@ -1,0 +1,13 @@
+{% extends "base.html.j2" %}
+{% block title %}Gaps — Food Atlas{% endblock %}
+{% block main %}
+<h1>Open questions</h1>
+<p class="muted">Rejected or unresolved values, not food facts. Each entry explains what evidence would settle the question.</p>
+{% for rule, gaps in by_rule.items() %}
+<h2>Rule {{ rule }} <span class="muted">({{ gaps|length }})</span></h2>
+<div class="scroll"><table>
+<tr><th>Subject</th><th>Field</th><th>Question</th><th>Rejected / unresolved carried value</th><th>Source</th><th>Would be settled by</th></tr>
+{% for g in gaps %}<tr><td>{{ g.subject }}</td><td>{{ g.field }}</td><td>{{ g.question }}</td><td>{{ g.carried_value if g.carried_value is not none else "—" }}</td><td>{{ g.src }}</td><td>{{ g.would_be_settled_by }}</td></tr>{% endfor %}
+</table></div>
+{% else %}<p>No open questions.</p>{% endfor %}
+{% endblock %}

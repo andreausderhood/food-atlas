@@ -1,0 +1,17 @@
+{% extends "base.html.j2" %}
+{% from "_chip.html.j2" import chip %}
+{% block title %}Molecules | Food Atlas{% endblock %}
+{% block main %}
+<div class="intro"><p class="eyebrow">Molecular index</p><h1>Molecules in the library.</h1><p class="muted">Accepted food–molecule claims only. Presence does not establish an amount, a health effect, or absence from other foods.</p></div>
+<label class="molecule-search">Find a molecule or food<input type="search" id="molecule-q" placeholder="Search names or source IDs…"></label>
+<p class="muted" id="molecule-count" role="status" aria-live="polite">{{ molecules|length }} molecules</p>
+{% for m in molecules %}
+<details class="molecule-row" data-search="{{ (m.name ~ ' ' ~ m.id ~ ' ' ~ m.claims|map(attribute='food_name')|join(' ') ~ ' ' ~ m.claims|map(attribute='src')|join(' '))|lower }}">
+<summary>{{ m.name }} <span>{{ m.food_count }} foods / {{ m.claims|length }} claims +</span></summary>
+<div class="scroll" tabindex="0" role="region" aria-label="{{ m.name }} evidence"><table><thead><tr><th>Food</th><th>Claim</th><th>Basis / part</th><th>Evidence</th></tr></thead><tbody>
+{% for c in m.claims %}<tr><td><a href="foods/{{ c.food_slug }}.html#molecules">{{ c.food_name }}</a></td><td>{{ c.display }}{% if c.machine_extracted %}<br><span class="badge">machine-extracted / unvalidated</span>{% endif %}</td><td>{{ c.basis or 'not stated' }} / {{ c.food_part or 'not stated' }}</td><td>{{ chip(c, sources) }}{% for pmc in c.pmcs %}<br><a href="https://pmc.ncbi.nlm.nih.gov/articles/{{ pmc }}/">{{ pmc }}</a>{% endfor %}</td></tr>{% endfor %}
+</tbody></table></div></details>
+{% endfor %}
+<p id="molecule-empty" class="notice" {% if molecules %}hidden{% endif %}>No matching molecule claims. Try another name. A missing entry means no accepted evidence in this build, not that the molecule is absent.</p>
+{% endblock %}
+{% block scripts %}<script>(()=>{const q=document.getElementById('molecule-q'),rows=[...document.querySelectorAll('.molecule-row')];q.addEventListener('input',()=>{let n=0;for(const row of rows){row.hidden=!q.value.trim().toLowerCase().split(/\s+/).every(t=>row.dataset.search.includes(t));if(!row.hidden)n++;}document.getElementById('molecule-count').textContent=n+' of '+rows.length+' molecules';document.getElementById('molecule-empty').hidden=n>0;});})();</script>{% endblock %}

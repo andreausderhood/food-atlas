@@ -1,0 +1,12 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+This license applies to everything under `data/registry/` and `data/curated/`
+in this repository: the hand-curated Food Atlas data.
+
+You are free to share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit and indicate if changes
+were made. Full license text:
+https://creativecommons.org/licenses/by/4.0/
+
+Imported data under `data/raw/` and its derivatives in `data/build/` keep
+their upstream licenses, as listed in `NOTICE.md`.

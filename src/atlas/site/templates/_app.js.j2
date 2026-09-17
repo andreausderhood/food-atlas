@@ -1,0 +1,40 @@
+(() => {
+'use strict';
+const ids=JSON.parse(document.getElementById('atlas-catalog').textContent);
+const names=JSON.parse(document.getElementById('atlas-names').textContent);
+const catalog=new Map(ids.map((id,i)=>[id,names[i]]));
+const root=document.body.dataset.root;
+const status=document.getElementById('app-status');
+let statusTimer;
+function announce(text){status.textContent=text;clearTimeout(statusTimer);statusTimer=setTimeout(()=>{status.textContent='';},5000);}
+function read(key,fallback){try {return JSON.parse(localStorage.getItem(key))??fallback;}catch(e){return fallback;}}
+function store(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true;}catch(e){return false;}}
+const initialSaved=read('food-atlas-saved',[]);
+let saved=new Set((Array.isArray(initialSaved)?initialSaved:[]).filter(id=>catalog.has(id)));
+function clean(values){return [...new Set(values)].filter(id=>catalog.has(id)).slice(0,3);}
+let selected=clean((new URLSearchParams(location.search).get('compare')||'').split(','));
+function syncURL(){const url=new URL(location.href);if(selected.length)url.searchParams.set('compare',selected.join(','));else url.searchParams.delete('compare');try{history.replaceState(null,'',url);}catch(e){} }
+function update(){
+ document.querySelectorAll('[data-save]').forEach(b=>{const active=saved.has(b.dataset.save);b.setAttribute('aria-pressed',String(active));b.textContent=active?'Saved':'Save';});
+ document.querySelectorAll('[data-compare]').forEach(b=>{const active=selected.includes(b.dataset.compare);b.setAttribute('aria-pressed',String(active));b.textContent=active?'Remove':'Compare +';b.disabled=!active&&selected.length>=3;});
+ const tray=document.getElementById('compare-tray');tray.hidden=!selected.length;
+ document.getElementById('tray-count').textContent=`Compare ${selected.length}/3`;
+ const items=document.getElementById('tray-items');items.replaceChildren();
+ for(const id of selected){const b=document.createElement('button');b.type='button';b.textContent=catalog.get(id)+' ×';b.setAttribute('aria-label','Remove '+catalog.get(id)+' from comparison');b.addEventListener('click',()=>setCompare(selected.filter(v=>v!==id)));items.append(b);}
+ const href=root+'compare.html?compare='+encodeURIComponent(selected.join(','));document.getElementById('tray-link').href=href;
+ document.querySelectorAll('a[href]').forEach(a=>{const raw=a.getAttribute('href');if(!raw||raw.startsWith('#'))return;const url=new URL(raw,location.href);if(url.origin!==location.origin||!url.pathname.endsWith('.html'))return;if(selected.length)url.searchParams.set('compare',selected.join(','));else url.searchParams.delete('compare');a.href=url.href;});
+ document.dispatchEvent(new CustomEvent('atlas:saved'));
+}
+function setCompare(values){selected=clean(values);syncURL();update();document.dispatchEvent(new CustomEvent('atlas:compare',{detail:selected}));}
+window.Atlas={saved:()=>saved,selected:()=>selected,setCompare,announce};
+ document.querySelectorAll('[data-save]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.save;if(saved.has(id))saved.delete(id);else saved.add(id);const persisted=store('food-atlas-saved',[...saved]);update();announce(persisted?(saved.has(id)?'Saved to this browser.':'Removed from saved foods.'):'Browser storage unavailable. Saved foods will last only on this page.');}));
+ document.querySelectorAll('[data-compare]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.compare;if(selected.includes(id))setCompare(selected.filter(v=>v!==id));else if(selected.length<3)setCompare([...selected,id]);else announce('Choose up to three foods. Remove one first.');}));
+ document.getElementById('tray-clear').addEventListener('click',()=>setCompare([]));
+ const theme=document.getElementById('theme');
+ const dark=()=>document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
+ function themeLabel(){theme.textContent=dark()?'Light mode':'Dark mode';theme.setAttribute('aria-label','Switch to '+(dark()?'light':'dark')+' mode');}
+ theme.addEventListener('click',()=>{const value=dark()?'light':'dark';document.documentElement.dataset.theme=value;try{localStorage.setItem('food-atlas-theme',value);}catch(e){}themeLabel();});themeLabel();
+ document.querySelectorAll('.masthead nav a').forEach(a=>{if(new URL(a.href).pathname===location.pathname)a.setAttribute('aria-current','page');});
+ window.addEventListener('popstate',()=>{selected=clean((new URLSearchParams(location.search).get('compare')||'').split(','));update();document.dispatchEvent(new CustomEvent('atlas:compare',{detail:selected}));});
+ update();
+})();

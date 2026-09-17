@@ -1,0 +1,111 @@
+# Typed food levels (product.md §4). FoodAtlas IDs from bundle v4.11.
+excluded_foodatlas:
+  e1671: {name: chinese cabbage head, reason: "Brassica rapa, not B. oleracea"}
+  e7808: {name: chinese cabbage head (raw), reason: "Brassica rapa, not B. oleracea"}
+  e1673: {name: chinese cabbage leaf, reason: "Brassica rapa, not B. oleracea"}
+  e1672: {name: chinese cabbage food product, reason: "Brassica rapa, not B. oleracea"}
+  e10084: {name: cauliflower fungus, reason: "Sparassis, a fungus, not cauliflower"}
+  e1475: {name: siberian kale leaf, reason: "Brassica napus, not B. oleracea"}
+  e1548: {name: siberian kale bunch, reason: "Brassica napus, not B. oleracea"}
+
+# ── Apple ────────────────────────────────────────────────────────────────
+food:apple:
+  level: taxon_food
+  name: Apple
+  derives_from: org:malus-domestica
+  foodon: FOODON_00002473
+  foodatlas_ids: [e897, e3974]
+  fdc_match: ['Apples, raw, with skin(\b.*)?']
+food:apple.flesh:
+  level: part
+  name: Apple flesh (without skin)
+  part_of: food:apple
+  part: mesocarp
+  fdc_match: ['Apples, raw, without skin(\b.*)?']
+food:apple.peel: {level: part, name: Apple peel, part_of: food:apple, part: exocarp, foodatlas_ids: [e8632]}
+food:apple.fuji:
+  level: cultivar
+  name: "Apple 'Fuji'"
+  is_a: food:apple
+  foodatlas_ids: [e1129]
+  fdc_match: ['Apples, (raw, )?fuji, with skin(, raw)?(\b.*)?']
+food:apple.gala:
+  level: cultivar
+  name: "Apple 'Gala'"
+  is_a: food:apple
+  foodatlas_ids: [e1420]
+  fdc_match: ['Apples, (raw, )?gala, with skin(, raw)?(\b.*)?']
+food:apple.golden-delicious:
+  level: cultivar
+  name: "Apple 'Golden Delicious'"
+  is_a: food:apple
+  foodatlas_ids: [e1994]
+  fdc_match: ['Apples, (raw, )?golden delicious, with skin(, raw)?(\b.*)?']
+food:apple.granny-smith:
+  level: cultivar
+  name: "Apple 'Granny Smith'"
+  is_a: food:apple
+  foodatlas_ids: [e1125]
+  fdc_match: ['Apples, (raw, )?granny smith, with skin(, raw)?(\b.*)?']
+food:apple.honeycrisp:
+  level: cultivar
+  name: "Apple 'Honeycrisp'"
+  is_a: food:apple
+  foodatlas_ids: [e1536]
+  fdc_match: ['Apples, (raw, )?honeycrisp, with skin(, raw)?(\b.*)?']
+food:apple.red-delicious:
+  level: cultivar
+  name: "Apple 'Red Delicious'"
+  is_a: food:apple
+  foodatlas_ids: [e953]
+  fdc_match: ['Apples, (raw, )?red delicious, with skin(, raw)?(\b.*)?']
+food:apple.juice:
+  level: form
+  name: Apple juice
+  derives_from: food:apple
+  process: proc:pressing
+  foodatlas_ids: [e61]
+  fdc_match: ['Apple juice, canned or bottled, unsweetened(\b.*)?']
+food:apple.sweet-cider: {level: form, name: Sweet cider (non-alcoholic), derives_from: food:apple, process: proc:pressing, foodatlas_ids: [e3621]}
+food:apple.pomace: {level: form, name: Apple pomace, derives_from: food:apple, process: proc:pressing, foodatlas_ids: [e4089]}
+food:apple.cider: {level: form, name: Cider (alcoholic), derives_from: food:apple.juice, process: proc:alcoholic-fermentation, foodatlas_ids: [e248]}
+food:apple.dried:
+  level: form
+  name: Dried apple
+  derives_from: food:apple
+  process: proc:drying
+  foodatlas_ids: [e4088]
+  fdc_match: ['Apples, dried, sulfured, uncooked']
+food:apple.sauce: {level: form, name: Applesauce, derives_from: food:apple, process: proc:pureeing, foodatlas_ids: [e3619]}
+
+# ── Brassica oleracea ────────────────────────────────────────────────────
+food:cabbage:
+  level: taxon_food
+  name: Cabbage
+  derives_from: org:brassica-oleracea-capitata
+  default_part: head
+  foodatlas_ids: [e1443, e3752]
+  fdc_match: ['Cabbage, raw']
+food:cabbage.green: {level: cultivar, name: Green cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e7882, e1157], fdc_match: ['Cabbage, (common|green), raw']}
+food:cabbage.red: {level: cultivar, name: Red cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e5090, e1158], fdc_match: ['Cabbage, red, raw']}
+food:cabbage.savoy: {level: cultivar, name: Savoy cabbage (cultivar group), is_a: food:cabbage, foodatlas_ids: [e1220, e1692], fdc_match: ['Cabbage, savoy, raw']}
+food:cabbage.leaf: {level: part, name: Cabbage leaf, part_of: food:cabbage, part: leaf, foodatlas_ids: [e1531]}
+food:cabbage.juice: {level: form, name: Cabbage juice, derives_from: food:cabbage, process: proc:pressing, foodatlas_ids: [e4447]}
+food:sauerkraut:
+  level: form
+  name: Sauerkraut
+  derives_from: food:cabbage
+  process: proc:lactic-fermentation
+  foodatlas_ids: [e3796]
+  fdc_match: ['Sauerkraut, canned, solids and liquids']
+food:broccoli: {level: taxon_food, name: Broccoli, derives_from: org:brassica-oleracea-italica, default_part: inflorescence, foodatlas_ids: [e1442, e3975], fdc_match: ['Broccoli, raw']}
+food:broccoli.leaf: {level: part, name: Broccoli leaf, part_of: food:broccoli, part: leaf, foodatlas_ids: [e3303]}
+food:broccoli.stalk: {level: part, name: Broccoli stalk, part_of: food:broccoli, part: stem, foodatlas_ids: [e3305]}
+food:broccoli.sprouts: {level: form, name: Broccoli sprouts, derives_from: food:broccoli, process: proc:sprouting, foodatlas_ids: [e1190]}
+food:cauliflower: {level: taxon_food, name: Cauliflower, derives_from: org:brassica-oleracea-botrytis, default_part: inflorescence, foodatlas_ids: [e1447, e4372], fdc_match: ['Cauliflower, raw']}
+food:cauliflower.leaf: {level: part, name: Cauliflower leaf, part_of: food:cauliflower, part: leaf, foodatlas_ids: [e1645]}
+food:kohlrabi: {level: taxon_food, name: Kohlrabi, derives_from: org:brassica-oleracea-gongylodes, default_part: stem, foodatlas_ids: [e1458, e7824, e1174], fdc_match: ['Kohlrabi, raw']}
+food:kohlrabi.leaf: {level: part, name: Kohlrabi leaf, part_of: food:kohlrabi, part: leaf, foodatlas_ids: [e1173]}
+food:brussels-sprout: {level: taxon_food, name: Brussels sprout, derives_from: org:brassica-oleracea-gemmifera, default_part: axillary_bud, foodatlas_ids: [e8759], fdc_match: ['Brussels sprouts, raw']}
+food:kale: {level: taxon_food, name: Kale, derives_from: org:brassica-oleracea-acephala, default_part: leaf, foodatlas_ids: [e3460, e5175, e1520, e3461, e1525], fdc_match: ['Kale, raw']}
+food:kale.frozen: {level: form, name: Frozen kale, derives_from: food:kale, process: proc:freezing, foodatlas_ids: [e8267], fdc_match: ['Kale, frozen, unprepared']}

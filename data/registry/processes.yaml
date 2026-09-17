@@ -1,0 +1,7 @@
+proc:pressing: {name: Pressing}
+proc:drying: {name: Drying}
+proc:freezing: {name: Freezing}
+proc:sprouting: {name: Sprouting}
+proc:alcoholic-fermentation: {name: Alcoholic fermentation}
+proc:lactic-fermentation: {name: Lactic acid fermentation}
+proc:pureeing: {name: Cooking and puréeing}

@@ -1,0 +1,38 @@
+{% extends "base.html.j2" %}
+{% from "_chip.html.j2" import chip %}
+{% block title %}{{ food.name }} — Food Atlas{% endblock %}
+{% block main %}
+<h1>{{ food.name }}</h1>
+<p class="muted">{% if food.name_de %}{{ food.name_de }} · {% endif %}{{ food.level }} · <em>{{ organisms[food.taxon].name }}</em>
+{% if food.is_a %} · cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a>{% endif %}
+{% if food.part_of %} · part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a>{% endif %}
+{% if food.derives_from and food.level == "form" %} · made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}{% endif %}</p>
+<div class="layers">
+<section>
+<h2>Editorial</h2>
+{% for group, claims in sections if group in ("narrative", "sensory") %}
+<h3>{{ group|capitalize }}</h3>
+{% for c in claims %}<p><strong>{{ c.field }}:</strong> {{ c.display }} {{ chip(c, sources) }}</p>{% endfor %}
+{% else %}<p class="muted">No editorial text yet.</p>{% endfor %}
+</section>
+<section>
+<h2>Technical</h2>
+{% for group, claims in sections if group not in ("narrative", "sensory") %}
+<h3>{{ group|capitalize }}</h3>
+{% if group == "nutrition" %}<p class="muted">Amounts per 100 g edible portion. Basis and part are source-specific; these values are not interchangeable.</p>{% endif %}
+<div class="scroll"><table>
+<tr><th>What</th><th>Value</th><th>Basis · part</th><th>Evidence</th></tr>
+{% for c in claims %}
+<tr><td>{{ c.label }}{% if c.machine_extracted %} <span class="badge">machine-extracted / unvalidated</span>{% endif %}</td>
+<td>{{ c.display }}</td>
+<td>{{ c.basis or "—" }} · {{ c.food_part or "—" }}</td>
+<td>{{ chip(c, sources) }}{% if c.machine_extracted and c.pmcs %}<br>{% for pmc in c.pmcs %}<a href="https://pmc.ncbi.nlm.nih.gov/articles/{{ pmc }}/">{{ pmc }}</a> {% endfor %}{% endif %}</td></tr>
+{% endfor %}
+</table></div>
+{% else %}<p class="muted">No sourced technical values yet.</p>{% endfor %}
+</section>
+</div>
+<h2>Open questions for this entry</h2>
+{% for g in food.gaps %}<p><span class="badge">Rule {{ g.rule }}</span> {{ g.field }}: {{ g.question }} <span class="muted">Would be settled by: {{ g.would_be_settled_by }}</span></p>
+{% else %}<p class="muted">None.</p>{% endfor %}
+{% endblock %}

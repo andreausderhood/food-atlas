@@ -1,0 +1,36 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:cabbage
+claims:
+- group: sensory
+  field: colour
+  v: Leaves range from pale green and cream to deep purple-red; some types have crinkled green leaves.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cabbage.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: texture
+  v: Raw leaves can be crisp, with firmer ribs. Cooking can make them tender; the cut and cooking time
+    matter.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cabbage.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: taste
+  v: Often mildly sweet with a cabbage-like, sometimes peppery or bitter note; cooking changes both flavour
+    and aroma.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cabbage.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: eli5
+  v: A cabbage looks like a parcel made of overlapping leaves. Slice across it to see the layers.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cabbage.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: story
+  v: A whole head and a bowl of fine shreds look almost unrelated. Follow one leaf from the outside toward
+    the centre and the familiar round shape becomes a stack of different textures.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/cabbage.yaml — original editorial, 2026-09-17; not measured sensory data

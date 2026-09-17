@@ -1,0 +1,22 @@
+# NCBI species record only; no inference about Brassica infraspecific ranks.
+subject: org:brassica-oleracea
+claims:
+- group: identity
+  field: ncbi_taxon
+  v: 3712
+  src: SRC-NCBI-TAXONOMY
+  derivation: registry
+  ref: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=3712 — Taxonomy ID; accessed 2026-09-17
+- group: identity
+  field: scientific_name
+  v: Brassica oleracea
+  src: SRC-NCBI-TAXONOMY
+  derivation: registry
+  ref: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=3712 — current name (canonical binomial
+    only; authority omitted); accessed 2026-09-17
+- group: identity
+  field: rank
+  v: species
+  src: SRC-NCBI-TAXONOMY
+  derivation: registry
+  ref: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=3712 — Rank; accessed 2026-09-17

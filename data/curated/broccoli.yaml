@@ -1,0 +1,36 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:broccoli
+claims:
+- group: sensory
+  field: colour
+  v: Usually green, with darker tips and paler stalk interiors; some types show purple tones.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/broccoli.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: texture
+  v: The tips are finely bumpy, while the stalk is firmer and smoother. Cooking can soften both at different
+    rates.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/broccoli.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: taste
+  v: Green and cabbage-like, with mild sweetness or bitterness; prolonged cooking can bring a stronger
+    sulphurous aroma.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/broccoli.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: eli5
+  v: Broccoli can look like a tiny bunch of trees. Its bumpy tops and smooth stalk offer different bites.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/broccoli.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: story
+  v: Imagine a plate where the stalk gets as much attention as the top. Comparing their shapes and textures
+    turns a familiar vegetable into two small discoveries.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/broccoli.yaml — original editorial, 2026-09-17; not measured sensory data

@@ -1,0 +1,137 @@
+# Food Atlas — source registry. Every claim's `src` must resolve here (rule 2).
+# license_class: ship (bulk import allowed) | cite (single curated facts only) | adapter | separate
+SRC-FDC-FOUNDATION-2026-04:
+  title: "USDA FoodData Central — Foundation Foods (April 2026)"
+  publisher: "U.S. Department of Agriculture, Agricultural Research Service"
+  url: "https://fdc.nal.usda.gov/download-datasets"
+  identifier: "FoodData_Central_foundation_food_csv_2026-04-30.zip"
+  license: "CC0-1.0"
+  license_url: "https://fdc.nal.usda.gov/faq"
+  license_class: ship
+  license_read: false
+  kind: measurement
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central: Foundation Foods, April 2026. fdc.nal.usda.gov."
+SRC-FDC-SRLEGACY-2018-04:
+  title: "USDA FoodData Central — SR Legacy (April 2018, final release)"
+  publisher: "U.S. Department of Agriculture, Agricultural Research Service"
+  url: "https://fdc.nal.usda.gov/download-datasets"
+  identifier: "FoodData_Central_sr_legacy_food_csv_2018-04.zip"
+  license: "CC0-1.0"
+  license_url: "https://fdc.nal.usda.gov/faq"
+  license_class: ship
+  license_read: false
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central: SR Legacy, April 2018. fdc.nal.usda.gov."
+SRC-BLS-4.0:
+  title: "Bundeslebensmittelschlüssel (BLS), Version 4.0 — Deutsche Nährstoffdatenbank"
+  publisher: "Max Rubner-Institut"
+  url: "https://blsdb.de/download"
+  identifier: "doi:10.25826/Data20251217-134202-0"
+  license: "CC-BY-4.0"
+  license_url: "https://blsdb.de/download"
+  license_class: ship
+  license_read: false
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "Max Rubner-Institut (2025): Bundeslebensmittelschlüssel (BLS), Version 4.0 — Deutsche Nährstoffdatenbank. Karlsruhe. DOI: 10.25826/Data20251217-134202-0"
+SRC-FOODATLAS-V4.11:
+  title: "FoodAtlas knowledge graph bundle v4.11 (CTD-derived rows excluded)"
+  publisher: "AI Institute for Next Generation Food Systems, UC Davis"
+  url: "https://www.foodatlas.ai/food-composition-downloads"
+  identifier: "foodatlas-v4.11.zip, sha256 591176b9d2bf669c34b2127e4e25c434978f582cd93f8e214c3675d0cb25d320"
+  license: "Apache-2.0"
+  license_url: "https://www.foodatlas.ai/food-composition-downloads"
+  license_class: ship
+  license_read: true
+  kind: literature_extraction
+  independence: independent
+  supports: [identity, molecules]
+  attribution: "Li, F. et al. (2026). A unified knowledge graph linking foodomics to chemical-disease networks and flavor profiles. npj Science of Food. doi:10.1038/s41538-025-00680-9"
+SRC-NCBI-TAXONOMY:
+  title: "NCBI Taxonomy"
+  publisher: "National Center for Biotechnology Information"
+  url: "https://www.ncbi.nlm.nih.gov/taxonomy"
+  license: "NCBI data use policy"
+  license_url: "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+  license_class: ship
+  license_read: true
+  kind: registry
+  independence: independent
+  supports: [identity]
+  attribution: "Schoch, C. L. et al. (2020). NCBI Taxonomy. Database, baaa062."
+SRC-MANSFELD:
+  title: "Mansfeld's World Database of Agricultural and Horticultural Crops"
+  publisher: "Leibniz Institute of Plant Genetics and Crop Plant Research (IPK) Gatersleben"
+  url: "https://mansfeld.ipk-gatersleben.de/"
+  license: "Cited fact by fact"
+  license_url: "https://mansfeld.ipk-gatersleben.de/"
+  license_class: cite
+  license_read: false
+  kind: registry
+  independence: independent
+  supports: [identity, origin]
+  attribution: "Mansfeld's World Database of Agricultural and Horticultural Crops, IPK Gatersleben."
+SRC-KHOURY-2016:
+  title: "Data from: Origins of food crops connect countries worldwide"
+  publisher: "Dryad (Khoury, C. K. et al.)"
+  url: "https://datadryad.org/dataset/doi:10.5061/dryad.s08t2"
+  identifier: "doi:10.5061/dryad.s08t2"
+  license: "CC0-1.0"
+  license_url: "https://datadryad.org/dataset/doi:10.5061/dryad.s08t2"
+  license_class: ship
+  license_read: true
+  kind: research
+  independence: independent
+  supports: [origin]
+  attribution: "Khoury, C. K. et al. (2016). Origins of food crops connect countries worldwide. Proc. R. Soc. B 283: 20160792. Data: doi:10.5061/dryad.s08t2"
+SRC-ECOCROP:
+  title: "FAO ECOCROP — crop environmental requirements"
+  publisher: "Food and Agriculture Organization of the United Nations"
+  url: "https://gaez.fao.org/pages/ecocrop"
+  license: "Cited fact by fact"
+  license_url: "https://www.fao.org/contact-us/terms/en/"
+  license_class: cite
+  license_read: false
+  kind: compilation
+  independence: independent
+  supports: [growing]
+  attribution: "FAO. ECOCROP database. gaez.fao.org."
+SRC-BZFE-SAISONKALENDER:
+  title: "Der Saisonkalender (Obst und Gemüse)"
+  publisher: "Bundeszentrum für Ernährung (BZfE)"
+  url: "https://www.bzfe.de/kueche-und-alltag/einkaufen/der-saisonkalender"
+  license: "Cited fact by fact"
+  license_url: "https://www.bzfe.de/impressum"
+  license_class: cite
+  license_read: false
+  kind: compilation
+  independence: independent
+  supports: [season]
+  attribution: "Bundeszentrum für Ernährung. Der Saisonkalender."
+SRC-EDITORIAL:
+  title: "Food Atlas editorial"
+  publisher: "Food Atlas contributors"
+  url: "https://github.com/"
+  license: "CC-BY-4.0"
+  license_class: ship
+  license_read: true
+  kind: library_editorial
+  independence: library_editorial
+  supports: [sensory, narrative]
+  attribution: "Food Atlas contributors (CC BY 4.0)."
+SRC-UNVERIFIED:
+  title: "Unverified — no traceable source"
+  publisher: "—"
+  url: "https://github.com/"
+  license: "n/a"
+  license_class: ship
+  license_read: false
+  kind: unverified
+  independence: library_editorial
+  supports: [identity, nutrition, molecules, bioactivity, sensory, origin, geography, growing, season, process, regulatory, narrative]
+  attribution: "—"

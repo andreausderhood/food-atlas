@@ -1,0 +1,44 @@
+{% extends "base.html.j2" %}
+{% from "_chip.html.j2" import chip %}
+{% block title %}Foods | Food Atlas{% endblock %}
+{% block main %}
+<div class="intro"><p class="eyebrow">The food library</p><h1>Explore what’s in a food.</h1><p class="muted">{{ rows|length }} foods, cultivars, parts and forms. {{ payload.stats.accepted }} accepted claims, with their sources kept visible.</p></div>
+<div class="library">
+<aside class="filters" aria-label="Food filters">
+<div class="filter-top"><h2>Refine library</h2><button id="reset" class="text-button" type="button">Reset filters</button></div>
+<label>Food family<select id="family"><option value="">All families</option>{% for id, name in families.items() %}<option value="{{ id }}">{{ name }}</option>{% endfor %}</select></label>
+<label>Food level<select id="level"><option value="">All levels</option>{% for id, name in level_label.items() %}<option value="{{ id }}">{{ name }}</option>{% endfor %}</select></label>
+<label>Evidence<select id="evidence"><option value="">Any evidence</option>{% for tier, name in tier_label.items() %}<option value="{{ tier }}">T{{ tier }} · {{ name }}</option>{% endfor %}<option value="none">No claims yet</option></select></label>
+<label class="check"><input id="saved-only" type="checkbox">Saved foods only <span id="saved-count"></span></label>
+<details><summary class="filter-help">How to read this library</summary><p class="filter-help">Families group entries by their top-level registered taxon, not botanical family rank. A tier describes an individual claim, not the entire food.</p><p class="filter-help">Editorial descriptions are declared, not measured. Missing nutrition is not zero.</p></details>
+</aside>
+<section aria-label="Food results">
+<div class="search-row"><label for="q">Search the library<input id="q" type="search" placeholder="Food, texture, taste or molecule…" autocomplete="off"></label></div>
+<div class="results-bar"><span id="result-count" role="status" aria-live="polite">{{ rows|length }} foods</span><div class="view-buttons" role="group" aria-label="Display mode"><button id="view-cards" type="button" aria-pressed="true">Cards</button><button id="view-list" type="button" aria-pressed="false">List</button></div></div>
+<div class="grid" id="grid">
+{% for r in rows %}
+<article class="card" data-id="{{ r.id }}" data-search="{{ r.search }}" data-family="{{ r.family }}" data-level="{{ r.level }}" data-tiers="{{ r.tiers|join(',') }}">
+<div class="card-body"><div class="card-heading"><span class="badge">{{ level_label[r.level] }}</span><span class="card-number">{{ r.molecules }} molecules</span></div>
+<div><h2><a href="foods/{{ r.slug }}.html">{{ r.name }}</a></h2><div class="taxon muted">{{ r.taxon_name }}</div></div>
+{% if r.preview %}<p class="preview">{{ r.preview.v }}</p>{{ chip(r.preview, sources) }}{% else %}<p class="preview muted">No editorial description yet. Open the entry to explore available evidence and questions.</p>{% endif %}</div>
+<div class="card-actions"><span class="card-meta">{{ r.claims }} claims<br>{% if r.nutrition %}{{ r.nutrition }} nutrition values{% else %}Nutrition not stated{% endif %}</span><button type="button" data-save="{{ r.id }}" aria-pressed="false" aria-label="Save {{ r.name }}">Save</button><button type="button" data-compare="{{ r.id }}" aria-pressed="false" aria-label="Compare {{ r.name }}">Compare +</button></div>
+</article>
+{% endfor %}
+</div>
+<div id="empty" class="empty" hidden><h2>No foods match.</h2><p>Try a broader search or reset the filters. Saved foods are stored only in this browser.</p><button type="button" id="empty-reset">Reset filters</button></div>
+<noscript><p class="notice">All entries are listed. Search, filters, saved foods and the compare tray need JavaScript; food pages and the initial comparison remain readable.</p></noscript>
+</section></div>
+{% endblock %}
+{% block scripts %}<script>
+(() => {
+const q=document.getElementById('q'),family=document.getElementById('family'),level=document.getElementById('level'),evidence=document.getElementById('evidence'),saved=document.getElementById('saved-only');
+const cards=[...document.querySelectorAll('#grid .card')],grid=document.getElementById('grid');
+const params=new URLSearchParams(location.search);for(const control of [q,family,level,evidence])if(params.has(control.id))control.value=params.get(control.id);saved.checked=params.get('saved')==='1';
+let view=params.get('view')==='list'?'list':'cards';
+function apply(){let count=0;const terms=q.value.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);for(const card of cards){const visible=terms.every(t=>card.dataset.search.includes(t))&&(!family.value||card.dataset.family===family.value)&&(!level.value||card.dataset.level===level.value)&&(!evidence.value||(evidence.value==='none'?!card.dataset.tiers:card.dataset.tiers.split(',').includes(evidence.value)))&&(!saved.checked||Atlas.saved().has(card.dataset.id));card.hidden=!visible;if(visible)count++;}document.getElementById('result-count').textContent=`${count} of ${cards.length} foods`;document.getElementById('empty').hidden=count>0;document.getElementById('saved-count').textContent=`(${Atlas.saved().size})`;grid.classList.toggle('list',view==='list');document.getElementById('view-cards').setAttribute('aria-pressed',String(view==='cards'));document.getElementById('view-list').setAttribute('aria-pressed',String(view==='list'));const url=new URL(location.href);for(const c of [q,family,level,evidence]){if(c.value)url.searchParams.set(c.id,c.value);else url.searchParams.delete(c.id);}if(saved.checked)url.searchParams.set('saved','1');else url.searchParams.delete('saved');if(view==='list')url.searchParams.set('view','list');else url.searchParams.delete('view');try{history.replaceState(null,'',url);}catch(e){}}
+for(const c of [q,family,level,evidence,saved])c.addEventListener(c===q?'input':'change',apply);
+function reset(){q.value='';family.value='';level.value='';evidence.value='';saved.checked=false;apply();q.focus();}
+document.getElementById('reset').addEventListener('click',reset);document.getElementById('empty-reset').addEventListener('click',reset);
+for(const mode of ['cards','list'])document.getElementById('view-'+mode).addEventListener('click',()=>{view=mode;apply();});
+document.addEventListener('atlas:saved',apply);apply();
+})();</script>{% endblock %}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore foods, their parts, forms and molecules. Trace each claim to its evidence.">
+<title>{% block title %}Food Atlas{% endblock %}</title>
+<style>{% include "_style.css.j2" %}</style>
+<script>try { const t=localStorage.getItem('food-atlas-theme'); if(['light','dark'].includes(t))document.documentElement.dataset.theme=t; } catch(e){}</script>
+</head>
+<body data-root="{{ root }}">
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead"><a class="brand" href="{{ root }}index.html">Food Atlas<span> A library of edible life</span></a>
+<nav aria-label="Main navigation"><a href="{{ root }}index.html">Foods</a><a href="{{ root }}molecules.html">Molecules</a><a href="{{ root }}compare.html">Compare</a><a href="{{ root }}gaps.html">Gaps</a><a href="{{ root }}sources.html">Sources</a></nav>
+<button id="theme" type="button" aria-label="Switch color theme">Theme</button></header>
+<main id="main">{% block main %}{% endblock %}</main>
+<aside id="compare-tray" class="compare-tray" aria-label="Selected foods" hidden><strong id="tray-count">Compare</strong><div id="tray-items"></div><a class="button primary" id="tray-link" href="{{ root }}compare.html">Compare foods</a><button id="tray-clear" type="button">Clear</button></aside>
+<p id="app-status" class="status" role="status" aria-live="polite"></p>
+<footer class="muted">Food Atlas / Evidence, not assumptions.<br>Code MIT · curated data CC BY 4.0 · imported data under its own license (see <a href="{{ root }}sources.html">Sources</a>)</footer>
+<script id="atlas-catalog" type="application/json">{{ atlas_rows|map(attribute='id')|list|tojson }}</script>
+<script id="atlas-names" type="application/json">{{ atlas_rows|map(attribute='name')|list|tojson }}</script>
+<script>{% include "_app.js.j2" %}</script>
+{% block scripts %}{% endblock %}
+</body></html>

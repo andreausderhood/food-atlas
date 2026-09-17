@@ -1,0 +1,37 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:brussels-sprout
+claims:
+- group: sensory
+  field: colour
+  v: Usually green outside and paler inside; some cultivars have purple tones.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/brussels-sprout.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: texture
+  v: Raw sprouts are compact and firm. Cooking can leave the centre firm or make the whole sprout tender;
+    browned outer leaves may be crisp.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/brussels-sprout.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: sensory
+  field: taste
+  v: Cabbage-like, with variable bitterness and sweetness. Browning can add toasted notes, while longer
+    cooking may bring a stronger sulphurous aroma.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/brussels-sprout.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: eli5
+  v: A Brussels sprout looks like a tiny leafy parcel. Cut one in half to see how closely its leaves fit
+    together.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/brussels-sprout.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: narrative
+  field: story
+  v: A halved sprout shows a pale centre framed by darker leaves. Put the cut face beside the rounded
+    side and the same small vegetable offers two quite different views.
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/brussels-sprout.yaml — original editorial, 2026-09-17; not measured sensory data

@@ -1,0 +1,73 @@
+{% extends "base.html.j2" %}
+{% from "_chip.html.j2" import chip %}
+{% block title %}Compare - Food Atlas{% endblock %}
+{% block main %}
+<h1>Compare</h1>
+<p class="muted">Up to three foods. Nutrition amounts per 100 g edible portion. Each source remains separate; check basis and part before comparing.</p>
+{% for i in range(3) %}
+<label for="pick-{{ i }}">Food {{ i + 1 }}</label>
+<select class="pick" id="pick-{{ i }}">
+<option value="" {% if i >= default_ids|length %}selected{% endif %}>Choose a food</option>
+{% for f in payload.foods %}<option value="{{ f.id }}" {% if i < default_ids|length and default_ids[i] == f.id %}selected{% endif %}>{{ f.name }}</option>{% endfor %}
+</select>
+{% endfor %}
+<div class="scroll" tabindex="0" role="region" aria-label="Nutrition comparison"><table id="cmp">
+<caption>Source-specific nutrition comparison</caption>
+<thead><tr><th scope="col">Nutrient</th>{% for fid in default_ids %}<th scope="col">{% for f in data.foods if f.id == fid %}{{ f.name }}{% endfor %}</th>{% endfor %}</tr></thead>
+<tbody>
+{% for r in default %}<tr><th scope="row">{{ r.label }}</th>
+{% for fid in default_ids %}<td>
+{% for c in data.rows[fid].get(r.field, []) %}
+<div class="claim">{{ c.display }}<br><span class="muted">{{ c.context }}</span><br>{{ chip(c, sources) }}</div>
+{% else %}not stated{% endfor %}
+</td>{% endfor %}</tr>{% endfor %}
+</tbody></table></div>
+<p id="compare-empty" {% if default %}hidden{% endif %}>No nutrition values stated for the selected foods.</p>
+<p class="muted">Missing values are not stated, not zero.</p>
+<noscript>The initial comparison is available above. Enable JavaScript to change the selection.</noscript>
+<script id="compare-data" type="application/json">{{ data|tojson }}</script>
+<script id="compare-sources" type="application/json">{{ sources|tojson }}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('compare-data').textContent);
+const SOURCES = JSON.parse(document.getElementById('compare-sources').textContent);
+function element(tag, text, className) {
+  const node = document.createElement(tag);
+  if (text !== undefined) node.textContent = text;
+  if (className) node.className = className;
+  return node;
+}
+function render() {
+  const ids = [...document.querySelectorAll('.pick')].map(s => s.value).filter(Boolean);
+  const fields = [...new Set(ids.flatMap(id => Object.keys(DATA.rows[id] || {})))]
+    .sort((a, b) => (DATA.labels[a] || a).localeCompare(DATA.labels[b] || b));
+  const names = Object.fromEntries(DATA.foods.map(f => [f.id, f.name]));
+  const head = element('thead'), header = element('tr');
+  for (const name of ['Nutrient', ...ids.map(id => names[id])]) {
+    const th = element('th', name); th.scope = 'col'; header.append(th);
+  }
+  head.append(header);
+  const body = element('tbody');
+  for (const field of fields) {
+    const tr = element('tr'), th = element('th', DATA.labels[field] || field);
+    th.scope = 'row'; tr.append(th);
+    for (const id of ids) {
+      const td = element('td'), claims = (DATA.rows[id] || {})[field] || [];
+      if (!claims.length) td.textContent = 'not stated';
+      for (const c of claims) {
+        const claim = element('div', c.display, 'claim');
+        claim.append(element('br'), element('span', c.context, 'muted'), element('br'));
+        const chip = element('span', `T${c.tier} · ${c.derivation} · ${c.src}`, `chip tier-${c.tier}`);
+        const source = SOURCES[c.src] || {};
+        chip.title = `${source.title || c.src} · ${source.license || 'license not stated'}${c.ref ? ' · ' + c.ref : ''}`;
+        claim.append(chip); td.append(claim);
+      }
+      tr.append(td);
+    }
+    body.append(tr);
+  }
+  document.getElementById('cmp').replaceChildren(element('caption', 'Source-specific nutrition comparison'), head, body);
+  document.getElementById('compare-empty').hidden = fields.length > 0;
+}
+document.querySelectorAll('.pick').forEach(s => s.addEventListener('change', render));
+</script>
+{% endblock %}
