@@ -8,7 +8,7 @@ SRC-FDC-FOUNDATION-2026-04:
   license: "CC0-1.0"
   license_url: "https://fdc.nal.usda.gov/faq"
   license_class: ship
-  license_read: false
+  license_read: true
   kind: measurement
   independence: independent
   supports: [identity, nutrition]
@@ -21,7 +21,7 @@ SRC-FDC-SRLEGACY-2018-04:
   license: "CC0-1.0"
   license_url: "https://fdc.nal.usda.gov/faq"
   license_class: ship
-  license_read: false
+  license_read: true
   kind: compilation
   independence: independent
   supports: [identity, nutrition]

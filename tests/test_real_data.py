@@ -33,6 +33,46 @@ def test_fdc_maps_pilot_foods_and_classifies_every_used_derivation(nodes):
     assert expected <= subjects, f"no FDC rows for {sorted(expected - subjects)}"
 
 
+def test_foundation_shared_codebook_and_gaps_are_explicit(nodes):
+    from atlas.claims import DERIVATION_TIER
+    from atlas.ingest.fdc import load_fdc
+    folder = need("data/raw/fdc-foundation")
+    assert not list(folder.rglob("food_nutrient_derivation.csv"))  # precondition of this regression
+    claims, _ = load_fdc(folder, FDC["data/raw/fdc-foundation"], nodes)
+    derivations = {c.derivation for c in claims}
+    assert derivations <= {"analytical", "calculated", "unverified"}
+    assert {"analytical", "calculated", "unverified"} <= derivations  # all three documented ID classes occur
+    unverified = [c for c in claims if c.derivation == "unverified"]
+    assert all(DERIVATION_TIER[c.derivation] == 5 for c in unverified)  # gaps, never promoted
+    assert all("missing_derivation" in c.flags and "missing_derivation_table" in c.flags for c in unverified)
+    assert all(c.method and "FDC derivation ID" in c.method for c in unverified)
+    mapped = [c for c in claims if c.derivation != "unverified"]
+    assert all(c.method and "SR Legacy 2018-04 lookup" in c.method for c in mapped)
+    assert all(c.ref and c.ref.startswith("fdc:") for c in claims)
+
+
+def test_foundation_publishes_only_foundation_food_rows(nodes):
+    from atlas.ingest.fdc import load_fdc
+    claims, _ = load_fdc(need("data/raw/fdc-foundation"), FDC["data/raw/fdc-foundation"], nodes)
+    assert claims  # sample/acquisition rows (75k+) must not leak in as duplicate subjects
+    from atlas.ingest.fdc import find_csv_dir, read_csv_rows
+    published = {f"fdc:{r['fdc_id']}" for r in read_csv_rows(
+        find_csv_dir(need("data/raw/fdc-foundation")) / "food.csv")
+        if r["data_type"] == "foundation_food"}
+    assert {c.ref for c in claims} <= published
+
+
+def test_honeycrisp_real_sucrose_spread_and_vitamin_c_gap(nodes):
+    from atlas.ingest.fdc import load_fdc
+    claims, _ = load_fdc(need("data/raw/fdc-foundation"), FDC["data/raw/fdc-foundation"], nodes)
+    apple = [c for c in claims if c.subject == "food:apple.honeycrisp"]
+    assert apple
+    assert not any(c.field == "nutrient:fdc:1162" for c in apple)  # no Vitamin C measurement
+    sucrose = next(c for c in apple if c.field == "nutrient:fdc:1010")
+    assert sucrose.derivation == "analytical"
+    assert (sucrose.v, sucrose.unit, sucrose.n, sucrose.v_min, sucrose.v_max) == (1.06, "g", 2, 0.99, 1.13)
+
+
 def test_bls_layout_and_pilot_codes(nodes):
     from openpyxl import load_workbook
     from atlas.ingest.bls import find_workbook, load_bls, nutrient_columns, parse_value_header
