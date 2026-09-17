@@ -1,0 +1,39 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.fuji
+claims:
+- group: narrative
+  field: eli5
+  v: 'Fuji is the sweet, dense crunch of the apple shelf: low acidity, lots of snap.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-fuji.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'A Fuji keeps its crunch for weeks in a fridge — that firmness is why it shows
+    up everywhere from lunchboxes to salads, where softer apples would slump.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-fuji.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pink-red blush over yellow-green, often striped.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-fuji.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Dense and very crisp; stays firm longer in storage than most dessert apples.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-fuji.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Markedly sweet, low acid; mild aromatic notes rather than tartness.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-fuji.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims

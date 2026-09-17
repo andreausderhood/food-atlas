@@ -1,0 +1,40 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.granny-smith
+claims:
+- group: narrative
+  field: eli5
+  v: 'Granny Smith is the sharp green apple: hard, acidic, and it keeps its colour
+    at the cut surface for a while.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-granny-smith.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: narrative
+  field: story
+  v: 'The green apple that holds its shape in a pie and startles you raw — its acidity
+    is the whole point, a clean sour snap nothing else on the shelf quite copies.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-granny-smith.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: colour
+  v: 'Uniform bright green, sometimes with a faint blush.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-granny-smith.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: texture
+  v: 'Hard, very crisp; one of the slowest to soften.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-granny-smith.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sharply tart, firm sweetness underneath, citrus-like edge.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-granny-smith.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims

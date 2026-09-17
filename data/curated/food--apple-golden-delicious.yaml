@@ -1,0 +1,39 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.golden-delicious
+claims:
+- group: narrative
+  field: eli5
+  v: 'Golden Delicious is the mellow yellow apple: honeyed, soft-crisp, barely tart.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-golden-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: narrative
+  field: story
+  v: 'A Golden Delicious rarely bites back — its low acid reads as pure sweetness,
+    which is why it quietly disappears into sauces and compotes.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-golden-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale yellow to golden; green-tinged when picked early.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-golden-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: texture
+  v: 'Initially crisp-tender, prone to mealiness with age.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-golden-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sweet, very low acid, honeyed aroma.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-golden-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims

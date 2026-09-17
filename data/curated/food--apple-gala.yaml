@@ -1,0 +1,39 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.gala
+claims:
+- group: narrative
+  field: eli5
+  v: 'Gala is the small, friendly apple: sweet, mild, thin-skinned.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-gala.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Galas rarely argue with anyone — mild, sweet, crisp for a few weeks, then softer.
+    Their small size made them a lunchbox default.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-gala.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Orange-red blush over yellow.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-gala.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Crisp when fresh, turning soft relatively quickly off refrigeration.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-gala.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sweet, low acid, gently aromatic.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-gala.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims

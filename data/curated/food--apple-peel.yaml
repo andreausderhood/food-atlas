@@ -1,0 +1,41 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.peel
+claims:
+- group: narrative
+  field: eli5
+  v: 'The peel is the apple''s skin: thin, often colourful, and the part that holds
+    the surface together.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-peel.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Peel an apple and the two halves stop being the same food — the skin carries
+    colour, a firmer bite and most of what your fingers touch. Waxed or rubbed, it
+    shines; peeled, the flesh beneath browns.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-peel.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Red, green or yellow depending on cultivar; duller and thicker in stored fruit.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-peel.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Thin and slightly leathery; snappier than the flesh, tough in long-stored fruit.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-peel.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Mildly sweet to tart with a faint bitter or waxy edge in some cultivars.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-peel.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims

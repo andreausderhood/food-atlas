@@ -1,0 +1,40 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.honeycrisp
+claims:
+- group: narrative
+  field: eli5
+  v: 'Honeycrisp is engineered around one idea: a huge, explosive crunch with juice
+    to match.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-honeycrisp.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: narrative
+  field: story
+  v: 'Bred for cell size that fractures loudly, Honeycrisp made crispness the selling
+    point. It bruises at the same large cells it is proud of — handle accordingly.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-honeycrisp.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: colour
+  v: 'Mottled red over cream-yellow.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-honeycrisp.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: texture
+  v: 'Explosively crisp, coarse-celled, very juicy.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-honeycrisp.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sweet with balancing acid; lightly aromatic.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-honeycrisp.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims

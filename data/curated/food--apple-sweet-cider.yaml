@@ -1,0 +1,40 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.sweet-cider
+claims:
+- group: narrative
+  field: eli5
+  v: 'Sweet cider is fresh pressed apple juice, unfermented — the American ''cider'',
+    not the alcoholic kind.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sweet-cider.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: narrative
+  field: story
+  v: 'Fresh-pressed sweet cider is apple season in a glass: richer and rougher-edged
+    than filtered juice, and it turns hard on its own if you give it days.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sweet-cider.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: colour
+  v: 'Opaque brown-gold.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sweet-cider.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: texture
+  v: 'Liquid, slightly thicker than water; fine pulp in suspension.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sweet-cider.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: taste
+  v: 'Full sweet-tart apple, more assertive and rustic than filtered juice.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sweet-cider.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims

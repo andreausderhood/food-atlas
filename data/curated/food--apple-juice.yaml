@@ -1,0 +1,41 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.juice
+claims:
+- group: narrative
+  field: eli5
+  v: 'Apple juice is the apple without its body: pressed, filtered or cloudy, sweet
+    and thin or soft-hazed.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-juice.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Pressed apple splits into two camps — clear filtered juice and cloudy direct
+    juice. Same fruit, opposite mouthfeel: one is glass-clean sweetness, the other
+    carries the apple''s texture as haze.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-juice.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale gold; cloudy brown-gold in unfiltered presses.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-juice.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Liquid; body ranges from watery (filtered) to softly viscous (cloudy).'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-juice.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sweet, gently tart; aromatic top notes depend on the blend and pressing.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-juice.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims

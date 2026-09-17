@@ -1,0 +1,40 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.red-delicious
+claims:
+- group: narrative
+  field: eli5
+  v: 'Red Delicious is the deep-red classic apple: mild, sweet, soft once it ages.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-red-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: narrative
+  field: story
+  v: 'Bred for shelf looks — that uniform five-pointed red — Red Delicious traded
+    away acid and texture along the way, which is exactly why it lost shelf space
+    to crunchier breeds.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-red-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: colour
+  v: 'Deep dark red, classic tall conic shape.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-red-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: texture
+  v: 'Firm when fresh, mealiness arriving early and reliably.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-red-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims
+- group: sensory
+  field: taste
+  v: 'Mildly sweet, low acid, faint melon-like aroma.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-red-delicious.yaml — original editorial, 2026-09-17;
+    descriptive only, no health claims

@@ -1,0 +1,43 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.flesh
+claims:
+- group: narrative
+  field: eli5
+  v: 'The flesh is the part you actually bite into: pale, crisp or soft, mostly water
+    and a little sugar.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-flesh.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Cut an apple sideways and the flesh shows its structure — cells packed like foam.
+    Freshness decides whether it snaps or yields; storage decides how much snap is
+    left.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-flesh.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale cream to near white, oxidising brown at the cut surface.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-flesh.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Crisp and juicy when fresh; mealy when overstored or in mealy cultivars; softens
+    fully when cooked.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-flesh.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Mild and sweet-tart; milder than the skin, taking most of its character from the
+    cultivar and ripeness.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-flesh.yaml — original editorial, 2026-09-17; descriptive
+    only, no health claims
