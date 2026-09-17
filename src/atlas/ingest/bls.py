@@ -69,6 +69,8 @@ def load_bls(root: Path, src_id: str, nodes: dict[str, FoodNode]) -> tuple[list[
                 if value is None or value == "":
                     continue  # missing, not zero (BLS FAQ 11)
                 origin = "" if row[oi] is None else str(row[oi]).strip()
+                if origin == "-":
+                    origin = ""  # BLS: no origin given for this value; stays honest as unverified
                 if origin and origin not in HERKUNFT:
                     raise UnmappedDerivation(f"BLS Datenherkunft {origin!r} in column {headers[oi]!r}")
                 tag, name, unit = parse_value_header(headers[vi])
