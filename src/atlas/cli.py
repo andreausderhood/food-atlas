@@ -29,8 +29,12 @@ def main(argv: list[str] | None = None) -> int:
     c = sub.add_parser("curate", help="search raw sources while editing foods.yaml")
     c.add_argument("kind", choices=sorted(SEARCH))
     c.add_argument("query")
+    from atlas.research.cli import register, dispatch
+    register(sub)
     args = parser.parse_args(argv)
     root = args.root.resolve()
+    if args.cmd == "research":
+        return dispatch(args, root)
     registry = root / "data/registry"
 
     if args.cmd == "fetch":
