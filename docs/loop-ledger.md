@@ -4,8 +4,7 @@
 - editorial: food:apple.pomace, food:apple.cider, food:apple.dried, food:apple.sauce (narrative+sensory, SRC-EDITORIAL, descriptive only)
 - editorial: food:cabbage.green, food:cabbage.red, food:cabbage.savoy, food:cabbage.leaf, food:cabbage.juice, food:sauerkraut (narrative+sensory, SRC-EDITORIAL, descriptive only)
 - editorial: food:broccoli.leaf, food:broccoli.stalk, food:broccoli.sprouts, food:cauliflower.leaf, food:kohlrabi.leaf, food:kale.frozen (narrative+sensory, SRC-EDITORIAL, descriptive only)
-- download: BLS 4.0 into data/raw — registry marks it manual (session token on blsdb.de); needs André or from-file fallback (`uv run atlas fetch bls --from-file <zip>`)
-- kuratur: sepia-like CSS filter check on all site images (2 `filter` hits in _style.css.j2 — inspect, remove if it tints photos)
+- mapping: BLS 4.0 is downloaded and loads, but 0 claims accepted — foods.yaml needs `bls_codes` mapping per pilot food before BLS nutrition flows in
 - kuratur: image 6 review on Spotify Explorer + Aesthetics DB repos — belongs to those repos' loops, NOT this one; skip here
 
 ## Delivered
