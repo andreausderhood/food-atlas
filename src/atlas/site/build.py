@@ -2,9 +2,14 @@
 from __future__ import annotations
 
 import re
+import shutil
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
+
+from atlas.site.images import DATA_DIR, image_for
+from atlas.site.nutrition import nutrition_profile
+from atlas.site.profiles import research_profile, season_records
 
 TIER_LABEL = {1: "Measured", 2: "Registry", 3: "Literature", 4: "Derived or declared", 5: "Unverified"}
 GROUP_ORDER = ("narrative", "sensory", "nutrition", "molecules", "origin", "growing", "season", "identity")
@@ -98,6 +103,8 @@ def index_rows(payload: dict) -> list[dict]:
             "molecules": len({c["field"] for c in food["claims"] if c["group"] == "molecules"}),
             "tiers": sorted({c["tier"] for c in food["claims"]}),
             "preview": preview,
+            "seasons": season_records(food["claims"]),
+            "research": [g["label"] for g in research_profile(food["claims"])],
             "search": " ".join([food["name"], food.get("name_de") or "", taxon_name,
                 organisms.get(family, {}).get("name", family),
                 *[f"{_label(c['field'], payload)} {c['v']}" for c in food["claims"]]]).lower(),
@@ -143,13 +150,15 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     food_map = {f["id"]: f for f in payload["foods"]}
     row_map = {r["id"]: r for r in rows}
     families = {r["family"]: r["family_name"] for r in rows}
-    env.globals.update(tier_label=TIER_LABEL, slug=slug, food_map=food_map,
+    env.globals.update(image_for=image_for, tier_label=TIER_LABEL, slug=slug, food_map=food_map,
                        atlas_rows=rows, families=families,
                        level_label={"taxon_food": "Food", "cultivar": "Cultivar", "part": "Part", "form": "Form"})
     sources = {s["id"]: s for s in payload["sources"]}
     organisms = {o["id"]: o for o in payload["organisms"]}
     out = Path(out)
     (out / "foods").mkdir(parents=True, exist_ok=True)
+    if (DATA_DIR / "images").is_dir():
+        shutil.copytree(DATA_DIR / "images", out / "images", dirs_exist_ok=True)
     written = []
 
     def write(rel: str, template: str, root: str, **ctx) -> None:
@@ -164,7 +173,9 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     for food in payload["foods"]:
         related = [r for r in rows if r["family"] == row_map[food["id"]]["family"] and r["id"] != food["id"]]
         write(f"foods/{slug(food['id'])}.html", "food.html.j2", "../",
-              food=food, row=row_map[food["id"]], related=related, sections=sections(food, payload))
+              food=food, row=row_map[food["id"]], related=related, sections=sections(food, payload),
+              nutrition=nutrition_profile(food), research=research_profile(food["claims"]),
+              organism_claims=organisms[food["taxon"]].get("claims", []))
     ids = [f["id"] for f in payload["foods"] if f["level"] == "taxon_food"][:3]
     data = compare_data(payload)
     write("compare.html", "compare.html.j2", "", default=compare_rows(ids, payload),

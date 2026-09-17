@@ -11,7 +11,13 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="masthead"><a class="brand" href="{{ root }}index.html">Food Atlas<span> A library of edible life</span></a>
 <nav aria-label="Main navigation"><a href="{{ root }}index.html">Foods</a><a href="{{ root }}molecules.html">Molecules</a><a href="{{ root }}compare.html">Compare</a><a href="{{ root }}gaps.html">Gaps</a><a href="{{ root }}sources.html">Sources</a></nav>
+<button id="science-mode" type="button" aria-pressed="false">Science mode</button>
 <button id="theme" type="button" aria-label="Switch color theme">Theme</button></header>
+<div class="season-toolbar" aria-label="Global season filters">
+<label>Region code<input id="season-region" placeholder="CH, DE, US-CA…" maxlength="12" autocomplete="off"></label>
+<label>Month<select id="season-month">{% for m in ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}<option value="{{ loop.index }}">{{ m }}</option>{% endfor %}</select></label>
+<label>Season<select id="season-mode"><option value="">All seasons</option><option value="fresh">Fresh harvest</option><option value="stored">Stored produce</option></select></label>
+<p id="season-context" class="muted"></p></div>
 <main id="main">{% block main %}{% endblock %}</main>
 <aside id="compare-tray" class="compare-tray" aria-label="Selected foods" hidden><strong id="tray-count">Compare</strong><div id="tray-items"></div><a class="button primary" id="tray-link" href="{{ root }}compare.html">Compare foods</a><button id="tray-clear" type="button">Clear</button></aside>
 <p id="app-status" class="status" role="status" aria-live="polite"></p>
@@ -19,5 +25,6 @@
 <script id="atlas-catalog" type="application/json">{{ atlas_rows|map(attribute='id')|list|tojson }}</script>
 <script id="atlas-names" type="application/json">{{ atlas_rows|map(attribute='name')|list|tojson }}</script>
 <script>{% include "_app.js.j2" %}</script>
+<script>{% include "_season.js.j2" %}</script>
 {% block scripts %}{% endblock %}
 </body></html>

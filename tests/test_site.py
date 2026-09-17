@@ -57,7 +57,8 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     entry = (out / "foods/apple.html").read_text()
     assert "Apfel roh" in entry and "Malus domestica" in entry
     assert "4.6 mg per 100 g" in entry and "fresh_weight" in entry and "flesh" in entry
-    assert entry.count('class="chip tier-') == 4
+    # Sensory evidence appears in its compact profile and the full scientific record.
+    assert entry.count('class="chip tier-') == 5
     assert "machine-extracted" in entry and "unvalidated" in entry
     assert "https://pmc.ncbi.nlm.nih.gov/articles/PMC444/" in entry
     assert "https://pmc.ncbi.nlm.nih.gov/articles/PMC555/" in entry

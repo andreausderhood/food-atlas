@@ -1,0 +1,105 @@
+{% macro nutrient_tile(tile, bars=false) -%}
+<div class="nutrition-tile">
+  <h5>{{ tile.label }}</h5>
+  <p class="nutrition-amount">{{ tile.display }}</p>
+  {% if bars and tile.bar_value is not none %}
+  <div class="nutrition-track" role="meter" aria-label="{{ tile.label }} per 100 g" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ tile.bar_value }}" aria-valuetext="{{ tile.display }} per 100 g">
+    <span style="width:{{ tile.bar_value }}%" aria-hidden="true"></span>
+  </div>
+  <div class="nutrition-scale" aria-hidden="true"><span>0 g</span><span>100 g</span></div>
+  {% endif %}
+  {% if tile.note %}<p class="muted">{{ tile.note }}</p>{% endif %}
+  {% if tile.claims %}
+  <details class="nutrition-science">
+    <summary>Science · {{ tile.field }}</summary>
+    {% for c in tile.claims %}
+    <dl>
+      <dt>Reported amount</dt><dd>{{ c.v }} {{ c.unit }} per 100 g</dd>
+      <dt>Tier</dt><dd>{{ c.tier if c.tier is defined else 'Not reported' }} · {{ c.derivation or 'Not reported' }}</dd>
+      <dt>Source</dt><dd>{{ c.src }}</dd>
+      <dt>Reference</dt><dd>{{ c.ref }}</dd>
+      <dt>Unit</dt><dd>{{ c.unit }}</dd>
+      <dt>Basis</dt><dd>{{ c.basis }}</dd>
+      <dt>Part</dt><dd>{{ c.food_part }}</dd>
+      <dt>Method</dt><dd>{{ c.method or 'Not reported' }}</dd>
+      {% if c.n is defined and c.n is not none %}<dt>Data points</dt><dd>{{ c.n }}</dd>{% endif %}
+      {% if c.v_min is defined and c.v_min is not none %}<dt>Source minimum</dt><dd>{{ c.v_min }} {{ c.unit }}</dd>{% endif %}
+      {% if c.v_max is defined and c.v_max is not none %}<dt>Source maximum</dt><dd>{{ c.v_max }} {{ c.unit }}</dd>{% endif %}
+      {% if c.flags %}<dt>Flags</dt><dd>{{ c.flags|join(', ') }}</dd>{% endif %}
+    </dl>
+    {% endfor %}
+  </details>
+  {% endif %}
+</div>
+{%- endmacro %}
+<section class="nutrition-profile" aria-label="Nutrition profile">
+<style>
+.nutrition-profile{margin-block:28px;border-top:1px solid var(--line);padding-top:24px}
+.nutrition-profile h2{margin-top:0}.nutrition-profile h3{font-size:17px;overflow-wrap:anywhere}
+.nutrition-profile h4{font-size:14px;margin:24px 0 12px}.nutrition-profile h5{font-size:13px;font-weight:500;margin:0;letter-spacing:0;line-height:1.4}
+.nutrition-profile [hidden]{display:none!important}.nutrition-profile p{max-width:75ch}
+.nutrition-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
+.nutrition-tile{min-width:0;border-top:2px solid var(--line);padding:12px;background:var(--card)}
+.nutrition-amount{font-size:21px;font-variant-numeric:tabular-nums;margin:10px 0;color:var(--fg)}
+.nutrition-track{height:8px;background:var(--soft);border:1px solid var(--line)}
+.nutrition-track>span{display:block;height:100%;background:var(--t1)}
+.nutrition-scale{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums;margin-top:4px}
+.nutrition-science{font-size:12px;margin-top:12px;overflow-wrap:anywhere}.nutrition-science summary{cursor:pointer;color:var(--muted);padding-block:4px}
+.nutrition-science dl{margin-bottom:0}.nutrition-science dt{font-weight:600;margin-top:8px}.nutrition-science dd{margin:0;color:var(--muted)}
+.nutrition-record{padding-block:16px}.nutrition-record+.nutrition-record{border-top:1px solid var(--line)}
+.nutrition-profile label{max-width:100%}.nutrition-profile select{width:100%;max-width:100%}
+.nutrition-live{font-size:12px;color:var(--muted);overflow-wrap:anywhere;min-height:1.5em}
+@media(forced-colors:active){.nutrition-track>span{background:CanvasText;forced-color-adjust:none}}
+</style>
+<h2>Nutrition profile</h2>
+{% if not nutrition.records %}
+<p class="muted">No supported FDC quantity record is available for this entry. Missing evidence is not a zero amount.</p>
+{% else %}
+<p class="muted">Quantities per 100 g, not a presence checklist or a health score. Each profile uses one source and one FDC food record on its stated basis and part. Missing values mean “not reported”, not zero.</p>
+<p class="muted">Sugars and fiber overlap carbohydrate; do not sum these bars. The two FDC sugar definitions (2000 and 1063) and carbohydrate methods stay separate. No percent daily values are inferred.</p>
+<div data-nutrition-controls hidden>
+<label>Source · FDC record · basis · part
+<select data-nutrition-select>
+{% for record in nutrition.records %}<option value="{{ loop.index0 }}">{{ record.label }}</option>{% endfor %}
+</select>
+</label>
+<p class="nutrition-live" data-nutrition-status role="status" aria-live="polite" aria-atomic="true"></p>
+</div>
+{% for record in nutrition.records %}
+<article class="nutrition-record" data-nutrition-record aria-label="{{ record.label }}">
+  <h3 data-science-label>{{ record.label }}</h3>
+  {% if sources is defined and record.src in sources %}<p class="muted">{{ sources[record.src].title }}</p>{% endif %}
+  <h4>Gram quantities · per 100 g · shared 0–100 g scale</h4>
+  <div class="nutrition-grid">{% for tile in record.macronutrients %}{{ nutrient_tile(tile, true) }}{% endfor %}</div>
+  <details data-science><summary>Minerals, vitamins &amp; energy</summary>
+  {% for key, heading in [('minerals', 'Minerals'), ('vitamins', 'Vitamins'), ('other', 'Energy')] %}
+  {% if record[key] %}
+  <h4>{{ heading }} · per 100 g · source units, no shared scale</h4>
+  <div class="nutrition-grid">{% for tile in record[key] %}{{ nutrient_tile(tile) }}{% endfor %}</div>
+  {% endif %}
+  {% endfor %}
+  </details>
+</article>
+{% endfor %}
+<script type="application/json" data-nutrition-labels>{{ nutrition.records|map(attribute='label')|list|tojson }}</script>
+<script>
+(() => {
+  const root = document.currentScript.closest('.nutrition-profile');
+  const select = root.querySelector('[data-nutrition-select]');
+  const controls = root.querySelector('[data-nutrition-controls]');
+  const panels = [...root.querySelectorAll('[data-nutrition-record]')];
+  const status = root.querySelector('[data-nutrition-status]');
+  const labels = JSON.parse(root.querySelector('[data-nutrition-labels]').textContent);
+  function changeRecord() {
+    const index = Number(select.value);
+    if (!Number.isInteger(index) || index < 0 || index >= panels.length) return;
+    panels.forEach((panel, i) => { panel.hidden = i !== index; });
+    status.textContent = 'Showing ' + labels[index] + '. Values from other records are not combined.';
+  }
+  select.addEventListener('change', changeRecord);
+  changeRecord();
+  controls.hidden = false;
+})();
+</script>
+{% endif %}
+</section>

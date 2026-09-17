@@ -1,0 +1,33 @@
+(() => {
+'use strict';
+const region=document.getElementById('season-region'),month=document.getElementById('season-month'),mode=document.getElementById('season-mode');
+const params=new URLSearchParams(location.search);
+let stored={};try{stored=JSON.parse(localStorage.getItem('food-atlas-season'))||{};}catch(e){}
+region.value=params.get('region')??stored.region??'';
+month.value=params.get('month')??stored.month??String(new Date().getMonth()+1);
+mode.value=params.get('season')??stored.mode??'';
+function state(){return {region:region.value.trim().toUpperCase(),month:Number(month.value),mode:mode.value};}
+function evaluate(records){
+ const s=state();if(!s.region||!s.month||!s.mode)return 'unknown';
+ const relevant=records.filter(r=>r.region===s.region&&r.kind===s.mode);
+ if(!relevant.length)return 'unknown';
+ const results=relevant.map(r=>r.months.includes(s.month));
+ if(results.some(Boolean)&&!results.every(Boolean))return 'unknown';
+ return results.every(Boolean)?'available':'unavailable';
+}
+function update(){
+ const s=state();const url=new URL(location.href);
+ for(const [key,value] of [['region',s.region],['month',s.month],['season',s.mode]]){if(value)url.searchParams.set(key,value);else url.searchParams.delete(key);}
+ try{localStorage.setItem('food-atlas-season',JSON.stringify(s));history.replaceState(null,'',url);}catch(e){}
+ document.querySelectorAll('a[href]').forEach(a=>{const raw=a.getAttribute('href');if(!raw||raw.startsWith('#'))return;const link=new URL(raw,location.href);if(link.origin!==location.origin||!link.pathname.endsWith('.html'))return;for(const key of ['region','month','season']){if(url.searchParams.has(key))link.searchParams.set(key,url.searchParams.get(key));else link.searchParams.delete(key);}a.href=link.href;});
+ document.querySelectorAll('[data-entry-seasons]').forEach(el=>{
+  const result=evaluate(JSON.parse(el.dataset.entrySeasons));
+  el.textContent=!s.mode?'Choose fresh harvest or stored produce above to check seasonality.':result==='unknown'?'Missing regional data for this selection — not evidence of absence.':result==='available'?'Reported in season for this region and month ('+s.mode+').':'Not listed for this month in the available '+s.mode+' calendar.';
+ });
+ document.getElementById('season-context').textContent=s.region?'Region: '+s.region+' · calendars apply only to the stated region.':'Enter a region code, for example CH or DE. No location is assumed.';
+ document.dispatchEvent(new CustomEvent('atlas:season'));
+}
+window.AtlasSeason={state,evaluate,update};
+for(const control of [region,month,mode])control.addEventListener('change',update);
+update();
+})();

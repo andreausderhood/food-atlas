@@ -2,40 +2,43 @@
 {% from "_chip.html.j2" import chip %}
 {% block title %}{{ food.name }} — Food Atlas{% endblock %}
 {% block main %}
-<h1>{{ food.name }}</h1>
-<p class="muted">{% if food.name_de %}{{ food.name_de }} · {% endif %}{{ level_label[food.level] }} · <em>{{ organisms[food.taxon].name }}</em>
-{% if food.is_a %} · cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a>{% endif %}
-{% if food.part_of %} · part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a>{% endif %}
-{% if food.derives_from and food.level == "form" %} · made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}{% endif %}</p>
-<div class="layers">
-<section class="editorial-copy">
-<h2>Editorial</h2>
-{% if sections|selectattr("0", "in", ("narrative", "sensory"))|list %}<p class="editorial-evidence">Evidence details: hover or focus a tier marker for its source and derivation.</p>{% endif %}
-{% for group, claims in sections if group in ("narrative", "sensory") %}
-<h3>{{ group|capitalize }}</h3>
-{% for c in claims %}<p class="editorial-line"><span><strong>{{ c.field }}:</strong> {{ c.display }}</span>{{ chip(c, sources, compact=true) }}</p>{% endfor %}
-{% else %}<p class="muted">No editorial text yet.</p>{% endfor %}
+<header class="entry-heading">
+<p class="eyebrow">{{ level_label[food.level] }} / Reference collection</p>
+<h1>{{ food.name }} <em>{{ organisms[food.taxon].name }}</em></h1>
+{% if food.name_de %}<p class="muted">{{ food.name_de }} · {{ level_label[food.level] }} · German common name</p>{% endif %}
+<p class="editorial-evidence">Evidence details: hover or focus a tier marker for its source and derivation.</p>
+{% if food.is_a %}<p>Cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a></p>{% endif %}
+{% if food.part_of %}<p>Part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a></p>{% endif %}
+{% if food.derives_from and food.level == "form" %}<p>Made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}</p>{% endif %}
+{% for group, claims in sections if group == 'narrative' %}{% for c in claims if c.field == 'eli5' %}<p class="entry-intro editorial-line"><span>{{ c.display }}</span>{{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="muted">A plain-language description is not yet available for this entry.</p>{% endfor %}
+<div class="card-actions"><button type="button" data-save="{{ food.id }}">Save</button><button type="button" data-compare="{{ food.id }}">Compare</button></div>
+</header>
+{% set plant_image = image_for(food) %}{% include "_plant_image.html.j2" %}
+<div class="profile-grid">
+<section class="profile" aria-label="Nutrition profile">{% include '_nutrition.html.j2' %}</section>
+<section class="profile editorial-copy"><h2>Sensory profile</h2><p class="muted">Descriptive observations, not measured intensity scores.</p>
+{% for group, claims in sections if group == 'sensory' %}{% for c in claims %}<p class="editorial-line"><span><strong>{{ c.field|capitalize }}</strong><br>{{ c.display }}</span>{{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="muted">No sourced sensory description yet. Missing is not neutral.</p>{% endfor %}
+{% if row.molecules %}<a href="#molecules">Explore {{ row.molecules }} recorded molecules</a><p class="muted">Presence alone does not explain flavour or establish a health effect.</p>{% endif %}
 </section>
-<section>
-<h2>Technical</h2>
-{% set has_nutrition = sections | selectattr("0", "equalto", "nutrition") | list %}
-{% if not has_nutrition %}<p class="muted">Nutrition not yet available for this entry — no sourced values pass the contract.</p>{% endif %}
-{% for group, claims in sections if group not in ("narrative", "sensory") %}
-<h3 id="{{ group }}">{{ group|capitalize }}</h3>
-{% if group == "nutrition" %}<p class="muted">Amounts per 100 g edible portion. Basis and part are source-specific; these values are not interchangeable.</p>{% endif %}
-<div class="scroll"><table>
-<tr><th>What</th><th>Value</th><th>Basis · part</th><th>Evidence</th></tr>
-{% for c in claims %}
-<tr><td>{{ c.label }}{% if c.machine_extracted %} <span class="badge">machine-extracted / unvalidated</span>{% endif %}</td>
-<td>{{ c.display }}</td>
-<td>{{ c.basis or "—" }} · {{ c.food_part or "—" }}</td>
-<td>{{ chip(c, sources) }}{% if c.machine_extracted and c.pmcs %}<br>{% for pmc in c.pmcs %}<a href="https://pmc.ncbi.nlm.nih.gov/articles/{{ pmc }}/">{{ pmc }}</a> {% endfor %}{% endif %}</td></tr>
-{% endfor %}
-</table></div>
-{% else %}<p class="muted">No sourced technical values yet.</p>{% endfor %}
+<section class="profile"><h2>Research profile</h2><p class="muted">Lab activity ≠ effects in humans ≠ traditional use. Evidence tiers describe provenance, not clinical efficacy.</p>
+{% for g in research %}<h3>{{ g.label }}</h3>{% for c in g.claims %}<p><strong>{{ c.field }}</strong>: {{ c.v }} {{ c.unit or '' }} {{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="empty">No classified bioactivity evidence for this entry.</p><p class="muted">Traditional use, laboratory findings and human studies will appear separately when sourced. Nutrition and molecule records are not substitutes.</p>{% endfor %}
 </section>
 </div>
-<h2>Open questions for this entry</h2>
-{% for g in food.gaps %}<p><span class="badge">Rule {{ g.rule }}</span> {{ g.field }}: {{ g.question }} <span class="muted">Would be settled by: {{ g.would_be_settled_by }}</span></p>
-{% else %}<p class="muted">None.</p>{% endfor %}
+<div class="entry-depth">
+<details><summary>Varieties &amp; relatives <span>{{ related|length }} related entries</span></summary><p class="muted">Linked by botanical family; not interchangeable in nutrition or use.</p><ul class="relative-list">{% for r in related %}<li><a href="{{ slug(r.id) }}.html">{{ r.name }}</a> <em>{{ r.taxon_name }}</em> <span class="muted">{{ level_label[r.level] }}</span></li>{% else %}<li>No related entries in this collection yet.</li>{% endfor %}</ul></details>
+<details><summary>Growing here <span>Region &amp; season</span></summary><p data-entry-seasons='{{ row.seasons|tojson }}'>Choose a region, month and harvest type above. Missing regional data is not evidence of absence.</p>
+{% for group, claims in sections if group in ('growing','season','origin','geography') %}<h3>{{ group|capitalize }}</h3>{% for c in claims %}<p>{{ c.label }}: {{ c.display }} {{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="muted">No sourced cultivation guidance for this entry yet.</p>{% endfor %}</details>
+<details><summary>Culinary &amp; technical uses <span>Preparation &amp; transformations</span></summary>
+{% for group, claims in sections if group in ('process','narrative') %}{% for c in claims if c.field != 'eli5' %}<p>{{ c.display }} {{ chip(c, sources, compact=true) }}</p>{% endfor %}{% endfor %}
+<ul>{% for r in related if r.level == 'form' %}<li><a href="{{ slug(r.id) }}.html">{{ r.name }}</a> — related preparation, not automatically a use of this specific entry</li>{% else %}<li>No linked technical preparations yet.</li>{% endfor %}</ul></details>
+</div>
+<details class="technical-record" data-science><summary>Scientific record <span>All quantities, methods &amp; sources</span></summary>
+{% set has_nutrition = sections | selectattr("0", "equalto", "nutrition") | list %}
+{% if not has_nutrition %}<p class="muted">Nutrition not yet available for this entry — no sourced values pass the contract.</p>{% endif %}
+{% for group, claims in sections %}<h3 id="{{ group }}">{{ group|capitalize }}</h3>
+{% if group == "nutrition" %}<p class="muted">Amounts per 100 g edible portion. Basis and part are source-specific; these values are not interchangeable.</p>{% endif %}
+<div class="scroll"><table><tr><th>What</th><th>Value</th><th>Basis · part</th><th>Evidence</th></tr>
+{% for c in claims %}<tr><td>{{ c.label }}{% if c.machine_extracted %} <span class="badge">machine-extracted / unvalidated</span>{% endif %}</td><td>{{ c.display }}</td><td>{{ c.basis or "—" }} · {{ c.food_part or "—" }}</td><td>{{ chip(c, sources) }}{% if c.machine_extracted and c.pmcs %}<br>{% for pmc in c.pmcs %}<a href="https://pmc.ncbi.nlm.nih.gov/articles/{{ pmc }}/">{{ pmc }}</a> {% endfor %}{% endif %}</td></tr>{% endfor %}</table></div>
+{% else %}<p class="muted">No sourced technical values yet.</p>{% endfor %}</details>
+<details class="entry-gaps"><summary>Open questions for this entry <span>{{ food.gaps|length }} gaps</span></summary>{% for g in food.gaps %}<p><span class="badge">Rule {{ g.rule }}</span> {{ g.field }}: {{ g.question }} <span class="muted">Would be settled by: {{ g.would_be_settled_by }}</span></p>{% else %}<p class="muted">None.</p>{% endfor %}</details>
 {% endblock %}
