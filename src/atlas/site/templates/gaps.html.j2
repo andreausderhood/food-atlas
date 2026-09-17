@@ -1,13 +1,11 @@
 {% extends "base.html.j2" %}
-{% block title %}Gaps — Food Atlas{% endblock %}
+{% block title %}Open questions | Food Atlas{% endblock %}
 {% block main %}
-<h1>Open questions</h1>
-<p class="muted">Rejected or unresolved values, not food facts. Each entry explains what evidence would settle the question.</p>
+<div class="intro"><p class="eyebrow">Curation ledger</p><h1>Open questions.</h1><p class="muted">{{ payload.gaps|length }} rejected or unresolved values across {{ by_rule|length }} curation rules — not food facts. Each entry explains what evidence would settle the question.</p></div>
 {% for rule, gaps in by_rule.items() %}
-<h2>Rule {{ rule }} <span class="muted">({{ gaps|length }})</span></h2>
-<div class="scroll"><table>
-<tr><th>Subject</th><th>Field</th><th>Question</th><th>Rejected / unresolved carried value</th><th>Source</th><th>Would be settled by</th></tr>
-{% for g in gaps %}<tr><td>{{ g.subject }}</td><td>{{ g.field }}</td><td>{{ g.question }}</td><td>{{ g.carried_value if g.carried_value is not none else "—" }}</td><td>{{ g.src }}</td><td>{{ g.would_be_settled_by }}</td></tr>{% endfor %}
-</table></div>
-{% else %}<p>No open questions.</p>{% endfor %}
+<section class="section"><h2>Rule {{ rule }} <span class="muted">({{ gaps|length }})</span></h2>
+<div class="scroll" tabindex="0" role="region" aria-label="Gaps under rule {{ rule }}"><table><thead><tr><th>Subject</th><th>Field</th><th>Question</th><th>Rejected / unresolved carried value</th><th>Source</th><th>Would be settled by</th></tr></thead><tbody>
+{% for g in gaps %}<tr><td>{{ g.subject }}</td><td>{{ g.field }}</td><td>{{ g.question }}</td><td>{{ g.carried_value if g.carried_value is not none else "—" }}</td><td>{{ g.src }}</td><td>{{ g.would_be_settled_by }}</td></tr>
+{% endfor %}</tbody></table></div></section>
+{% else %}<p class="notice">No open questions.</p>{% endfor %}
 {% endblock %}

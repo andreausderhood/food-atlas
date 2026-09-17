@@ -17,6 +17,8 @@
 </section>
 <section>
 <h2>Technical</h2>
+{% set has_nutrition = sections | selectattr("0", "equalto", "nutrition") | list %}
+{% if not has_nutrition %}<p class="muted">Nutrition not yet available for this entry — no sourced values pass the contract.</p>{% endif %}
 {% for group, claims in sections if group not in ("narrative", "sensory") %}
 <h3>{{ group|capitalize }}</h3>
 {% if group == "nutrition" %}<p class="muted">Amounts per 100 g edible portion. Basis and part are source-specific; these values are not interchangeable.</p>{% endif %}

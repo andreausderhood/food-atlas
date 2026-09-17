@@ -1,13 +1,8 @@
 {% extends "base.html.j2" %}
-{% block title %}Sources — Food Atlas{% endblock %}
+{% block title %}Sources | Food Atlas{% endblock %}
 {% block main %}
-<h1>Sources</h1>
-<div class="scroll"><table>
-<tr><th>ID</th><th>Title</th><th>License</th><th>Use</th><th>Kind</th><th>Independence</th><th>Link</th><th>Claims</th><th>Attribution</th></tr>
-{% for s in payload.sources %}
-<tr><td>{{ s.id }}</td><td><a href="{{ s.url }}">{{ s.title }}</a><br><span class="muted">{{ s.publisher }}</span></td>
-<td>{{ s.license }}</td><td>{{ s.license_class }}</td><td>{{ s.kind }}</td><td>{{ s.independence }}</td>
-<td>{{ s.link_status }}</td><td>{{ s.claims }}</td><td>{{ s.attribution }}</td></tr>
-{% endfor %}
-</table></div>
+<div class="intro"><p class="eyebrow">Evidence register</p><h1>Sources.</h1><p class="muted">{{ payload.sources|length }} sources behind every chip in this library. Imported data stays under its own license.</p></div>
+<div class="scroll" tabindex="0" role="region" aria-label="Source table"><table><thead><tr><th>ID</th><th>Title</th><th>License</th><th>Use</th><th>Kind</th><th>Independence</th><th>Link</th><th>Claims</th><th>Attribution</th></tr></thead><tbody>
+{% for s in payload.sources %}<tr><td>{{ s.id }}</td><td class="source-title"><a href="{{ s.url }}">{{ s.title }}</a><br><span class="muted">{{ s.publisher }}</span></td><td>{{ s.license }}</td><td>{{ s.license_class }}</td><td>{{ s.kind }}</td><td>{{ s.independence }}</td><td>{{ s.link_status }}</td><td>{{ s.claims }}</td><td>{{ s.attribution }}</td></tr>
+{% endfor %}</tbody></table></div>
 {% endblock %}
