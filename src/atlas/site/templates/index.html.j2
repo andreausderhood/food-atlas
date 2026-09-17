@@ -2,7 +2,7 @@
 {% from "_chip.html.j2" import chip %}
 {% block title %}Foods | Food Atlas{% endblock %}
 {% block main %}
-<div class="intro"><p class="eyebrow">The food library</p><h1>Explore what’s in a food.</h1><p class="muted">{{ rows|length }} foods, cultivars, parts and forms. {{ payload.stats.accepted }} accepted claims, with their sources kept visible.</p></div>
+<div class="intro"><p class="eyebrow">The food library</p><h1>Explore what’s in a food.</h1><p class="muted">{{ rows|length }} foods, cultivars, parts and forms. {{ "{:,}".format(payload.stats.accepted) }} accepted claims, with their sources kept visible.</p></div>
 <div class="library">
 <aside class="filters" aria-label="Food filters">
 <div class="filter-top"><h2>Refine library</h2><button id="reset" class="text-button" type="button">Reset filters</button></div>
@@ -20,7 +20,7 @@
 <article class="card" data-id="{{ r.id }}" data-search="{{ r.search }}" data-family="{{ r.family }}" data-level="{{ r.level }}" data-tiers="{{ r.tiers|join(',') }}">
 <div class="card-body"><div class="card-heading"><span class="badge">{{ level_label[r.level] }}</span><span class="card-number">{{ r.molecules }} molecules</span></div>
 <div><h2><a href="foods/{{ r.slug }}.html">{{ r.name }}</a></h2><div class="taxon muted">{{ r.taxon_name }}</div></div>
-{% if r.preview %}<p class="preview">{{ r.preview.v }}</p>{{ chip(r.preview, sources) }}{% else %}<p class="preview muted">No editorial description yet. Open the entry to explore available evidence and questions.</p>{% endif %}</div>
+{% if r.preview %}<p class="preview">{{ r.preview.v }}</p>{{ chip(r.preview, sources) }}{% else %}<p class="preview muted">No editorial description yet. Open the entry to explore available evidence and questions.</p><span class="card-evidence">{% if r.claims %}No editorial claim{% else %}No claims yet{% endif %}</span>{% endif %}</div>
 <div class="card-actions"><span class="card-meta">{{ r.claims }} claims<br>{% if r.nutrition %}{{ r.nutrition }} nutrition values{% else %}Nutrition not stated{% endif %}</span><button type="button" data-save="{{ r.id }}" aria-pressed="false" aria-label="Save {{ r.name }}">Save</button><button type="button" data-compare="{{ r.id }}" aria-pressed="false" aria-label="Compare {{ r.name }}">Compare +</button></div>
 </article>
 {% endfor %}

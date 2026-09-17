@@ -3,16 +3,17 @@
 {% block title %}{{ food.name }} — Food Atlas{% endblock %}
 {% block main %}
 <h1>{{ food.name }}</h1>
-<p class="muted">{% if food.name_de %}{{ food.name_de }} · {% endif %}{{ food.level }} · <em>{{ organisms[food.taxon].name }}</em>
+<p class="muted">{% if food.name_de %}{{ food.name_de }} · {% endif %}{{ level_label[food.level] }} · <em>{{ organisms[food.taxon].name }}</em>
 {% if food.is_a %} · cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a>{% endif %}
 {% if food.part_of %} · part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a>{% endif %}
 {% if food.derives_from and food.level == "form" %} · made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}{% endif %}</p>
 <div class="layers">
-<section>
+<section class="editorial-copy">
 <h2>Editorial</h2>
+{% if sections|selectattr("0", "in", ("narrative", "sensory"))|list %}<p class="editorial-evidence">Evidence details: hover or focus a tier marker for its source and derivation.</p>{% endif %}
 {% for group, claims in sections if group in ("narrative", "sensory") %}
 <h3>{{ group|capitalize }}</h3>
-{% for c in claims %}<p><strong>{{ c.field }}:</strong> {{ c.display }} {{ chip(c, sources) }}</p>{% endfor %}
+{% for c in claims %}<p class="editorial-line"><span><strong>{{ c.field }}:</strong> {{ c.display }}</span>{{ chip(c, sources, compact=true) }}</p>{% endfor %}
 {% else %}<p class="muted">No editorial text yet.</p>{% endfor %}
 </section>
 <section>

@@ -186,6 +186,17 @@ const assert = require('node:assert/strict');
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
     await page.goto(process.argv[1] + '/foods/apple.html');
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+    for (const width of [320, 375, 768, 1050, 1280, 1920]) {
+      await page.setViewportSize({width, height: 812});
+      for (const path of ['/index.html', '/foods/apple.html']) {
+        await page.goto(process.argv[1] + path);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${path} overflow at ${width}`);
+        assert.ok(await page.evaluate(() => Math.abs(document.querySelector('.brand').getBoundingClientRect().left - document.querySelector('h1').getBoundingClientRect().left) < 1), `header alignment at ${width}`);
+      }
+      await page.goto(process.argv[1] + '/index.html');
+      assert.ok(await page.locator('.card-actions button').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height <= 33)), `wrapped button at ${width}`);
+      assert.ok(await page.locator('.card-meta').evaluateAll(items => items.every(item => item.getBoundingClientRect().height < 36)), `wrapped metadata at ${width}`);
+    }
     assert.deepEqual(errors, []);
     console.log('Mobile filters, live comparison, evidence chips and page widths verified.');
   } finally { await browser.close(); }
@@ -218,6 +229,23 @@ def test_explorer_metadata_and_accepted_molecules(payload, tmp_path):
     assert "Nutrition not yet available" in detail
     assert 'href="apple.html"' in detail
     assert "Rejected only" not in (tmp_path / "molecules.html").read_text()
+
+
+def test_editorial_evidence_is_compact_and_traceable(payload, tmp_path):
+    from atlas.site.build import render_site
+    payload["stats"]["accepted"] = 2597
+    payload["foods"][0]["claims"].extend([
+        dict(group="narrative", field=field, v="A readable description.", src="SRC-A",
+             tier=4, derivation="editorial", ref="Editorial note", flags=[])
+        for field in ("story", "eli5")
+    ])
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "Apfel roh · Food ·" in entry
+    assert entry.count('class="editorial-evidence"') == 1
+    assert entry.count('>T4</span>') == 2
+    assert "SRC-A · CC0-1.0 · Editorial note" in entry
+    assert "2,597 accepted claims" in (tmp_path / "index.html").read_text()
 
 
 def test_slug():

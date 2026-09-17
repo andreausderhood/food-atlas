@@ -1,3 +1,3 @@
-{% macro chip(c, sources) -%}
-<span class="chip tier-{{ c.tier }}" title="{{ sources[c.src].title }} · {{ sources[c.src].license }}{% if c.ref %} · {{ c.ref }}{% endif %}">T{{ c.tier }} · {{ c.derivation }} · {{ c.src }}</span>
+{% macro chip(c, sources, compact=false) -%}
+<span class="chip tier-{{ c.tier }}" tabindex="0" title="{{ sources[c.src].title }} · {{ c.src }} · {{ sources[c.src].license }}{% if c.ref %} · {{ c.ref }}{% endif %} · T{{ c.tier }} · {{ c.derivation }}">T{{ c.tier }}{% if not compact %} · {{ c.derivation }} · {{ c.src }}{% endif %}</span>
 {%- endmacro %}
