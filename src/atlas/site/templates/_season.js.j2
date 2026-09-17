@@ -3,9 +3,13 @@
 const region=document.getElementById('season-region'),month=document.getElementById('season-month'),mode=document.getElementById('season-mode');
 const params=new URLSearchParams(location.search);
 let stored={};try{stored=JSON.parse(localStorage.getItem('food-atlas-season'))||{};}catch(e){}
-region.value=params.get('region')??stored.region??'';
-month.value=params.get('month')??stored.month??String(new Date().getMonth()+1);
-mode.value=params.get('season')??stored.mode??'';
+function restore(){
+ const p=new URLSearchParams(location.search);
+ region.value=p.get('region')??stored.region??'';
+ month.value=p.get('month')??stored.month??String(new Date().getMonth()+1);
+ mode.value=p.get('season')??stored.mode??'';
+}
+restore();
 function state(){return {region:region.value.trim().toUpperCase(),month:Number(month.value),mode:mode.value};}
 function evaluate(records){
  const s=state();if(!s.region||!s.month||!s.mode)return 'unknown';
@@ -29,5 +33,6 @@ function update(){
 }
 window.AtlasSeason={state,evaluate,update};
 for(const control of [region,month,mode])control.addEventListener('change',update);
+window.addEventListener('popstate',()=>{restore();update();});
 update();
 })();

@@ -45,6 +45,22 @@ def test_profiles_integrated_and_science_mode_available(payload, tmp_path):
     assert entry.index('class="entry-heading"') < entry.index('class="profile-grid"')
     assert 'href="apple--honeycrisp.html"' in entry
     assert 'Missing regional data' in entry
+    assert 'Linked by top-level registered taxon' in entry
+    assert 'botanical family' not in entry
+
+
+def test_scientific_record_reports_method_or_marks_it_missing(payload, tmp_path):
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(group="bioactivity", field="antifungal", v="growth reduced", src="SRC-A",
+             tier=3, derivation="database", method="in_vitro:assay", flags=["evidence_only"]))
+    payload["foods"][0]["claims"].append(
+        dict(group="bioactivity", field="antiviral", v="reported", src="SRC-A",
+             tier=3, derivation="database", method=None, flags=["evidence_only"]))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / 'foods/apple.html').read_text()
+    assert 'Method: in_vitro:assay' in entry
+    assert 'Method: not reported' in entry
 
 
 def test_season_evaluation_runs_in_javascript():
@@ -56,7 +72,7 @@ global.document={getElementById:id=>fields[id]||{textContent:''},querySelectorAl
 global.localStorage={getItem:()=>null,setItem(){}};
 global.location={search:'',href:'http://localhost/index.html'};
 global.history={replaceState(){}};
-global.window=global;global.CustomEvent=function(){};
+global.window=global;global.CustomEvent=function(){};global.addEventListener=()=>{};
 CODE
 fields['season-region'].value='CH';fields['season-month'].value='9';fields['season-mode'].value='fresh';
 assert.equal(AtlasSeason.evaluate([]),'unknown');

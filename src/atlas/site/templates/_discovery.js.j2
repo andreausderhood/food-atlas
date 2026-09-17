@@ -56,12 +56,12 @@ function apply(writeURL=true){
  if(writeURL)syncURL();
 }
 for(const control of [...controls,saved])control.addEventListener(control===q||control===exclude?'input':'change',()=>apply());
-function reset(){for(const control of controls)control.value='';saved.checked=false;apply();q.focus();}
+function reset(){for(const control of controls)control.value='';saved.checked=false;const season=window.AtlasSeason;if(season&&season.state().mode){byId('season-mode').value='';season.update();}apply();q.focus();}
 byId('reset').addEventListener('click',reset);byId('empty-reset').addEventListener('click',reset);
 for(const mode of ['cards','list'])byId('view-'+mode).addEventListener('click',()=>{view=mode;apply();});
 // Shared app emits this during popstate before our restore; never overwrite that URL.
 document.addEventListener('atlas:saved',()=>apply(false));
-document.addEventListener('atlas:season',()=>apply());
+document.addEventListener('atlas:season',()=>apply(false));
 window.addEventListener('popstate',()=>{restore();apply(false);});
 restore();apply();
 })();
