@@ -1,0 +1,13 @@
+{% if plant_image and plant_image.url %}
+<figure class="plant-image">
+  <img src="{% if plant_image.url.startswith('images/') %}{{ root | default('') }}{% endif %}{{ plant_image.url }}" alt="{{ plant_image.alt | default('') }}"{% if plant_image.width and plant_image.height %} width="{{ plant_image.width }}" height="{{ plant_image.height }}"{% endif %} loading="lazy" decoding="async" style="max-width:100%;height:auto">
+  <figcaption>
+    {% if compact %}{% set shown_label = plant_image.reference_label %}{% else %}{% set shown_label = plant_image.reference_label %}{% endif %}
+    {% if plant_image.reference_label %}<span class="image-reference">{{ plant_image.reference_label }}</span>{% if not compact %}<br>{% else %} {% endif %}{% endif %}
+    {% if plant_image.credit %}<span class="image-credit">Photo: {{ plant_image.credit }}.</span>{% endif %}
+    {% if plant_image.license %}{% if plant_image.license_url %}<a href="{{ plant_image.license_url }}" rel="license">{{ plant_image.license }}</a>{% else %}{{ plant_image.license }}{% endif %}.{% endif %}
+    {% if plant_image.source_url %}<a href="{{ plant_image.source_url }}">Original &amp; attribution</a>.{% endif %}
+    {% if not compact %}{% if plant_image.changes %}<span class="image-changes">{{ plant_image.changes }}</span>{% endif %}{% endif %}
+  </figcaption>
+</figure>
+{% endif %}
