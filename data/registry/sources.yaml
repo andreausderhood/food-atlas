@@ -32,9 +32,9 @@ SRC-BLS-4.0:
   url: "https://blsdb.de/download"
   identifier: "doi:10.25826/Data20251217-134202-0"
   license: "CC-BY-4.0"
-  license_url: "https://blsdb.de/download"
+  license_url: "https://creativecommons.org/licenses/by/4.0/deed.de"
   license_class: ship
-  license_read: false
+  license_read: true
   kind: compilation
   independence: independent
   supports: [identity, nutrition]

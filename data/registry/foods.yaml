@@ -16,6 +16,7 @@ food:apple:
   foodon: FOODON_00002473
   foodatlas_ids: [e897, e3974]
   fdc_match: ['Apples, raw, with skin(\b.*)?']
+  bls_codes: [F110100]
 food:apple.flesh:
   level: part
   name: Apple flesh (without skin)
