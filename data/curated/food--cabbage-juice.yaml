@@ -1,0 +1,43 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:cabbage.juice
+claims:
+- group: narrative
+  field: eli5
+  v: 'Cabbage juice is fresh raw cabbage pressed or blended and strained into a pale green
+    liquid that tastes of sweet raw cabbage.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-juice.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'In the kitchen it is a thin, grassy pressing, usually mellowed with apple, carrot,
+    lemon or ginger. The flavour is that of raw cabbage, clean and faintly sweet, and the
+    liquid settles a fine sediment if left to stand.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-juice.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale jade to whitish-green; cloudy rather than clear, with a light foam at the top
+    when freshly pressed.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-juice.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Thin and watery with a faint slip; unstrained presses carry a fine, silky pulp.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-juice.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Mild raw-cabbage sweetness up front, a gentle brassica edge in the middle, and a
+    clean, slightly grassy finish.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-juice.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

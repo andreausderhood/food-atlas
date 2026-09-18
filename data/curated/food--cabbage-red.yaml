@@ -1,0 +1,45 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:cabbage.red
+claims:
+- group: narrative
+  field: eli5
+  v: 'Red cabbage is green cabbage''s purple twin — a dense head of magenta leaves, crunchier to
+    the bite and earthier, at home in slaws and long slow braises.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-red.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Its colour is the headline: violet outside, pink along the pale ribs, and startlingly
+    brighter the moment vinegar or apple juice hits the shreds. Braised long with apples and
+    spice it softens into something sweet, jammy and wine-dark; pickled it stays loud and
+    crunchy; shredded raw it gives a slaw both crunch and colour.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-red.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Deep magenta to violet-purple leaves with pale pink ribs, turning brilliant pink under any
+    acidic dressing.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-red.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Tightly packed and firm, with a denser, harder crunch than green cabbage and leaves that
+    resist softening a little longer in the pot.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-red.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Earthy and gently sweet with a slight peppery bite when raw; slow braising rounds it into a
+    sweet-sour, almost jammy depth.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-red.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

@@ -1,0 +1,45 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:cabbage.leaf
+claims:
+- group: narrative
+  field: eli5
+  v: 'A cabbage leaf is one of the broad, ribbed sheets that build the head, used whole as an
+    edible wrapper or cooked on its own.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Taken singly, a cabbage leaf is a package waiting to be assembled: a wide, waxy sheet with
+    a thick central spine, happy to be blanched until supple, filled and rolled. Steamed or
+    braised it swings from squeaky-crisp to buttery-silky, and it makes a sturdy edible casing
+    for fillings of minced meat, rice, grains or vegetables.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale to deep green with a faint waxy sheen, the central rib whitening to ivory where it
+    thickens.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Crisp and snappy raw, with a juicy crunch; blanched or steamed, the blade turns pliable
+    while the rib softens last.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Lightly sweet with a green, cabbagey edge when raw, mellowing as it cooks into a mild,
+    sweet brassica flavour.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

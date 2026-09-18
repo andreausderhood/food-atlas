@@ -1,0 +1,43 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:sauerkraut
+claims:
+- group: narrative
+  field: eli5
+  v: 'Sauerkraut is finely shredded cabbage salted and left to ferment until it turns sour,
+    golden and soft-crisp.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--sauerkraut.yaml — original editorial, 2026-09-18; descriptive only,
+    no health claims
+- group: narrative
+  field: story
+  v: 'A preserve as much as a dish: shredded cabbage is kneaded with salt, packed tight until
+    brine rises, and left to sour slowly. In the kitchen it is braised with pork, sausage and
+    juniper, layered into stews and casseroles, or served cool and rinsed for a milder bite.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--sauerkraut.yaml — original editorial, 2026-09-18; descriptive only,
+    no health claims
+- group: sensory
+  field: colour
+  v: 'Pale straw to warm gold, deepening toward amber with longer fermentation.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--sauerkraut.yaml — original editorial, 2026-09-18; descriptive only,
+    no health claims
+- group: sensory
+  field: texture
+  v: 'Soft-crisp shreds, juicy with brine, with a faint crunch left in the thicker ribbons
+    of leaf.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--sauerkraut.yaml — original editorial, 2026-09-18; descriptive only,
+    no health claims
+- group: sensory
+  field: taste
+  v: 'Pronounced lactic sourness over a salty edge, with mellow cooked-sweet cabbage
+    underneath.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--sauerkraut.yaml — original editorial, 2026-09-18; descriptive only,
+    no health claims

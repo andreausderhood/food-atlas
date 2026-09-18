@@ -1,0 +1,44 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.cider
+claims:
+- group: narrative
+  field: eli5
+  v: 'Here cider means the fermented kind: apple juice given time to turn into a gently
+    alcoholic, orchard-scented drink — still or sparkling, sweet to bone dry.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-cider.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Cider is the apple allowed to let go: juice fermented until it lifts, prickles and turns
+    dry on the palate. One orchard pours honeyed and soft-hazed; the next pours tannic and
+    grippy. Mulled with spice it becomes the winter glass, and in the kitchen it reduces into
+    pan sauces and loosens batters.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-cider.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale straw to deep amber; hazy in farmhouse styles, bright and clear in filtered ones, with
+    a fine bead of bubbles rising in the sparkling versions.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-cider.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Light-bodied and watery-fresh, from softly still to briskly prickling on the tongue.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-cider.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Ripe apple over a clean tart edge, running from honey-sweet to bone dry; tannic styles add
+    gentle bitterness and a grippy, mouth-drying finish.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-cider.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

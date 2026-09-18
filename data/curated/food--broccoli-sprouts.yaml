@@ -1,0 +1,43 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:broccoli.sprouts
+claims:
+- group: narrative
+  field: eli5
+  v: 'Broccoli sprouts are baby broccoli plants only a few days old, eaten whole as tiny
+    pale sprouts with a fresh, peppery bite.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-sprouts.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Grown from seed in jars or shallow trays over several days, the sprouts are harvested
+    while still threadlike and eaten raw — scattered over sandwiches, salads and bowls as a
+    sharp little garnish.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-sprouts.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Translucent pale stems tipped with vivid green seed leaves; a seed husk or two may
+    cling.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-sprouts.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Delicate, wiry and crisp — more thread than leaf, forming a fine tangle on the plate.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-sprouts.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Fresh green sweetness with a sudden peppery, radish-like bite and a lingering brassica
+    edge.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-sprouts.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

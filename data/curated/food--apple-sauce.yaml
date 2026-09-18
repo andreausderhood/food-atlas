@@ -1,0 +1,44 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:apple.sauce
+claims:
+- group: narrative
+  field: eli5
+  v: 'Applesauce is apples cooked until they collapse into a soft, spoonable puree — sweet, tart
+    and often scented with cinnamon.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sauce.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'A quiet staple of the kitchen: apples simmered with barely any water until they give up and
+    fall into sauce, then mashed smooth or left honest and chunky. It sits beside roast pork
+    and pancakes, disappears into cakes and crumbles, and stands in for some of the butter in
+    batters where a soft apple sweetness is welcome.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sauce.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Pale cream to warm gold, turning rosier when red-skinned apples cook with their skins on.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sauce.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Loose and smooth or thick and chunky, built from fully dissolved fruit with, in rustic
+    versions, soft fragments that still hold a shape.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sauce.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sweet with a rounded cooked-apple tartness, mellowed by the pot and warmed through with
+    cinnamon when the cook allows it.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--apple-sauce.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

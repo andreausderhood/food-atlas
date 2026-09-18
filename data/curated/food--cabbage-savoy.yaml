@@ -1,0 +1,44 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:cabbage.savoy
+claims:
+- group: narrative
+  field: eli5
+  v: 'Savoy cabbage is the crinkle-leaved one — blistered, ruffled heads whose leaves are
+    tender, pliable and milder than those of smooth cabbages.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-savoy.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'The quilted, rumpled leaves look almost decorative, deep green at the edge and pale
+    yellow-green at the heart. They bend without cracking even when raw, which makes savoy the
+    natural wrapper for stuffed rolls, a soft quick cook for soups and braises, and a gentler,
+    sweeter eat than its smooth-leaved cousins.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-savoy.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Deep green, deeply wrinkled outer leaves wrapping a tender yellow-green heart.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-savoy.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Supple and blistered rather than smooth and tight; thin, flexible leaves that turn silky
+    and collapse quickly in the pan.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-savoy.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Sweet, mild and rounded, with little of the raw bite of denser cabbages and a faint
+    nuttiness where the leaves sear or char.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--cabbage-savoy.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

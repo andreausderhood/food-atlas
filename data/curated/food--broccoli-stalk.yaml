@@ -1,0 +1,44 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:broccoli.stalk
+claims:
+- group: narrative
+  field: eli5
+  v: 'The broccoli stalk is the thick trunk under the florets, and once peeled it is dense,
+    juicy and sweet like a mild cabbage heart.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-stalk.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Often trimmed away, the stalk is a kitchen asset: peeled of its fibrous rind it can be
+    cut into coins or matchsticks for stir-fries and slaw, diced into soups, or steamed and
+    mashed alongside the florets. Raw, it eats like a firm kohlrabi.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-stalk.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Ivory to pale green flesh under a green rind; peeled pieces look like polished pale
+    jade.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-stalk.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Dense, crisp and juicy raw — a clean snap like kohlrabi; tender and yielding when
+    cooked.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-stalk.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Delicate cabbage sweetness, less bitter than the florets, with a faint brassica note
+    at the end.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-stalk.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims

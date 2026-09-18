@@ -1,0 +1,43 @@
+# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
+subject: food:broccoli.leaf
+claims:
+- group: narrative
+  field: eli5
+  v: 'Broccoli leaves are the big green leaves the plant grows around its head, and they
+    cook and taste much like mild cabbage or collard greens.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: narrative
+  field: story
+  v: 'Long treated as a by-product of the head, the leaves are broad paddles with a thick
+    midrib. Stripped of the rib they roll and slice into ribbons for sautéing, braising,
+    soups and slaws, holding their shape longer than spinach.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: colour
+  v: 'Deep blue-green blades with pale, celery-coloured midribs.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: texture
+  v: 'Sturdy and faintly leathery raw; slow cooking turns the blades silky and the ribbons
+    chewy-tender.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
+- group: sensory
+  field: taste
+  v: 'Mild cabbage sweetness with a whisper of bitterness — greener and gentler than the
+    florets.'
+  src: SRC-EDITORIAL
+  derivation: editorial
+  ref: data/curated/food--broccoli-leaf.yaml — original editorial, 2026-09-18; descriptive
+    only, no health claims
