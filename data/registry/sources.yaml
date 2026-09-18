@@ -101,6 +101,19 @@ SRC-ECOCROP:
   independence: independent
   supports: [growing]
   attribution: "FAO. ECOCROP database. gaez.fao.org."
+SRC-SEASONCAL-DB:
+  title: "Season calendar database (seasoncalendar app data, BZfE-derived)"
+  publisher: "seasoncalendar project / lebensmittellexikon.de"
+  url: "https://github.com/seasoncalendar/seasoncalendar"
+  identifier: "assets/db/foods.db (develop, extracted 2026-09-19)"
+  license: "All rights reserved — availability data © lebensmittellexikon.de; individual facts cited with attribution"
+  license_url: "https://raw.githubusercontent.com/seasoncalendar/seasoncalendar/develop/assets/db/LICENSE"
+  license_class: cite
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [season]
+  attribution: "seasoncalendar project (code GPL-3.0). Availability data © 2020 lebensmittellexikon.de, Andreas Boltres. Derived from the BZfE Saisonkalender."
 SRC-BZFE-SAISONKALENDER:
   title: "Der Saisonkalender (Obst und Gemüse)"
   publisher: "Bundeszentrum für Ernährung (BZfE)"

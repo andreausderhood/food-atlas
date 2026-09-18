@@ -128,7 +128,7 @@ def _write_csv(path: Path, columns: list[str], rows: list[dict]) -> None:
         w = csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
         w.writeheader()
         for r in rows:
-            w.writerow({k: (";".join(v) if isinstance(v, list) else v) for k, v in r.items()})
+            w.writerow({k: (";".join(str(x) for x in v) if isinstance(v, list) else v) for k, v in r.items()})
 
 
 def write_outputs(out: Path, result: ValidationResult, payload: dict) -> None:

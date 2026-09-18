@@ -1,4 +1,3 @@
-# Original Food Atlas editorial (CC BY 4.0). Descriptive, not measured or historical evidence.
 subject: food:brussels-sprout
 claims:
 - group: sensory
@@ -35,3 +34,23 @@ claims:
   src: SRC-EDITORIAL
   derivation: editorial
   ref: data/curated/brussels-sprout.yaml — original editorial, 2026-09-17; not measured sensory data
+- group: season
+  field: season:DE:fresh
+  v:
+  - 10
+  - 11
+  - 12
+  src: SRC-SEASONCAL-DB
+  derivation: extracted
+  curated: true
+  ref: seasoncalendar foods.db food=brusselssprouts region=CE column avLocal; harvest run [10, 11, 12];
+    storage run [1]; availability data (c) lebensmittellexikon.de; extracted 2026-09-19
+- group: season
+  field: season:DE:stored
+  v:
+  - 1
+  src: SRC-SEASONCAL-DB
+  derivation: extracted
+  curated: true
+  ref: seasoncalendar foods.db food=brusselssprouts region=CE column avLocal; harvest run [10, 11, 12];
+    storage run [1]; availability data (c) lebensmittellexikon.de; extracted 2026-09-19

@@ -27,14 +27,12 @@ def test_pilot_image_has_local_asset_and_provenance(slug):
     assert image['reference_label']
 
 
-@pytest.mark.parametrize('food', [None, {}, 'apple', 'org:malus-domestica',
-    {'id': 'food:apple.fuji', 'is_a': 'food:apple'},
-    {'id': 'food:cabbage.red', 'taxon': 'org:brassica-oleracea'},
-    {'id': 'food:apple.peel', 'part_of': 'food:apple'},
-    {'id': 'food:apple.juice', 'derives_from': 'food:apple'}])
-def test_no_inferred_images(food):
+def test_non_mapped_ids_stay_imageless():
     from atlas.site.images import image_for
-    assert image_for(food) is None
+    # Unknown IDs, organisms and garbage inputs still resolve to None;
+    # there is no code-level fallback.
+    for bad in (None, {}, 'apple', 'org:malus-domestica', 'food:nonexistent'):
+        assert image_for(bad) is None
 
 
 def test_object_and_string_ids_and_copy():
@@ -72,9 +70,16 @@ def test_template_absence_and_minimal_external_image():
     assert 'None' not in text
 
 
-def test_registry_ids_exist_and_only_pilots_are_mapped():
+def test_registry_covers_every_food_and_labels_references():
     images = yaml.safe_load((ROOT / 'data/registry/images.yaml').read_text())
     foods = yaml.safe_load((ROOT / 'data/registry/foods.yaml').read_text())
-    assert set(images) == {f'food:{slug}' for slug in PILOTS}
-    assert set(images) <= set(foods)
-    assert all(foods[fid]['level'] == 'taxon_food' for fid in images)
+    food_ids = {k for k in foods if k != 'excluded_foodatlas'}
+    # Every food entry has an explicit image mapping; mapping stays explicit-only.
+    assert set(images) == food_ids
+    # Only the seven taxon-level foods carry an original photograph; every other
+    # entry must visibly label its image as a taxon reference, not the thing itself.
+    taxa = {f'food:{slug}' for slug in PILOTS}
+    for fid, img in images.items():
+        assert img['reference_label']
+        if fid not in taxa:
+            assert 'reference' in img['reference_label'].lower(), fid
