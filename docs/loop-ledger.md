@@ -1,11 +1,7 @@
 # Loop ledger
 
 ## Backlog
-- editorial: food:apple.pomace, food:apple.cider, food:apple.dried, food:apple.sauce (narrative+sensory, SRC-EDITORIAL, descriptive only)
-- editorial: food:cabbage.green, food:cabbage.red, food:cabbage.savoy, food:cabbage.leaf, food:cabbage.juice, food:sauerkraut (narrative+sensory, SRC-EDITORIAL, descriptive only)
-- editorial: food:broccoli.leaf, food:broccoli.stalk, food:broccoli.sprouts, food:cauliflower.leaf, food:kohlrabi.leaf, food:kale.frozen (narrative+sensory, SRC-EDITORIAL, descriptive only)
-- mapping: BLS codes for remaining pilot foods (brassicas: `atlas curate bls kohl` / `rotkohl` / `wirsing` / `brokkoli` / `blumenkohl` / `grünkohl`) — same pattern as food:apple, verify against fdc_match/foodon
-- download: khoury2016 via Dryad (manual page, 'Download full dataset') — origin/primary_region_of_diversity claims pending on it
+- kuratur: cultivar-specific photos (Fuji, Gala, …) instead of labelled taxon references — optional polish, cron lane
 - kuratur: image 6 review on Spotify Explorer + Aesthetics DB repos — belongs to those repos' loops, NOT this one; skip here
 
 ## Delivered
@@ -22,5 +18,7 @@
 - `loop` — 2026-09-18 — 9a665f5, 5ac9532 — BLS mapped onto food:apple (F110100): 110 accepted nutrition claims; ingest fixed for missing Datenherkunft ('-'→unverified, honest T5); license_read via blsdb.de (CC BY 4.0, MRI attribution); 202 tests + audit green
 - `loop` — 2026-09-18 — dc79c61 — research phase-one layer delivered & committed (approval gate propose-only, task queue, 1305 queued tasks from gaps); cron now drives the research-week pipeline (docs/research-workflow.md, every 30m)
 
+- `prototype` — 2026-09-19 — 649bc63, 774b2a0, 766b31d — ALL 33 entries fully functional: images on every entry (explicit mapping, visible reference labels), season claims from seasoncalendar foods.db (fresh+storage, DE, cite-class), editorial narrative+sensory on all 16 remaining foods; 232 tests; "DE/October/fresh" filter verified in browser (kale, cabbage, brussels-sprout, kohlrabi, apple)
+
 ## Blockers
-(none)
+- Grünkohl-frozen kale season: greencabbage maps to food:kale only; food:kale.frozen has no own calendar (inherits taxon read)
