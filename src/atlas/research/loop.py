@@ -45,12 +45,13 @@ class ResearchLoop:
         if reason:
             raise ValueError(f"invalid conversation history: {reason}")
 
-    def _checkpoint(self, history, status):
+    def _checkpoint(self, history, status, turns):
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         target = self.checkpoint_dir / "checkpoint.json"
         tmp = target.with_suffix(".json.tmp")
         tmp.write_text(json.dumps(
-            {"status": status, "history": history}, ensure_ascii=False, indent=1))
+            {"status": status, "history": history, "turns": turns},
+            ensure_ascii=False, indent=1))
         os.replace(tmp, target)
 
     def _execute(self, message):
@@ -72,22 +73,39 @@ class ResearchLoop:
     def run(self, messages):
         history = [dict(m) for m in messages]
         self._validate(history)
+        turns = []
         while True:
             try:
                 self.budget.require(now=self.clock())
             except Exception:
-                self._checkpoint(history, "budget_exhausted")
-                return {"status": "budget_exhausted", "history": history}
+                self._checkpoint(history, "budget_exhausted", turns)
+                return {"status": "budget_exhausted", "history": history,
+                        "turns": turns}
+            turn = {"n": len(turns) + 1, "phases": ["prep"], "status": "continued"}
             self.budget.spend(now=self.clock())
-            message = self.provider.complete(
-                history, tools=[{k: t[k] for k in ("name", "description")}
-                                for t in self.tools.values()])
+            turn["phases"].append("call")
+            try:
+                message = self.provider.complete(
+                    history, tools=[{k: t[k] for k in ("name", "description")}
+                                    for t in self.tools.values()])
+            except Exception as error:  # noqa: BLE001 - turn error phase, not crash
+                turn["phases"].append("error")
+                turn["status"] = "provider_error"
+                turns.append(turn)
+                self._checkpoint(history, "provider_error", turns)
+                return {"status": "provider_error", "history": history,
+                        "error": str(error), "turns": turns}
+            turns.append(turn)
             history.append(message)
             if not message.get("tool_calls"):
-                self._validate(history)
-                self._checkpoint(history, "done")
-                return {"status": "done", "history": history}
-            for result in self._execute(message):
-                history.append(result)
+                turn["status"] = "done"
+            else:
+                for result in self._execute(message):
+                    history.append(result)
             self._validate(history)
-            self._checkpoint(history, "running")
+            turn["phases"].append("validate")
+            turn["phases"].append("persist")
+            self._checkpoint(history, turn["status"] if turn["status"] == "done"
+                             else "running", turns)
+            if turn["status"] != "continued":
+                return {"status": turn["status"], "history": history, "turns": turns}

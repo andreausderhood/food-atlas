@@ -125,3 +125,60 @@ def test_invalid_scripted_history_fails_loudly(tmp_path):
                         checkpoint_dir=tmp_path / "run")
     with pytest.raises(ValueError, match="tool result without preceding tool call"):
         loop.run([{"role": "user", "content": "hi"}])
+
+
+def test_provider_error_is_checkpointed_not_raised(tmp_path):
+    class BoomProvider:
+        def __init__(self):
+            self.calls = 0
+
+        def complete(self, messages, tools=None):
+            self.calls += 1
+            raise RuntimeError("transient provider failure")
+
+    provider = BoomProvider()
+    loop = ResearchLoop(provider, tools={}, budget=IterationBudget(calls=3, deadline=1e12),
+                        checkpoint_dir=tmp_path / "run")
+    result = loop.run([{"role": "user", "content": "work"}])
+    assert result["status"] == "provider_error"
+    assert result["error"] == "transient provider failure"
+    assert provider.calls == 1
+    assert invalid_reason(result["history"]) is None
+    saved = json.loads((tmp_path / "run" / "checkpoint.json").read_text())
+    assert saved["status"] == "provider_error"
+    assert saved["history"] == result["history"]
+
+
+def test_turns_record_phase_progression(tmp_path):
+    task = setup_root(tmp_path)
+    lease = next_item(tmp_path, "agent-loop")["lease"]
+    payload = proposal_payload(task, lease, tmp_path)
+    provider = FakeProvider([
+        {"role": "assistant", "content": None,
+         "tool_calls": [{"id": "c1", "type": "function",
+                         "function": {"name": "submit_proposal",
+                                      "arguments": json.dumps(payload)}}]},
+        {"role": "assistant", "content": "recorded."},
+    ])
+    loop = ResearchLoop(provider, tools={"submit_proposal": submit_tool(tmp_path)},
+                        budget=IterationBudget(calls=5, deadline=1e12),
+                        checkpoint_dir=tmp_path / "run")
+    result = loop.run([{"role": "user", "content": "work"}])
+    assert result["turns"] == [
+        {"n": 1, "phases": ["prep", "call", "validate", "persist"], "status": "continued"},
+        {"n": 2, "phases": ["prep", "call", "validate", "persist"], "status": "done"},
+    ]
+    saved = json.loads((tmp_path / "run" / "checkpoint.json").read_text())
+    assert saved["turns"] == result["turns"]
+
+
+def test_provider_error_turn_records_error_phase(tmp_path):
+    class BoomProvider:
+        def complete(self, messages, tools=None):
+            raise RuntimeError("boom")
+
+    loop = ResearchLoop(BoomProvider(), tools={}, budget=IterationBudget(calls=3, deadline=1e12),
+                        checkpoint_dir=tmp_path / "run")
+    result = loop.run([{"role": "user", "content": "work"}])
+    assert result["turns"] == [
+        {"n": 1, "phases": ["prep", "call", "error"], "status": "provider_error"}]
