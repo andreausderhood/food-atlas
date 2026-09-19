@@ -185,6 +185,12 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     (out / "foods").mkdir(parents=True, exist_ok=True)
     if (DATA_DIR / "images").is_dir():
         shutil.copytree(DATA_DIR / "images", out / "images", dirs_exist_ok=True)
+    fonts = DATA_DIR / "site-assets" / "fonts"
+    if fonts.is_dir():
+        # Emitted at both levels: the stylesheet is inlined into pages at the
+        # site root and in foods/, and the site must also open from file://.
+        shutil.copytree(fonts, out / "fonts", dirs_exist_ok=True)
+        shutil.copytree(fonts, out / "foods" / "fonts", dirs_exist_ok=True)
     written = []
 
     def write(rel: str, template: str, root: str, **ctx) -> None:

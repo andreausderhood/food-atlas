@@ -418,3 +418,21 @@ def test_no_gaps_means_no_summary_line(payload, tmp_path):
     from atlas.site.build import render_site
     render_site(payload, tmp_path)
     assert 'class="gaps-summary"' not in (tmp_path / "foods/apple.html").read_text()
+
+
+def test_no_runtime_dependency_on_a_third_party_cdn(payload, tmp_path):
+    """Static, offline-capable artifact (spec §3)."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    for page in tmp_path.rglob("*.html"):
+        text = page.read_text()
+        assert "fonts.googleapis.com" not in text, page.name
+        assert "fonts.gstatic.com" not in text, page.name
+
+
+def test_fonts_are_shipped_with_the_site(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    shipped = {p.name for p in (tmp_path / "fonts").glob("*.woff2")}
+    assert shipped, "no woff2 files copied into the site"
+    assert "@font-face" in (tmp_path / "index.html").read_text()
