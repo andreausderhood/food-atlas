@@ -207,11 +207,13 @@ const assert = require('node:assert/strict');
       for (const path of ['/index.html', '/foods/apple.html']) {
         await page.goto(process.argv[1] + path);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${path} overflow at ${width}`);
-        assert.ok(await page.evaluate(() => Math.abs(document.querySelector('.brand').getBoundingClientRect().left - document.querySelector('h1').getBoundingClientRect().left) < 1), `header alignment at ${width}`);
       }
-      await page.goto(process.argv[1] + '/index.html');
-      assert.ok(await page.locator('.card-actions button').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height <= 33)), `wrapped button at ${width}`);
-      assert.ok(await page.locator('.card-meta').evaluateAll(items => items.every(item => item.getBoundingClientRect().height < 36)), `wrapped metadata at ${width}`);
+      await page.goto(process.argv[1] + '/foods/apple.html');
+      assert.equal(await page.locator('.entry-masthead h1').count(), 1, `masthead at ${width}`);
+      assert.ok(await page.locator('.prof').evaluateAll(
+        sections => sections.every(section => section.getBoundingClientRect().width > 0)),
+        `collapsed profile at ${width}`);
+      assert.equal(await page.locator('#science-mode').count(), 0, `science toggle at ${width}`);
     }
     assert.deepEqual(errors, []);
     console.log('Mobile filters, live comparison, evidence chips and page widths verified.');
