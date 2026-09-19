@@ -1,0 +1,23 @@
+/* src/atlas/site/templates/_entry.css.j2
+   Botanical register on Micrographics tokens: warmth from photography, serif
+   editorial and space — never from rounded corners or shadows. */
+.entry-masthead{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.55fr);
+  gap:var(--s-16);align-items:end;margin-bottom:var(--s-8)}
+.entry-fam{margin:0;font-size:var(--t-mini);font-weight:600;letter-spacing:var(--tr-wide);
+  text-transform:uppercase;color:var(--ink-55)}
+.entry-masthead h1{margin:var(--s-2) 0 0;font-family:var(--f-display);font-weight:800;
+  font-size:clamp(52px,6vw,92px);line-height:.95;letter-spacing:var(--tr-tight)}
+.entry-binomial{font-family:var(--f-serif);font-style:italic;font-size:var(--t-h3);
+  margin:var(--s-2) 0 0;color:var(--ink-90);line-height:var(--lh-snug)}
+.entry-lede{font-family:var(--f-serif);font-size:var(--t-h4);line-height:1.45;
+  margin:var(--s-5) 0 0;max-width:52ch;color:var(--ink-90)}
+.entry-tags{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;
+  border:1px solid var(--ink-15);background:var(--paper-2);font-size:var(--t-small)}
+.entry-plate{margin:0 0 var(--s-12)}
+.entry-plate img{display:block;width:100%;height:auto;max-height:420px;object-fit:cover}
+.entry-plate figcaption{font-family:var(--f-mono);font-size:var(--t-micro);line-height:1.6;
+  color:var(--ink-55);margin-top:var(--s-2)}
+@media(max-width:900px){
+  .entry-masthead{grid-template-columns:1fr;gap:var(--s-6);align-items:start}
+}

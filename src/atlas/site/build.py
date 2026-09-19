@@ -33,8 +33,14 @@ def _amount(claim: dict) -> str:
     """Nutrition imports are per 100 g; molecule units retain their source denominator."""
     if claim.get("v") == "present":
         return "present"
+    value = claim["v"]
+    if (claim.get("group") == "season" and isinstance(value, list) and value
+            and all(isinstance(m, int) for m in value)):
+        # Season month lists read as names, not raw ISO numbers, wherever a claim's
+        # amount is displayed (not just the masthead's own "In season" tag).
+        value = ", ".join(month_name(m) for m in value)
     unit = f" {claim['unit']}" if claim.get("unit") else ""
-    text = f"{claim['v']}{unit}"
+    text = f"{value}{unit}"
     if claim.get("group") == "nutrition":
         text += " per 100 g"
     if claim.get("v_min") is not None:
@@ -149,9 +155,23 @@ def sections(food: dict, payload: dict) -> list[tuple[str, list[dict]]]:
             for group in order if group in groups]
 
 
+MONTH_NAMES = ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def month_name(number: int) -> str:
+    """Month number to short English name; unknown numbers pass through."""
+    return MONTH_NAMES[number - 1] if 1 <= number <= 12 else str(number)
+
+
 def render_site(payload: dict, out: Path) -> list[Path]:
     # All templates are HTML despite the .j2 suffix.
     env = Environment(loader=PackageLoader("atlas.site", "templates"), autoescape=True)
+    env.filters["month_name"] = month_name
+    # Compact tojson output (no space after separators) is functionally identical for
+    # JSON.parse consumers (e.g. _season.js.j2's data-entry-seasons) and avoids "10, 11, 12"
+    # style number runs leaking into raw HTML text via embedded JSON.
+    env.policies["json.dumps_kwargs"] = {"separators": (",", ":")}
     rows = index_rows(payload)
     food_map = {f["id"]: f for f in payload["foods"]}
     row_map = {r["id"]: r for r in rows}

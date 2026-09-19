@@ -242,8 +242,12 @@ def test_editorial_evidence_is_compact_and_traceable(payload, tmp_path):
     ])
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
-    assert entry.count('class="editorial-evidence"') == 1
-    assert entry.count('>T4</span>') == 2
+    # Task 7 retires the "hover or focus a tier marker" evidence line and the eli5
+    # lede's chip along with the old entry-header: the masthead's lede is plain text
+    # (spec's "no tier marks on the reading surface" constraint), so only the
+    # Culinary & technical uses section's "story" claim still carries a compact chip.
+    assert 'class="editorial-evidence"' not in entry
+    assert entry.count('>T4</span>') == 1
     assert "SRC-A · CC0-1.0 · Editorial note" in entry
     assert "2,597 accepted claims" in (tmp_path / "index.html").read_text()
 
@@ -291,3 +295,42 @@ def test_square_corners_and_no_shadows(payload, tmp_path):
     index = (tmp_path / "index.html").read_text()
     assert "border-radius:6px" not in index and "border-radius:10px" not in index
     assert "box-shadow:0 8px 36px" not in index
+
+
+@pytest.mark.xfail(reason="entry-profiles lands in Task 8", strict=True)
+def test_masthead_order_identity_then_plate_then_profiles(payload, tmp_path):
+    """Composition C: identity first, then the plate, then the profiles (spec §4)."""
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(subject="food:apple", group="narrative", field="eli5",
+             v="An apple is a fruit you can hold in one hand.",
+             src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert entry.index('class="entry-masthead"') < entry.index('class="entry-plate"')
+    assert entry.index('class="entry-plate"') < entry.index('class="entry-profiles"')
+
+
+def test_masthead_carries_identity_and_lede(payload, tmp_path):
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(subject="food:apple", group="narrative", field="eli5",
+             v="An apple is a fruit you can hold in one hand.",
+             src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="entry-binomial"' in entry and "Malus domestica" in entry
+    assert "An apple is a fruit you can hold in one hand." in entry
+    assert 'class="entry-tags"' in entry
+
+
+def test_season_tag_shows_month_names_not_numbers(payload, tmp_path):
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(subject="food:apple", group="season", field="season:CH:fresh",
+             v=[10, 11, 12], src="SRC-A", tier=3, derivation="extracted",
+             flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "In season:" in entry and "Oct, Nov, Dec" in entry
+    assert "10, 11, 12" not in entry

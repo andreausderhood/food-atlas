@@ -42,7 +42,7 @@ def test_profiles_integrated_and_science_mode_available(payload, tmp_path):
                  'id="science-mode"', 'id="season-region"', 'id="season-month"',
                  'id="season-mode"', 'data-science', 'No classified bioactivity evidence']:
         assert text in entry
-    assert entry.index('class="entry-heading"') < entry.index('class="profile-grid"')
+    assert entry.index('class="entry-masthead"') < entry.index('class="profile-grid"')
     assert 'href="apple--honeycrisp.html"' in entry
     assert 'Missing regional data' in entry
     assert 'Linked by top-level registered taxon' in entry

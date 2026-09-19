@@ -2,16 +2,7 @@
 {% from "_chip.html.j2" import chip %}
 {% block title %}{{ food.name }} — Food Atlas{% endblock %}
 {% block main %}
-<header class="entry-heading">
-<p class="eyebrow">{{ level_label[food.level] }} / Reference collection</p>
-<h1>{{ food.name }} <em>{{ organisms[food.taxon].name }}</em></h1>
-<p class="editorial-evidence">Evidence details: hover or focus a tier marker for its source and derivation.</p>
-{% if food.is_a %}<p>Cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a></p>{% endif %}
-{% if food.part_of %}<p>Part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a></p>{% endif %}
-{% if food.derives_from and food.level == "form" %}<p>Made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}</p>{% endif %}
-{% for group, claims in sections if group == 'narrative' %}{% for c in claims if c.field == 'eli5' %}<p class="entry-intro editorial-line"><span>{{ c.display }}</span>{{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="muted">A plain-language description is not yet available for this entry.</p>{% endfor %}
-<div class="card-actions"><button type="button" data-save="{{ food.id }}">Save</button><button type="button" data-compare="{{ food.id }}">Compare</button></div>
-</header>
+{% include "_masthead.html.j2" %}
 {% set plant_image = image_for(food) %}{% include "_plant_image.html.j2" %}
 <div class="profile-grid">
 <section class="profile" aria-label="Nutrition profile">{% include '_nutrition.html.j2' %}</section>

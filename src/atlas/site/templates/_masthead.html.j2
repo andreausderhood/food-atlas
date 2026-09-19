@@ -1,0 +1,37 @@
+{# src/atlas/site/templates/_masthead.html.j2
+   Composition C (spec §4): identity at large scale, tags beside it, plate below.
+   No data header, no crop marks, no stamps. #}
+{% set organism = organisms[food.taxon] %}
+{% set lede = (food.claims | selectattr("group", "equalto", "narrative")
+                           | selectattr("field", "equalto", "eli5") | list) %}
+<header class="entry-masthead">
+  <div class="entry-identity">
+    <p class="entry-fam">{{ row.family_name }} &middot; {{ level_label[food.level] }}</p>
+    <h1>{{ food.name }}</h1>
+    <p class="entry-binomial">{{ organism.name }}</p>
+    {% if lede %}<p class="entry-lede">{{ lede[0].v }}</p>{% endif %}
+    {% if food.is_a %}<p>Cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a></p>{% endif %}
+    {% if food.part_of %}<p>Part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a></p>{% endif %}
+    {% if food.derives_from and food.level == "form" %}<p>Made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}</p>{% endif %}
+    <div class="card-actions"><button type="button" data-save="{{ food.id }}">Save</button><button type="button" data-compare="{{ food.id }}">Compare</button></div>
+  </div>
+  <div class="entry-tags">
+    <span class="tag">{{ level_label[food.level] }}</span>
+    <span class="tag">{{ row.family_name }}</span>
+    {% if row.seasons %}
+      <span class="tag">In season:
+        {{ row.seasons[0].months | map("month_name") | join(", ") }}</span>
+    {% endif %}
+    {% if row.molecules %}<span class="tag">{{ row.molecules }} molecules studied</span>{% endif %}
+  </div>
+</header>
+{% set image = image_for(food) %}
+{% if image %}
+<figure class="entry-plate">
+  <img src="{{ root }}{{ image.url }}" alt="{{ image.alt }}" width="{{ image.width }}" height="{{ image.height }}">
+  <figcaption>
+    {{ image.reference_label }}
+    &copy; {{ image.credit }} &middot; {{ image.license }} &middot; retrieved {{ image.retrieved }}
+  </figcaption>
+</figure>
+{% endif %}
