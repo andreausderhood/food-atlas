@@ -6,13 +6,6 @@
 {% include "_profiles.html.j2" %}
 <div class="profile-grid">
 <section class="profile" aria-label="Nutrition profile">{% include '_nutrition.html.j2' %}</section>
-<section class="profile editorial-copy"><h2>Sensory profile</h2><p class="muted">Descriptive observations, not measured intensity scores.</p>
-{% for group, claims in sections if group == 'sensory' %}{% for c in claims %}<p class="editorial-line"><span><strong>{{ c.field|capitalize }}</strong><br>{{ c.display }}</span>{{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="muted">No sourced sensory description yet. Missing is not neutral.</p>{% endfor %}
-{% if row.molecules %}<a href="#molecules">Explore {{ row.molecules }} recorded molecules</a><p class="muted">Presence alone does not explain flavour or establish a health effect.</p>{% endif %}
-</section>
-<section class="profile"><h2>Research profile</h2><p class="muted">Lab activity ≠ effects in humans ≠ traditional use. Evidence tiers describe provenance, not clinical efficacy.</p>
-{% for g in research %}<h3>{{ g.label }}</h3>{% for c in g.claims %}<p><strong>{{ c.field }}</strong>: {{ c.v }} {{ c.unit or '' }} {{ chip(c, sources, compact=true) }}</p>{% endfor %}{% else %}<p class="empty">No classified bioactivity evidence for this entry.</p><p class="muted">Traditional use, laboratory findings and human studies will appear separately when sourced. Nutrition and molecule records are not substitutes.</p>{% endfor %}
-</section>
 </div>
 <div class="entry-depth">
 <details><summary>Varieties &amp; relatives <span>{{ related|length }} related entries</span></summary><p class="muted">Linked by top-level registered taxon; not interchangeable in nutrition or use.</p><ul class="relative-list">{% for r in related %}<li><a href="{{ slug(r.id) }}.html">{{ r.name }}</a> <em>{{ r.taxon_name }}</em> <span class="muted">{{ level_label[r.level] }}</span></li>{% else %}<li>No related entries in this collection yet.</li>{% endfor %}</ul></details>

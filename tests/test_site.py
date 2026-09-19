@@ -58,7 +58,7 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert "Malus domestica" in entry
     assert "4.6 mg per 100 g" in entry and "fresh_weight" in entry and "flesh" in entry
     # Sensory evidence appears in its compact profile and the full scientific record.
-    assert entry.count('class="chip tier-') == 5
+    assert entry.count('class="chip tier-') == entry.split('<details class="register"', 1)[1].count('class="chip tier-')
     assert "machine-extracted" in entry and "unvalidated" in entry
     assert "https://pmc.ncbi.nlm.nih.gov/articles/PMC444/" in entry
     assert "https://pmc.ncbi.nlm.nih.gov/articles/PMC555/" in entry
@@ -75,6 +75,21 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert "#F2EFE8" in index and "#FF4F00" in index
     assert "[hidden]" in index and "!important" in index
     assert "apple--honeycrisp.html" in index
+
+
+def test_tier_marks_never_appear_on_the_reading_surface(payload, tmp_path):
+    """T1-T5 is internal vocabulary (spec §5, Global Constraints)."""
+    import re
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    food["claims"].append(
+        dict(subject="food:apple", group="sensory", field="taste", v="crisp",
+             src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    surface = entry.split('<details class="register"')[0]
+    assert 'class="chip tier-' not in surface
+    assert not re.search(r"\bT[1-5]\b", surface)
 
 
 def test_html_templates_escape_source_text(payload, tmp_path):
