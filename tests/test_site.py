@@ -297,7 +297,6 @@ def test_square_corners_and_no_shadows(payload, tmp_path):
     assert "box-shadow:0 8px 36px" not in index
 
 
-@pytest.mark.xfail(reason="entry-profiles lands in Task 8", strict=True)
 def test_masthead_order_identity_then_plate_then_profiles(payload, tmp_path):
     """Composition C: identity first, then the plate, then the profiles (spec §4)."""
     from atlas.site.build import render_site
@@ -334,3 +333,28 @@ def test_season_tag_shows_month_names_not_numbers(payload, tmp_path):
     entry = (tmp_path / "foods/apple.html").read_text()
     assert "In season:" in entry and "Oct, Nov, Dec" in entry
     assert "10, 11, 12" not in entry
+
+
+def test_nutrition_profile_states_both_scales(payload, tmp_path):
+    """Water/dry split at 0-100 g, then dry matter at its own stated scale."""
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    for label, field, value in [("Water", "water", 89.6), ("Protein", "protein", 2.92)]:
+        payload["nutrients"][field] = {"name": label}
+        food["claims"].append(dict(subject="food:apple", group="nutrition", field=field,
+                                   v=value, unit="g", basis="fresh_weight", food_part="flesh",
+                                   src="SRC-A", tier=1, derivation="analytical", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="entry-profiles"' in entry
+    assert "89.6" in entry and "2.92" in entry
+    assert "at its own scale" in entry
+    assert "%DV" not in entry and "Daily Value" not in entry
+
+
+def test_profiles_omitted_when_composition_absent(payload, tmp_path):
+    """No water means no honest 0-100 g bar; render nothing rather than a fake one."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "at its own scale" not in entry

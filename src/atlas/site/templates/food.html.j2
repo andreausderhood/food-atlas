@@ -3,6 +3,7 @@
 {% block title %}{{ food.name }} — Food Atlas{% endblock %}
 {% block main %}
 {% include "_masthead.html.j2" %}
+{% include "_profiles.html.j2" %}
 <div class="profile-grid">
 <section class="profile" aria-label="Nutrition profile">{% include '_nutrition.html.j2' %}</section>
 <section class="profile editorial-copy"><h2>Sensory profile</h2><p class="muted">Descriptive observations, not measured intensity scores.</p>
