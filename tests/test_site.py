@@ -72,7 +72,7 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert 'title="Source SRC-B' in compare and "CC0-1.0" in compare
     assert "CC0-1.0" in (out / "sources.html").read_text()
     index = (out / "index.html").read_text()
-    assert "#F1EEE7" in index and "#B10034" in index
+    assert "#F2EFE8" in index and "#FF4F00" in index
     assert "[hidden]" in index and "!important" in index
     assert "apple--honeycrisp.html" in index and "apfel roh" in index
 
@@ -252,3 +252,25 @@ def test_editorial_evidence_is_compact_and_traceable(payload, tmp_path):
 def test_slug():
     from atlas.site.build import slug
     assert slug("food:apple.honeycrisp") == "apple--honeycrisp"
+
+
+def test_token_layer_replaces_the_invented_palette(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    index = (tmp_path / "index.html").read_text()
+    for token, value in [("--paper", "#F2EFE8"), ("--paper-2", "#E8E4DA"),
+                         ("--ink", "#0B0B0B"), ("--accent", "#FF4F00"),
+                         ("--cobalt", "#1530FF")]:
+        assert f"{token}:{value}" in index or f"{token}: {value}" in index, token
+    for retired in ("#B10034", "#F1EEE7", "#25251f"):
+        assert retired not in index, retired
+    for family in ("Archivo", "Inter Tight", "JetBrains Mono", "Instrument Serif"):
+        assert family in index, family
+
+
+def test_square_corners_and_no_shadows(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    index = (tmp_path / "index.html").read_text()
+    assert "border-radius:6px" not in index and "border-radius:10px" not in index
+    assert "box-shadow:0 8px 36px" not in index
