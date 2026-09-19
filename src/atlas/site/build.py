@@ -9,7 +9,6 @@ from jinja2 import Environment, PackageLoader
 
 from atlas.site.composition import macro_split, micro_readings
 from atlas.site.images import DATA_DIR, image_for
-from atlas.site.nutrition import nutrition_profile
 from atlas.site.profiles import research_profile, season_records
 
 TIER_LABEL = {1: "Measured", 2: "Registry", 3: "Literature", 4: "Derived or declared", 5: "Unverified"}
@@ -208,7 +207,7 @@ def render_site(payload: dict, out: Path) -> list[Path]:
         write(f"foods/{slug(food['id'])}.html", "food.html.j2", "../",
               food=food, row=row_map[food["id"]], related=related, sections=sections(food, payload),
               composition={"macro": macro_split(labelled), "micro": micro_readings(labelled)},
-              nutrition=nutrition_profile(food), research=research_profile(food["claims"]),
+              research=research_profile(food["claims"]),
               organism_claims=organisms[food["taxon"]].get("claims", []))
     ids = [f["id"] for f in payload["foods"] if f["level"] == "taxon_food"][:3]
     data = compare_data(payload)

@@ -388,6 +388,15 @@ def test_global_science_mode_is_retired(payload, tmp_path):
 
 
 def test_each_register_discloses_independently(payload, tmp_path):
+    """Whichever registers exist are independently toggleable (spec §4).
+
+    Per-section disclosure is not a claim about how MANY registers a page has.
+    This asserted >= 2 while the retired _nutrition.html.j2 include contributed a
+    second register ("Minerals, vitamins & energy"); that section was a broken,
+    duplicate single-scale 0-100 g bar and is gone, so the entry page now carries
+    exactly one register ("Measurements & sources"). One self-contained <details>
+    with no global controller is per-section disclosure -- not a regression.
+    """
     from atlas.site.build import render_site
     food = payload["foods"][0]
     payload["nutrients"]["nutrient:fdc:1051"] = {"name": "Water"}
@@ -396,7 +405,9 @@ def test_each_register_discloses_independently(payload, tmp_path):
                                src="SRC-A", tier=1, derivation="analytical", flags=[], ref="fdc:100"))
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
-    assert entry.count('<details class="register"') >= 2
+    assert entry.count('<details class="register"') >= 1
+    # Every register carries its own <summary> control; none is driven from outside.
+    assert entry.count('<details class="register"') == entry.count('class="register"')
 
 
 def test_gaps_are_summarised_and_linked_not_listed(payload, tmp_path):

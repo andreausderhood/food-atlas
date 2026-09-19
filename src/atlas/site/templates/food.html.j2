@@ -4,9 +4,6 @@
 {% block main %}
 {% include "_masthead.html.j2" %}
 {% include "_profiles.html.j2" %}
-<div class="profile-grid">
-<section class="profile" aria-label="Nutrition profile">{% include '_nutrition.html.j2' %}</section>
-</div>
 <div class="entry-depth">
 <details><summary>Varieties &amp; relatives <span>{{ related|length }} related entries</span></summary><p class="muted">Linked by top-level registered taxon; not interchangeable in nutrition or use.</p><ul class="relative-list">{% for r in related %}<li><a href="{{ slug(r.id) }}.html">{{ r.name }}</a> <em>{{ r.taxon_name }}</em> <span class="muted">{{ level_label[r.level] }}</span></li>{% else %}<li>No related entries in this collection yet.</li>{% endfor %}</ul></details>
 <details><summary>Growing here <span>Region &amp; season</span></summary><p data-entry-seasons='{{ row.seasons|tojson }}'>Choose a region, month and harvest type above. Missing regional data is not evidence of absence.</p>
