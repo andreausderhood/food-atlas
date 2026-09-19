@@ -54,3 +54,44 @@ def test_unit_and_tier_come_from_the_best_evidenced_claim():
     r = reading(claims, "Protein")
     assert r["tier"] == 1
     assert r["text"] == "2.92–4.16"
+
+
+KALE = [  # real values, data/build/atlas.json, per 100 g
+    claim("Water", 89.6), claim("Water", 89.63, src="SRC-B"),
+    claim("Carbohydrate, by difference", 4.42, tier=4),
+    claim("Protein", 2.92), claim("Ash", 1.54), claim("Total lipid (fat)", 1.49),
+]
+
+
+def test_macro_split_separates_water_from_everything_else():
+    from atlas.site.composition import macro_split
+    split = macro_split(KALE)
+    assert split["water"]["text"] == "89.6–89.63"
+    assert split["dry_total"] == 10.37
+    assert split["total"] == 100.0
+
+
+def test_macro_split_orders_dry_matter_largest_first_with_display_names():
+    from atlas.site.composition import macro_split
+    split = macro_split(KALE)
+    assert [(d["display"], d["text"]) for d in split["dry"]] == [
+        ("Carbohydrate", "4.42"), ("Protein", "2.92"),
+        ("Minerals (ash)", "1.54"), ("Fat", "1.49")]
+
+
+def test_macro_split_is_none_without_water():
+    from atlas.site.composition import macro_split
+    assert macro_split([claim("Protein", 2.92)]) is None
+
+
+def test_macro_split_is_none_without_any_dry_component():
+    from atlas.site.composition import macro_split
+    assert macro_split([claim("Water", 89.6)]) is None
+
+
+def test_macro_split_tolerates_partial_dry_matter():
+    from atlas.site.composition import macro_split
+    split = macro_split([claim("Water", 89.6), claim("Protein", 2.92)])
+    assert split["dry_total"] == 2.92
+    assert [d["display"] for d in split["dry"]] == ["Protein"]
+    assert split["total"] == 92.52

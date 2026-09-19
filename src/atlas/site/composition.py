@@ -41,3 +41,36 @@ def reading(claims: list[dict], label: str) -> dict | None:
         "tier": best.get("tier", 5),
         "sources": len({c["src"] for c in matching}),
     }
+
+
+WATER = "Water"
+# FDC dictionary label -> display name. These five compose 100 g exactly:
+# carbohydrate is "by difference", i.e. the remainder after the other four.
+DRY_MATTER = (
+    ("Carbohydrate, by difference", "Carbohydrate"),
+    ("Protein", "Protein"),
+    ("Ash", "Minerals (ash)"),
+    ("Total lipid (fat)", "Fat"),
+)
+
+
+def macro_split(claims: list[dict]) -> dict | None:
+    """Water and dry matter on a true 0-100 g scale, dry matter reopened.
+
+    A single 0-100 g bar on a 90%-water vegetable collapses everything that
+    distinguishes it into invisible slivers, so the dry matter is reopened at
+    its own scale, which the page states in words (spec §5).
+    """
+    water = reading(claims, WATER)
+    parts = [(display, reading(claims, label)) for label, display in DRY_MATTER]
+    parts = [(display, r) for display, r in parts if r is not None]
+    if water is None or not parts:
+        return None
+    parts.sort(key=lambda pair: -pair[1]["high"])
+    dry_total = round(sum(r["high"] for _, r in parts), 2)
+    return {
+        "water": water,
+        "dry": [dict(r, display=display) for display, r in parts],
+        "dry_total": dry_total,
+        "total": round(water["high"] + dry_total, 2),
+    }
