@@ -7,8 +7,8 @@ from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
 
+from atlas.site.composition import macro_split, micro_readings
 from atlas.site.images import DATA_DIR, image_for
-from atlas.site.nutrition import nutrition_profile
 from atlas.site.profiles import research_profile, season_records
 
 TIER_LABEL = {1: "Measured", 2: "Registry", 3: "Literature", 4: "Derived or declared", 5: "Unverified"}
@@ -23,12 +23,23 @@ def _label(field: str, payload: dict) -> str:
     return payload["nutrients"].get(field, {}).get("name", field)
 
 
+def labelled_claims(food: dict, payload: dict) -> list[dict]:
+    """Attach the display label the composition model matches on."""
+    return [c | {"label": _label(c["field"], payload)} for c in food["claims"]]
+
+
 def _amount(claim: dict) -> str:
     """Nutrition imports are per 100 g; molecule units retain their source denominator."""
     if claim.get("v") == "present":
         return "present"
+    value = claim["v"]
+    if (claim.get("group") == "season" and isinstance(value, list) and value
+            and all(isinstance(m, int) for m in value)):
+        # Season month lists read as names, not raw ISO numbers, wherever a claim's
+        # amount is displayed (not just the masthead's own "In season" tag).
+        value = ", ".join(month_name(m) for m in value)
     unit = f" {claim['unit']}" if claim.get("unit") else ""
-    text = f"{claim['v']}{unit}"
+    text = f"{value}{unit}"
     if claim.get("group") == "nutrition":
         text += " per 100 g"
     if claim.get("v_min") is not None:
@@ -105,7 +116,7 @@ def index_rows(payload: dict) -> list[dict]:
             "preview": preview,
             "seasons": season_records(food["claims"]),
             "research": [g["label"] for g in research_profile(food["claims"])],
-            "search": " ".join([food["name"], food.get("name_de") or "", taxon_name,
+            "search": " ".join([food["name"], taxon_name,
                 organisms.get(family, {}).get("name", family),
                 *[f"{_label(c['field'], payload)} {c['v']}" for c in food["claims"]]]).lower(),
         })
@@ -143,9 +154,23 @@ def sections(food: dict, payload: dict) -> list[tuple[str, list[dict]]]:
             for group in order if group in groups]
 
 
+MONTH_NAMES = ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def month_name(number: int) -> str:
+    """Month number to short English name; unknown numbers pass through."""
+    return MONTH_NAMES[number - 1] if 1 <= number <= 12 else str(number)
+
+
 def render_site(payload: dict, out: Path) -> list[Path]:
     # All templates are HTML despite the .j2 suffix.
     env = Environment(loader=PackageLoader("atlas.site", "templates"), autoescape=True)
+    env.filters["month_name"] = month_name
+    # Compact tojson output (no space after separators) is functionally identical for
+    # JSON.parse consumers (e.g. _season.js.j2's data-entry-seasons) and avoids "10, 11, 12"
+    # style number runs leaking into raw HTML text via embedded JSON.
+    env.policies["json.dumps_kwargs"] = {"sort_keys": True, "separators": (",", ":")}
     rows = index_rows(payload)
     food_map = {f["id"]: f for f in payload["foods"]}
     row_map = {r["id"]: r for r in rows}
@@ -159,6 +184,12 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     (out / "foods").mkdir(parents=True, exist_ok=True)
     if (DATA_DIR / "images").is_dir():
         shutil.copytree(DATA_DIR / "images", out / "images", dirs_exist_ok=True)
+    fonts = DATA_DIR / "site-assets" / "fonts"
+    if fonts.is_dir():
+        # Emitted at both levels: the stylesheet is inlined into pages at the
+        # site root and in foods/, and the site must also open from file://.
+        shutil.copytree(fonts, out / "fonts", dirs_exist_ok=True)
+        shutil.copytree(fonts, out / "foods" / "fonts", dirs_exist_ok=True)
     written = []
 
     def write(rel: str, template: str, root: str, **ctx) -> None:
@@ -172,9 +203,11 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     write("molecules.html", "molecules.html.j2", "", molecules=molecule_rows(payload))
     for food in payload["foods"]:
         related = [r for r in rows if r["family"] == row_map[food["id"]]["family"] and r["id"] != food["id"]]
+        labelled = labelled_claims(food, payload)
         write(f"foods/{slug(food['id'])}.html", "food.html.j2", "../",
               food=food, row=row_map[food["id"]], related=related, sections=sections(food, payload),
-              nutrition=nutrition_profile(food), research=research_profile(food["claims"]),
+              composition={"macro": macro_split(labelled), "micro": micro_readings(labelled)},
+              research=research_profile(food["claims"]),
               organism_claims=organisms[food["taxon"]].get("claims", []))
     ids = [f["id"] for f in payload["foods"] if f["level"] == "taxon_food"][:3]
     data = compare_data(payload)

@@ -1,0 +1,68 @@
+{# src/atlas/site/templates/_profiles.html.j2
+   The visible top of the iceberg (spec §4): a self-sufficient read, not a teaser.
+   No tier marks on any value — evidence lives behind each register's own control. #}
+{% set sensory = food.claims | selectattr("group", "equalto", "sensory") | list %}
+<div class="entry-profiles">
+
+  <section class="prof">
+    <h2>Nutrition <em>per 100 g</em></h2>
+    {% if composition.macro %}
+      {% set macro = composition.macro %}
+      <div class="macro-bar">
+        <div class="seg seg-water" style="flex:{{ macro.water.high }}"></div>
+        <div class="seg seg-dry" style="flex:{{ macro.dry_total_high }}"></div>
+      </div>
+      <div class="macro-key">
+        <div class="key"><i class="seg-water"></i><span>Water</span>
+          <b>{{ macro.water.text }}<em>g</em></b></div>
+        <div class="key"><i class="seg-dry"></i><span>Everything else</span>
+          <b>{{ macro.dry_total }}<em>g</em></b></div>
+      </div>
+      <p class="scale-note">Everything else, {{ macro.dry_total }} g, at its own scale</p>
+      <div class="macro-bar dry-bar">
+        {% for part in macro.dry %}
+          <div class="seg seg-d{{ loop.index0 }}" style="flex:{{ part.high }}"></div>
+        {% endfor %}
+      </div>
+      <div class="macro-key">
+        {% for part in macro.dry %}
+          <div class="key"><i class="seg-d{{ loop.index0 }}"></i><span>{{ part.display }}</span>
+            <b>{{ part.text }}<em>g</em></b></div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-note">Composition not yet recorded.</p>
+    {% endif %}
+    {% if composition.micro %}
+      <div class="micros">
+        {% for row in composition.micro %}
+          <div class="micro-row"><span>{{ row.label }}</span>
+            <b>{{ row.text }}<em>{{ row.unit }}</em></b></div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="prof">
+    <h2>Sensory <em>described</em></h2>
+    {% if sensory %}
+      {% for claim in sensory %}
+        <div class="sens-row"><span>{{ claim.field | title }}</span><p>{{ claim.v }}</p></div>
+      {% endfor %}
+    {% else %}
+      <p class="empty-note">Sensory description not yet recorded.</p>
+    {% endif %}
+  </section>
+
+  <section class="prof">
+    <h2>Research <em>what is studied</em></h2>
+    {% if row.molecules %}
+      <div class="stat"><b>{{ row.molecules }}</b><span>molecules recorded as present</span></div>
+      <p class="empty-note">Occurrence only. The atlas does not yet record what these
+        molecules do, or any traditional-medicine correspondence.</p>
+    {% else %}
+      <p class="empty-note">No molecules recorded as present for this entry.</p>
+    {% endif %}
+  </section>
+
+</div>

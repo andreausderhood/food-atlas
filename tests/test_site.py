@@ -1,3 +1,5 @@
+from html.parser import HTMLParser
+
 import pytest
 
 
@@ -55,10 +57,10 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert written == {"index.html", "compare.html", "gaps.html", "sources.html",
                        "molecules.html", "foods/apple.html", "foods/apple--honeycrisp.html"}
     entry = (out / "foods/apple.html").read_text()
-    assert "Apfel roh" in entry and "Malus domestica" in entry
+    assert "Malus domestica" in entry
     assert "4.6 mg per 100 g" in entry and "fresh_weight" in entry and "flesh" in entry
     # Sensory evidence appears in its compact profile and the full scientific record.
-    assert entry.count('class="chip tier-') == 5
+    assert entry.count('class="chip tier-') == entry.split('<details class="register"', 1)[1].count('class="chip tier-')
     assert "machine-extracted" in entry and "unvalidated" in entry
     assert "https://pmc.ncbi.nlm.nih.gov/articles/PMC444/" in entry
     assert "https://pmc.ncbi.nlm.nih.gov/articles/PMC555/" in entry
@@ -72,9 +74,109 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert 'title="Source SRC-B' in compare and "CC0-1.0" in compare
     assert "CC0-1.0" in (out / "sources.html").read_text()
     index = (out / "index.html").read_text()
-    assert "#F1EEE7" in index and "#B10034" in index
+    assert "#F2EFE8" in index and "#FF4F00" in index
     assert "[hidden]" in index and "!important" in index
-    assert "apple--honeycrisp.html" in index and "apfel roh" in index
+    assert "apple--honeycrisp.html" in index
+
+
+class _SurfaceSlicer(HTMLParser):
+    """Collect the HTML that is NOT nested inside any <details> element.
+
+    The reading surface is a DOM fact, not a text-position one. The earlier
+    version of this guard sliced at the first literal '<details class="register"'
+    substring, which (a) missed chips inside plain <details> and (b) silently
+    shrank to 8.9% of a real kale.html once an earlier register appeared above
+    the one it split on. Nesting depth is measured here instead, so a chip is
+    compliant when it sits inside ANY <details> -- register-classed or not,
+    open or closed -- which is the constraint the plan actually ruled on.
+    """
+
+    def __init__(self, html: str):
+        super().__init__(convert_charrefs=False)
+        self.html = html
+        self._line_start = [0]
+        for line in html.splitlines(keepends=True):
+            self._line_start.append(self._line_start[-1] + len(line))
+        self.depth = 0
+        self.max_depth = 0
+        self._span_open = 0
+        self.spans: list[tuple[int, int]] = []
+        self.feed(html)
+        self.close()
+        if self.depth == 0:
+            self.spans.append((self._span_open, len(html)))
+
+    def _index(self) -> int:
+        line, offset = self.getpos()
+        return self._line_start[line - 1] + offset
+
+    def handle_starttag(self, tag, attrs):
+        if tag != "details":
+            return
+        if self.depth == 0:
+            self.spans.append((self._span_open, self._index()))
+        self.depth += 1
+        self.max_depth = max(self.max_depth, self.depth)
+
+    def handle_endtag(self, tag):
+        if tag != "details" or not self.depth:
+            return
+        self.depth -= 1
+        if self.depth == 0:
+            self._span_open = self.html.index(">", self._index()) + 1
+
+    @property
+    def outside(self) -> str:
+        return "".join(self.html[a:b] for a, b in self.spans)
+
+
+def reading_surface(html: str) -> str:
+    """Everything a reader sees without opening a disclosure control."""
+    return _SurfaceSlicer(html).outside
+
+
+def test_reading_surface_follows_dom_nesting_not_text_position():
+    """The checker itself: containment, at any depth, in any <details>."""
+    import re
+    crafted = (
+        '<p>lede</p>'
+        '<details><summary>Growing here</summary>'
+        '<p>grown <span class="chip tier-3">T3</span></p></details>'
+        '<details class="register"><summary>Measurements</summary>'
+        '<span class="chip tier-1">T1</span>'
+        '<details><span class="chip tier-2">T2</span></details>'
+        '</details>'
+        '<p>tail</p>')
+    surface = reading_surface(crafted)
+    # Chips inside a plain <details>, a register, and a nested <details> are all off-surface.
+    assert 'class="chip tier-' not in surface
+    assert not re.search(r"\bT[1-5]\b", surface)
+    assert "lede" in surface and "tail" in surface
+    # ...and a chip that is genuinely outside every <details> is caught.
+    leaked = reading_surface(crafted + '<span class="chip tier-4">T4</span>')
+    assert 'class="chip tier-4"' in leaked
+    assert re.search(r"\bT[1-5]\b", leaked)
+    # Text position alone would have missed the first chip: it precedes the register.
+    assert 'class="chip tier-3"' in crafted.split('<details class="register"')[0]
+
+
+def test_tier_marks_never_appear_on_the_reading_surface(payload, tmp_path):
+    """T1-T5 is internal vocabulary (spec §5, Global Constraints)."""
+    import re
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    food["claims"].append(
+        dict(subject="food:apple", group="sensory", field="taste", v="crisp",
+             src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    surface = reading_surface(entry)
+    # Guard against a vacuous pass: the slicer must have seen real disclosure
+    # controls and must still be leaving the masthead on the surface.
+    assert _SurfaceSlicer(entry).max_depth >= 1
+    assert "entry-masthead" in surface and 'class="entry-profiles"' in surface
+    assert 'class="chip tier-' not in surface
+    assert not re.search(r"\bT[1-5]\b", surface)
 
 
 def test_html_templates_escape_source_text(payload, tmp_path):
@@ -128,7 +230,7 @@ def test_render_site_from_build(project, tmp_path):
     assert "SRC-FDC-FOUNDATION-2026-04" in entry and "fresh_weight" in entry
     assert "machine-extracted" in entry and "unvalidated" in entry and "PMC444" in entry
     apple = (tmp_path / "foods/apple.html").read_text()
-    assert "Apfel roh" in apple and "Amount without unit, basis or food part." in apple
+    assert 'class="gaps-summary"' in apple and "Read the register" in apple
     assert "CC0-1.0" in (tmp_path / "sources.html").read_text()
     gaps = (tmp_path / "gaps.html").read_text()
     assert "Rule 8" in gaps and "An anti-inflammatory food." in gaps
@@ -169,7 +271,7 @@ const assert = require('node:assert/strict');
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(process.argv[1] + '/index.html');
     assert.equal(await page.locator('.card:visible').count(), 2);
-    await page.locator('#q').fill('apfel');
+    await page.locator('#q').fill('apple');
     assert.equal(await page.locator('.card:visible').count(), 1);
     await page.locator('#level').selectOption('cultivar');
     assert.equal(await page.locator('.card:visible').count(), 0);
@@ -192,11 +294,14 @@ const assert = require('node:assert/strict');
       for (const path of ['/index.html', '/foods/apple.html']) {
         await page.goto(process.argv[1] + path);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${path} overflow at ${width}`);
-        assert.ok(await page.evaluate(() => Math.abs(document.querySelector('.brand').getBoundingClientRect().left - document.querySelector('h1').getBoundingClientRect().left) < 1), `header alignment at ${width}`);
       }
-      await page.goto(process.argv[1] + '/index.html');
-      assert.ok(await page.locator('.card-actions button').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height <= 33)), `wrapped button at ${width}`);
-      assert.ok(await page.locator('.card-meta').evaluateAll(items => items.every(item => item.getBoundingClientRect().height < 36)), `wrapped metadata at ${width}`);
+      await page.goto(process.argv[1] + '/foods/apple.html');
+      assert.equal(await page.locator('.entry-masthead h1').count(), 1, `masthead at ${width}`);
+      assert.equal(await page.locator('.prof').count(), 3, `profile sections at ${width}`);
+      assert.ok(await page.locator('.prof').evaluateAll(
+        sections => sections.every(section => section.getBoundingClientRect().width > 0)),
+        `collapsed profile at ${width}`);
+      assert.equal(await page.locator('#science-mode').count(), 0, `science toggle at ${width}`);
     }
     assert.deepEqual(errors, []);
     console.log('Mobile filters, live comparison, evidence chips and page widths verified.');
@@ -242,9 +347,12 @@ def test_editorial_evidence_is_compact_and_traceable(payload, tmp_path):
     ])
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
-    assert "Apfel roh · Food ·" in entry
-    assert entry.count('class="editorial-evidence"') == 1
-    assert entry.count('>T4</span>') == 2
+    # Task 7 retires the "hover or focus a tier marker" evidence line and the eli5
+    # lede's chip along with the old entry-header: the masthead's lede is plain text
+    # (spec's "no tier marks on the reading surface" constraint), so only the
+    # Culinary & technical uses section's "story" claim still carries a compact chip.
+    assert 'class="editorial-evidence"' not in entry
+    assert entry.count('>T4</span>') == 1
     assert "SRC-A · CC0-1.0 · Editorial note" in entry
     assert "2,597 accepted claims" in (tmp_path / "index.html").read_text()
 
@@ -252,3 +360,212 @@ def test_editorial_evidence_is_compact_and_traceable(payload, tmp_path):
 def test_slug():
     from atlas.site.build import slug
     assert slug("food:apple.honeycrisp") == "apple--honeycrisp"
+
+
+def test_token_layer_replaces_the_invented_palette(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    index = (tmp_path / "index.html").read_text()
+    for token, value in [("--paper", "#F2EFE8"), ("--paper-2", "#E8E4DA"),
+                         ("--ink", "#0B0B0B"), ("--accent", "#FF4F00"),
+                         ("--cobalt", "#1530FF")]:
+        assert f"{token}:{value}" in index or f"{token}: {value}" in index, token
+    for retired in ("#B10034", "#F1EEE7", "#25251f"):
+        assert retired not in index, retired
+    for family in ("Archivo", "Inter Tight", "JetBrains Mono", "Instrument Serif"):
+        assert family in index, family
+
+
+def test_german_food_names_never_reach_the_ui(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    index = (tmp_path / "index.html").read_text()
+    assert "Apfel roh" not in entry
+    assert "Apfel roh" not in index and "apfel roh" not in index
+    assert "Malus domestica" in entry
+
+
+def test_source_titles_stay_verbatim(payload, tmp_path):
+    """A published title is a citation, not UI copy (spec, Global Constraints)."""
+    from atlas.site.build import render_site
+    payload["sources"][0]["title"] = "Bundeslebensmittelschlüssel (BLS), Version 4.0"
+    render_site(payload, tmp_path)
+    assert "Bundeslebensmittelschlüssel (BLS), Version 4.0" in (tmp_path / "sources.html").read_text()
+
+
+def test_square_corners_and_no_shadows(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    index = (tmp_path / "index.html").read_text()
+    assert "border-radius:6px" not in index and "border-radius:10px" not in index
+    assert "box-shadow:0 8px 36px" not in index
+
+
+def test_masthead_order_identity_then_plate_then_profiles(payload, tmp_path):
+    """Composition C: identity first, then the plate, then the profiles (spec §4)."""
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(subject="food:apple", group="narrative", field="eli5",
+             v="An apple is a fruit you can hold in one hand.",
+             src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert entry.index('class="entry-masthead"') < entry.index('class="entry-plate"')
+    assert entry.index('class="entry-plate"') < entry.index('class="entry-profiles"')
+
+
+def test_masthead_carries_identity_and_lede(payload, tmp_path):
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(subject="food:apple", group="narrative", field="eli5",
+             v="An apple is a fruit you can hold in one hand.",
+             src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="entry-binomial"' in entry and "Malus domestica" in entry
+    assert "An apple is a fruit you can hold in one hand." in entry
+    assert 'class="entry-tags"' in entry
+
+
+def test_masthead_says_so_when_there_is_no_plain_language_lede(payload, tmp_path):
+    """A thin entry shows the empty state; it does not silently omit the line.
+
+    All 33 real foods carry an eli5 claim, so this branch never renders on
+    production data -- it is only ever exercised here.
+    """
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="entry-lede"' not in entry
+    assert "Plain-language description not yet recorded." in entry
+
+
+def test_relations_read_as_names_not_internal_ids(payload, tmp_path):
+    """"Cultivar of food:apple" is an internal id leaking onto the surface."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple--honeycrisp.html").read_text()
+    assert 'Cultivar of <a href="apple.html">Apple</a>' in entry
+    assert "food:apple<" not in entry
+
+
+def test_zero_molecules_does_not_promise_what_they_do(payload, tmp_path):
+    """"The atlas does not record what these molecules do" needs molecules."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "No molecules recorded as present for this entry." in entry
+    assert "molecules recorded as present</span>" not in entry
+    assert "does not yet record what these" not in entry
+
+
+def test_season_tag_shows_month_names_not_numbers(payload, tmp_path):
+    from atlas.site.build import render_site
+    payload["foods"][0]["claims"].append(
+        dict(subject="food:apple", group="season", field="season:CH:fresh",
+             v=[10, 11, 12], src="SRC-A", tier=3, derivation="extracted",
+             flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "In season:" in entry and "Oct, Nov, Dec" in entry
+    assert "10, 11, 12" not in entry
+
+
+def test_nutrition_profile_states_both_scales(payload, tmp_path):
+    """Water/dry split at 0-100 g, then dry matter at its own stated scale."""
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    for label, field, value in [("Water", "water", 89.6), ("Protein", "protein", 2.92)]:
+        payload["nutrients"][field] = {"name": label}
+        food["claims"].append(dict(subject="food:apple", group="nutrition", field=field,
+                                   v=value, unit="g", basis="fresh_weight", food_part="flesh",
+                                   src="SRC-A", tier=1, derivation="analytical", flags=[], ref=None))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="entry-profiles"' in entry
+    assert "89.6" in entry and "2.92" in entry
+    assert "at its own scale" in entry
+    assert "%DV" not in entry and "Daily Value" not in entry
+
+
+def test_profiles_omitted_when_composition_absent(payload, tmp_path):
+    """No water means no honest 0-100 g bar; render nothing rather than a fake one."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "at its own scale" not in entry
+
+
+def test_global_science_mode_is_retired(payload, tmp_path):
+    """Disclosure is per-section, never global (spec §4)."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    for name in ("index.html", "foods/apple.html", "compare.html"):
+        page = (tmp_path / name).read_text()
+        assert 'id="science-mode"' not in page, name
+        assert "data-science" not in page, name
+
+
+def test_each_register_discloses_independently(payload, tmp_path):
+    """Whichever registers exist are independently toggleable (spec §4).
+
+    Per-section disclosure is not a claim about how MANY registers a page has.
+    This asserted >= 2 while the retired _nutrition.html.j2 include contributed a
+    second register ("Minerals, vitamins & energy"); that section was a broken,
+    duplicate single-scale 0-100 g bar and is gone, so the entry page now carries
+    exactly one register ("Measurements & sources"). One self-contained <details>
+    with no global controller is per-section disclosure -- not a regression.
+    """
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    payload["nutrients"]["nutrient:fdc:1051"] = {"name": "Water"}
+    food["claims"].append(dict(subject="food:apple", group="nutrition", field="nutrient:fdc:1051",
+                               v=85.6, unit="g", basis="fresh_weight", food_part="flesh",
+                               src="SRC-A", tier=1, derivation="analytical", flags=[], ref="fdc:100"))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert entry.count('<details class="register"') >= 1
+    # Every register carries its own <summary> control; none is driven from outside.
+    assert entry.count('<details class="register"') == entry.count('class="register"')
+
+
+def test_gaps_are_summarised_and_linked_not_listed(payload, tmp_path):
+    """One line on the entry page, full register elsewhere (spec §5)."""
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    gaps = [dict(subject=food["id"], field=f"f{i}", rule=6,
+                 question="Amount without unit, basis or food part.",
+                 would_be_settled_by="Unit, basis and food part from the original study.",
+                 carried_value=None, src="SRC-A") for i in range(3)]
+    payload["gaps"] = food["gaps"] = gaps
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="gaps-summary"' in entry
+    assert "3 open questions" in entry
+    assert 'href="../gaps.html"' in entry
+    assert entry.count("Amount without unit, basis or food part.") <= 1
+
+
+def test_no_gaps_means_no_summary_line(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    assert 'class="gaps-summary"' not in (tmp_path / "foods/apple.html").read_text()
+
+
+def test_no_runtime_dependency_on_a_third_party_cdn(payload, tmp_path):
+    """Static, offline-capable artifact (spec §3)."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    for page in tmp_path.rglob("*.html"):
+        text = page.read_text()
+        assert "fonts.googleapis.com" not in text, page.name
+        assert "fonts.gstatic.com" not in text, page.name
+
+
+def test_fonts_are_shipped_with_the_site(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    shipped = {p.name for p in (tmp_path / "fonts").glob("*.woff2")}
+    assert shipped, "no woff2 files copied into the site"
+    assert "@font-face" in (tmp_path / "index.html").read_text()

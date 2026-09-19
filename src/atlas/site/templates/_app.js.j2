@@ -36,9 +36,5 @@ window.Atlas={saved:()=>saved,selected:()=>selected,setCompare,announce};
  theme.addEventListener('click',()=>{const value=dark()?'light':'dark';document.documentElement.dataset.theme=value;try{localStorage.setItem('food-atlas-theme',value);}catch(e){}themeLabel();});themeLabel();
  document.querySelectorAll('.masthead nav a').forEach(a=>{if(new URL(a.href).pathname===location.pathname)a.setAttribute('aria-current','page');});
  window.addEventListener('popstate',()=>{selected=clean((new URLSearchParams(location.search).get('compare')||'').split(','));update();document.dispatchEvent(new CustomEvent('atlas:compare',{detail:selected}));});
- const science=document.getElementById('science-mode');
- function setScience(active){science.setAttribute('aria-pressed',String(active));document.documentElement.dataset.science=String(active);document.querySelectorAll('details[data-science],details.nutrition-science').forEach(el=>{el.open=active;});store('food-atlas-science',active);}
- science.addEventListener('click',()=>setScience(science.getAttribute('aria-pressed')!=='true'));
- setScience(read('food-atlas-science',false)===true);
  update();
 })();
