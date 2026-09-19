@@ -55,7 +55,7 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert written == {"index.html", "compare.html", "gaps.html", "sources.html",
                        "molecules.html", "foods/apple.html", "foods/apple--honeycrisp.html"}
     entry = (out / "foods/apple.html").read_text()
-    assert "Apfel roh" in entry and "Malus domestica" in entry
+    assert "Malus domestica" in entry
     assert "4.6 mg per 100 g" in entry and "fresh_weight" in entry and "flesh" in entry
     # Sensory evidence appears in its compact profile and the full scientific record.
     assert entry.count('class="chip tier-') == 5
@@ -74,7 +74,7 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     index = (out / "index.html").read_text()
     assert "#F2EFE8" in index and "#FF4F00" in index
     assert "[hidden]" in index and "!important" in index
-    assert "apple--honeycrisp.html" in index and "apfel roh" in index
+    assert "apple--honeycrisp.html" in index
 
 
 def test_html_templates_escape_source_text(payload, tmp_path):
@@ -128,7 +128,7 @@ def test_render_site_from_build(project, tmp_path):
     assert "SRC-FDC-FOUNDATION-2026-04" in entry and "fresh_weight" in entry
     assert "machine-extracted" in entry and "unvalidated" in entry and "PMC444" in entry
     apple = (tmp_path / "foods/apple.html").read_text()
-    assert "Apfel roh" in apple and "Amount without unit, basis or food part." in apple
+    assert "Amount without unit, basis or food part." in apple
     assert "CC0-1.0" in (tmp_path / "sources.html").read_text()
     gaps = (tmp_path / "gaps.html").read_text()
     assert "Rule 8" in gaps and "An anti-inflammatory food." in gaps
@@ -169,7 +169,7 @@ const assert = require('node:assert/strict');
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(process.argv[1] + '/index.html');
     assert.equal(await page.locator('.card:visible').count(), 2);
-    await page.locator('#q').fill('apfel');
+    await page.locator('#q').fill('apple');
     assert.equal(await page.locator('.card:visible').count(), 1);
     await page.locator('#level').selectOption('cultivar');
     assert.equal(await page.locator('.card:visible').count(), 0);
@@ -242,7 +242,6 @@ def test_editorial_evidence_is_compact_and_traceable(payload, tmp_path):
     ])
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
-    assert "Apfel roh · Food ·" in entry
     assert entry.count('class="editorial-evidence"') == 1
     assert entry.count('>T4</span>') == 2
     assert "SRC-A · CC0-1.0 · Editorial note" in entry
@@ -266,6 +265,24 @@ def test_token_layer_replaces_the_invented_palette(payload, tmp_path):
         assert retired not in index, retired
     for family in ("Archivo", "Inter Tight", "JetBrains Mono", "Instrument Serif"):
         assert family in index, family
+
+
+def test_german_food_names_never_reach_the_ui(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    index = (tmp_path / "index.html").read_text()
+    assert "Apfel roh" not in entry
+    assert "Apfel roh" not in index and "apfel roh" not in index
+    assert "Malus domestica" in entry
+
+
+def test_source_titles_stay_verbatim(payload, tmp_path):
+    """A published title is a citation, not UI copy (spec, Global Constraints)."""
+    from atlas.site.build import render_site
+    payload["sources"][0]["title"] = "Bundeslebensmittelschlüssel (BLS), Version 4.0"
+    render_site(payload, tmp_path)
+    assert "Bundeslebensmittelschlüssel (BLS), Version 4.0" in (tmp_path / "sources.html").read_text()
 
 
 def test_square_corners_and_no_shadows(payload, tmp_path):

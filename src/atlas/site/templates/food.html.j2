@@ -5,7 +5,6 @@
 <header class="entry-heading">
 <p class="eyebrow">{{ level_label[food.level] }} / Reference collection</p>
 <h1>{{ food.name }} <em>{{ organisms[food.taxon].name }}</em></h1>
-{% if food.name_de %}<p class="muted">{{ food.name_de }} · {{ level_label[food.level] }} · German common name</p>{% endif %}
 <p class="editorial-evidence">Evidence details: hover or focus a tier marker for its source and derivation.</p>
 {% if food.is_a %}<p>Cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a></p>{% endif %}
 {% if food.part_of %}<p>Part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a></p>{% endif %}

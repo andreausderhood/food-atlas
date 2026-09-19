@@ -111,7 +111,7 @@ def index_rows(payload: dict) -> list[dict]:
             "preview": preview,
             "seasons": season_records(food["claims"]),
             "research": [g["label"] for g in research_profile(food["claims"])],
-            "search": " ".join([food["name"], food.get("name_de") or "", taxon_name,
+            "search": " ".join([food["name"], taxon_name,
                 organisms.get(family, {}).get("name", family),
                 *[f"{_label(c['field'], payload)} {c['v']}" for c in food["claims"]]]).lower(),
         })
