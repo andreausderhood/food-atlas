@@ -170,7 +170,7 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     # Compact tojson output (no space after separators) is functionally identical for
     # JSON.parse consumers (e.g. _season.js.j2's data-entry-seasons) and avoids "10, 11, 12"
     # style number runs leaking into raw HTML text via embedded JSON.
-    env.policies["json.dumps_kwargs"] = {"separators": (",", ":")}
+    env.policies["json.dumps_kwargs"] = {"sort_keys": True, "separators": (",", ":")}
     rows = index_rows(payload)
     food_map = {f["id"]: f for f in payload["foods"]}
     row_map = {r["id"]: r for r in rows}

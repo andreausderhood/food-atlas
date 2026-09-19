@@ -9,10 +9,10 @@
     <p class="entry-fam">{{ row.family_name }} &middot; {{ level_label[food.level] }}</p>
     <h1>{{ food.name }}</h1>
     <p class="entry-binomial">{{ organism.name }}</p>
-    {% if lede %}<p class="entry-lede">{{ lede[0].v }}</p>{% endif %}
-    {% if food.is_a %}<p>Cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food.is_a }}</a></p>{% endif %}
-    {% if food.part_of %}<p>Part of <a href="{{ slug(food.part_of) }}.html">{{ food.part_of }}</a></p>{% endif %}
-    {% if food.derives_from and food.level == "form" %}<p>Made from <a href="{{ slug(food.derives_from) }}.html">{{ food.derives_from }}</a> by {{ payload.processes[food.process] }}</p>{% endif %}
+    {% if lede %}<p class="entry-lede">{{ lede[0].v }}</p>{% else %}<p class="empty-note">Plain-language description not yet recorded.</p>{% endif %}
+    {% if food.is_a %}<p>Cultivar of <a href="{{ slug(food.is_a) }}.html">{{ food_map[food.is_a].name }}</a></p>{% endif %}
+    {% if food.part_of %}<p>Part of <a href="{{ slug(food.part_of) }}.html">{{ food_map[food.part_of].name }}</a></p>{% endif %}
+    {% if food.derives_from and food.level == "form" %}<p>Made from <a href="{{ slug(food.derives_from) }}.html">{{ food_map[food.derives_from].name }}</a> by {{ payload.processes[food.process] }}</p>{% endif %}
     <div class="card-actions"><button type="button" data-save="{{ food.id }}">Save</button><button type="button" data-compare="{{ food.id }}">Compare</button></div>
   </div>
   <div class="entry-tags">

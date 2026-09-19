@@ -297,6 +297,7 @@ const assert = require('node:assert/strict');
       }
       await page.goto(process.argv[1] + '/foods/apple.html');
       assert.equal(await page.locator('.entry-masthead h1').count(), 1, `masthead at ${width}`);
+      assert.equal(await page.locator('.prof').count(), 3, `profile sections at ${width}`);
       assert.ok(await page.locator('.prof').evaluateAll(
         sections => sections.every(section => section.getBoundingClientRect().width > 0)),
         `collapsed profile at ${width}`);
@@ -425,6 +426,38 @@ def test_masthead_carries_identity_and_lede(payload, tmp_path):
     assert 'class="entry-binomial"' in entry and "Malus domestica" in entry
     assert "An apple is a fruit you can hold in one hand." in entry
     assert 'class="entry-tags"' in entry
+
+
+def test_masthead_says_so_when_there_is_no_plain_language_lede(payload, tmp_path):
+    """A thin entry shows the empty state; it does not silently omit the line.
+
+    All 33 real foods carry an eli5 claim, so this branch never renders on
+    production data -- it is only ever exercised here.
+    """
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="entry-lede"' not in entry
+    assert "Plain-language description not yet recorded." in entry
+
+
+def test_relations_read_as_names_not_internal_ids(payload, tmp_path):
+    """"Cultivar of food:apple" is an internal id leaking onto the surface."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple--honeycrisp.html").read_text()
+    assert 'Cultivar of <a href="apple.html">Apple</a>' in entry
+    assert "food:apple<" not in entry
+
+
+def test_zero_molecules_does_not_promise_what_they_do(payload, tmp_path):
+    """"The atlas does not record what these molecules do" needs molecules."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert "No molecules recorded as present for this entry." in entry
+    assert "molecules recorded as present</span>" not in entry
+    assert "does not yet record what these" not in entry
 
 
 def test_season_tag_shows_month_names_not_numbers(payload, tmp_path):

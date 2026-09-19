@@ -56,9 +56,13 @@
 
   <section class="prof">
     <h2>Research <em>what is studied</em></h2>
-    <div class="stat"><b>{{ row.molecules }}</b><span>molecules recorded as present</span></div>
-    <p class="empty-note">Occurrence only. The atlas does not yet record what these
-      molecules do, or any traditional-medicine correspondence.</p>
+    {% if row.molecules %}
+      <div class="stat"><b>{{ row.molecules }}</b><span>molecules recorded as present</span></div>
+      <p class="empty-note">Occurrence only. The atlas does not yet record what these
+        molecules do, or any traditional-medicine correspondence.</p>
+    {% else %}
+      <p class="empty-note">No molecules recorded as present for this entry.</p>
+    {% endif %}
   </section>
 
 </div>
