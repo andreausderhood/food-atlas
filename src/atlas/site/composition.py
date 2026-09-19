@@ -54,12 +54,32 @@ DRY_MATTER = (
 )
 
 
+def _span(low: float, high: float) -> str:
+    """Render a summed quantity the way reading() renders a measured one.
+
+    A total built from ranges is itself a range. Printing only its high end
+    states a precision the sources do not support: summing the highs of water
+    and dry matter exceeds the declared 100 g basis on real foods (apple
+    'Gala': 84.6-85.76 g water + 15.5 g dry). Conflicts read as ranges here
+    too, never as a fabricated single total (spec §5).
+    """
+    low, high = round(low, 2), round(high, 2)
+    return _fmt(low) if low == high else f"{_fmt(low)}–{_fmt(high)}"
+
+
 def macro_split(claims: list[dict]) -> dict | None:
     """Water and dry matter on a true 0-100 g scale, dry matter reopened.
 
     A single 0-100 g bar on a 90%-water vegetable collapses everything that
     distinguishes it into invisible slivers, so the dry matter is reopened at
     its own scale, which the page states in words (spec §5).
+
+    Totals carry three fields apiece: `dry_total`/`total` are the display text
+    (a number, or "low–high" when the sources disagree), `*_low`/`*_high` are
+    the numeric bounds, and `*_is_range` says which it is. Bar geometry uses
+    the numeric highs -- a bar is a proportion, not a stated quantity -- while
+    every rendered TOTAL uses the text, so no reader is shown a bare number
+    over 100 g on a 100 g basis.
     """
     water = reading(claims, WATER)
     parts = [(display, reading(claims, label)) for label, display in DRY_MATTER]
@@ -67,12 +87,24 @@ def macro_split(claims: list[dict]) -> dict | None:
     if water is None or not parts:
         return None
     parts.sort(key=lambda pair: -pair[1]["high"])
-    dry_total = round(sum(r["high"] for _, r in parts), 2)
+    dry_low = round(sum(r["low"] for _, r in parts), 2)
+    dry_high = round(sum(r["high"] for _, r in parts), 2)
+    total_low = round(water["low"] + dry_low, 2)
+    total_high = round(water["high"] + dry_high, 2)
     return {
         "water": water,
         "dry": [dict(r, display=display) for display, r in parts],
-        "dry_total": dry_total,
-        "total": round(water["high"] + dry_total, 2),
+        "dry_total": _span(dry_low, dry_high),
+        "dry_total_low": dry_low,
+        "dry_total_high": dry_high,
+        "dry_total_is_range": dry_low != dry_high,
+        # Water + dry matter against the declared 100 g basis. Nothing renders
+        # this today; it is kept range-aware so that any future caller inherits
+        # the bounds rather than a high-end sum that can overshoot 100 g.
+        "total": _span(total_low, total_high),
+        "total_low": total_low,
+        "total_high": total_high,
+        "total_is_range": total_low != total_high,
     }
 
 

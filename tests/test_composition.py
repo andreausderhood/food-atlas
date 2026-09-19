@@ -67,8 +67,13 @@ def test_macro_split_separates_water_from_everything_else():
     from atlas.site.composition import macro_split
     split = macro_split(KALE)
     assert split["water"]["text"] == "89.6–89.63"
-    assert split["dry_total"] == 10.37
-    assert split["total"] == 100.0
+    # Every dry component here is single-valued, so the dry total is one number
+    # and reads as one number; only water disagrees, so the 100 g total spans.
+    assert split["dry_total"] == "10.37"
+    assert split["dry_total_is_range"] is False
+    assert (split["dry_total_low"], split["dry_total_high"]) == (10.37, 10.37)
+    assert split["total"] == "99.97–100"
+    assert split["total_is_range"] is True
 
 
 def test_macro_split_orders_dry_matter_largest_first_with_display_names():
@@ -92,9 +97,39 @@ def test_macro_split_is_none_without_any_dry_component():
 def test_macro_split_tolerates_partial_dry_matter():
     from atlas.site.composition import macro_split
     split = macro_split([claim("Water", 89.6), claim("Protein", 2.92)])
-    assert split["dry_total"] == 2.92
+    assert split["dry_total"] == "2.92"
     assert [d["display"] for d in split["dry"]] == ["Protein"]
-    assert split["total"] == 92.52
+    assert split["total"] == "92.52"
+    assert split["total_is_range"] is False
+
+
+def test_macro_split_totals_keep_the_spread_when_dry_sources_disagree():
+    """A total summed from ranges is a range; printing its high end overstates.
+
+    Summing only the highs made water + dry exceed the declared 100 g basis on
+    9 of 33 real foods, contradicting the page's own "true 0-100 g scale". The
+    displayed total must carry the spread; only the bar's geometry may use the
+    numeric high, because a proportion is not a stated quantity.
+    """
+    from atlas.site.composition import macro_split
+    claims = [
+        claim("Water", 84.6), claim("Water", 85.76, src="SRC-B"),
+        # Two sources disagree on carbohydrate and on fat; ash agrees with itself.
+        claim("Carbohydrate, by difference", 13.0),
+        claim("Carbohydrate, by difference", 14.1, src="SRC-B"),
+        claim("Total lipid (fat)", 0.16), claim("Total lipid (fat)", 0.2, src="SRC-B"),
+        claim("Ash", 0.24), claim("Ash", 0.24, src="SRC-B"),
+    ]
+    split = macro_split(claims)
+    assert (split["dry_total_low"], split["dry_total_high"]) == (13.4, 14.54)
+    assert split["dry_total"] == "13.4–14.54"
+    assert split["dry_total_is_range"] is True
+    # 85.76 + 14.54 = 100.3: the high end alone would claim more than the basis.
+    assert split["total_high"] == 100.3
+    assert split["total"] == "98–100.3"
+    assert split["total_is_range"] is True
+    # The spread is never silently collapsed to either end.
+    assert "100.3" != split["total"] and "98" != split["total"]
 
 
 def test_micro_readings_keep_declared_order_and_skip_absent():
