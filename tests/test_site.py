@@ -143,7 +143,7 @@ def test_render_site_from_build(project, tmp_path):
     assert "SRC-FDC-FOUNDATION-2026-04" in entry and "fresh_weight" in entry
     assert "machine-extracted" in entry and "unvalidated" in entry and "PMC444" in entry
     apple = (tmp_path / "foods/apple.html").read_text()
-    assert "Amount without unit, basis or food part." in apple
+    assert 'class="gaps-summary"' in apple and "Read the register" in apple
     assert "CC0-1.0" in (tmp_path / "sources.html").read_text()
     gaps = (tmp_path / "gaps.html").read_text()
     assert "Rule 8" in gaps and "An anti-inflammatory food." in gaps
@@ -395,3 +395,26 @@ def test_each_register_discloses_independently(payload, tmp_path):
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
     assert entry.count('<details class="register"') >= 2
+
+
+def test_gaps_are_summarised_and_linked_not_listed(payload, tmp_path):
+    """One line on the entry page, full register elsewhere (spec §5)."""
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    gaps = [dict(subject=food["id"], field=f"f{i}", rule=6,
+                 question="Amount without unit, basis or food part.",
+                 would_be_settled_by="Unit, basis and food part from the original study.",
+                 carried_value=None, src="SRC-A") for i in range(3)]
+    payload["gaps"] = food["gaps"] = gaps
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert 'class="gaps-summary"' in entry
+    assert "3 open questions" in entry
+    assert 'href="../gaps.html"' in entry
+    assert entry.count("Amount without unit, basis or food part.") <= 1
+
+
+def test_no_gaps_means_no_summary_line(payload, tmp_path):
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    assert 'class="gaps-summary"' not in (tmp_path / "foods/apple.html").read_text()
