@@ -61,3 +61,10 @@
 .stat span{font-size:var(--t-small);color:var(--ink-55)}
 .empty-note{font-size:var(--t-small);color:var(--ink-55);margin:var(--s-3) 0 0;line-height:1.5}
 @media(max-width:900px){.entry-profiles{grid-template-columns:1fr;gap:var(--s-6)}}
+.register{border-top:1px solid var(--ink);padding:var(--s-4) 0;margin:0}
+.register>summary{cursor:pointer;font-family:var(--f-display);font-size:var(--t-mini);
+  font-weight:700;text-transform:uppercase;letter-spacing:var(--tr-xwide);
+  display:flex;gap:var(--s-3);align-items:baseline}
+.register>summary span{font-family:var(--f-body);font-size:var(--t-small);font-weight:400;
+  text-transform:none;letter-spacing:0;color:var(--ink-55);margin-left:auto}
+.register[open]>summary{margin-bottom:var(--s-4)}

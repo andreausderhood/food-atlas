@@ -22,7 +22,8 @@
 {% for group, claims in sections if group in ('process','narrative') %}{% for c in claims if c.field != 'eli5' %}<p>{{ c.display }} {{ chip(c, sources, compact=true) }}</p>{% endfor %}{% endfor %}
 <ul>{% for r in related if r.level == 'form' %}<li><a href="{{ slug(r.id) }}.html">{{ r.name }}</a> — related preparation, not automatically a use of this specific entry</li>{% else %}<li>No linked technical preparations yet.</li>{% endfor %}</ul></details>
 </div>
-<details class="technical-record" data-science><summary>Scientific record <span>All quantities, methods &amp; sources</span></summary>
+<details class="register"><summary>Measurements &amp; sources
+  <span>Every quantity with its unit, basis, food part and source</span></summary>
 {% set has_nutrition = sections | selectattr("0", "equalto", "nutrition") | list %}
 {% if not has_nutrition %}<p class="muted">Nutrition not yet available for this entry — no sourced values pass the contract.</p>{% endif %}
 {% for group, claims in sections %}<h3 id="{{ group }}">{{ group|capitalize }}</h3>

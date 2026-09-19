@@ -67,11 +67,11 @@
 </div>
 {% for record in nutrition.records %}
 <article class="nutrition-record" data-nutrition-record aria-label="{{ record.label }}">
-  <h3 data-science-label>{{ record.label }}</h3>
+  <h3>{{ record.label }}</h3>
   {% if sources is defined and record.src in sources %}<p class="muted">{{ sources[record.src].title }}</p>{% endif %}
   <h4>Gram quantities · per 100 g · shared 0–100 g scale</h4>
   <div class="nutrition-grid">{% for tile in record.macronutrients %}{{ nutrient_tile(tile, true) }}{% endfor %}</div>
-  <details data-science><summary>Minerals, vitamins &amp; energy</summary>
+  <details class="register"><summary>Minerals, vitamins &amp; energy</summary>
   {% for key, heading in [('minerals', 'Minerals'), ('vitamins', 'Vitamins'), ('other', 'Energy')] %}
   {% if record[key] %}
   <h4>{{ heading }} · per 100 g · source units, no shared scale</h4>

@@ -33,16 +33,17 @@ def test_research_kind_not_inferred_from_tier_or_molecule_presence():
     assert research_profile([claims[0]]) == []
 
 
-def test_profiles_integrated_and_science_mode_available(payload, tmp_path):
+def test_profiles_integrated_and_disclosure_is_per_section(payload, tmp_path):
     from atlas.site.build import render_site
     render_site(payload, tmp_path)
     entry = (tmp_path / 'foods/apple.html').read_text()
-    for text in ['Nutrition profile', 'Sensory profile', 'Research profile',
+    for text in ['Nutrition', 'Sensory', 'Research',
                  'Varieties &amp; relatives', 'Growing here', 'Culinary &amp; technical uses',
-                 'id="science-mode"', 'id="season-region"', 'id="season-month"',
-                 'id="season-mode"', 'data-science', 'No classified bioactivity evidence']:
+                 'id="season-region"', 'id="season-month"', 'id="season-mode"',
+                 '<details class="register"']:
         assert text in entry
-    assert entry.index('class="entry-masthead"') < entry.index('class="profile-grid"')
+    assert 'id="science-mode"' not in entry
+    assert entry.index('class="entry-masthead"') < entry.index('class="entry-profiles"')
     assert 'href="apple--honeycrisp.html"' in entry
     assert 'Missing regional data' in entry
     assert 'Linked by top-level registered taxon' in entry

@@ -358,3 +358,25 @@ def test_profiles_omitted_when_composition_absent(payload, tmp_path):
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
     assert "at its own scale" not in entry
+
+
+def test_global_science_mode_is_retired(payload, tmp_path):
+    """Disclosure is per-section, never global (spec §4)."""
+    from atlas.site.build import render_site
+    render_site(payload, tmp_path)
+    for name in ("index.html", "foods/apple.html", "compare.html"):
+        page = (tmp_path / name).read_text()
+        assert 'id="science-mode"' not in page, name
+        assert "data-science" not in page, name
+
+
+def test_each_register_discloses_independently(payload, tmp_path):
+    from atlas.site.build import render_site
+    food = payload["foods"][0]
+    payload["nutrients"]["nutrient:fdc:1051"] = {"name": "Water"}
+    food["claims"].append(dict(subject="food:apple", group="nutrition", field="nutrient:fdc:1051",
+                               v=85.6, unit="g", basis="fresh_weight", food_part="flesh",
+                               src="SRC-A", tier=1, derivation="analytical", flags=[], ref="fdc:100"))
+    render_site(payload, tmp_path)
+    entry = (tmp_path / "foods/apple.html").read_text()
+    assert entry.count('<details class="register"') >= 2
