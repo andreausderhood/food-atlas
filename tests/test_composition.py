@@ -95,3 +95,29 @@ def test_macro_split_tolerates_partial_dry_matter():
     assert split["dry_total"] == 2.92
     assert [d["display"] for d in split["dry"]] == ["Protein"]
     assert split["total"] == 92.52
+
+
+def test_micro_readings_keep_declared_order_and_skip_absent():
+    from atlas.site.composition import micro_readings
+    claims = [claim("Vitamin C, total ascorbic acid", 93.4, unit="mg"),
+              claim("Calcium, Ca", 254.0, unit="mg"),
+              claim("Vitamin K (phylloquinone)", 389.6, unit="ug"),
+              claim("Vitamin K (phylloquinone)", 390.0, src="SRC-B", unit="ug")]
+    rows = micro_readings(claims)
+    assert [r["label"] for r in rows] == [
+        "Vitamin K (phylloquinone)", "Vitamin C, total ascorbic acid", "Calcium, Ca"]
+    assert rows[0]["text"] == "389.6–390"
+    assert rows[0]["unit"] == "ug"
+
+
+def test_micro_readings_respect_the_limit():
+    from atlas.site.composition import micro_readings
+    claims = [claim("Vitamin C, total ascorbic acid", 1.0, unit="mg"),
+              claim("Calcium, Ca", 2.0, unit="mg"),
+              claim("Iron, Fe", 3.0, unit="mg")]
+    assert len(micro_readings(claims, limit=2)) == 2
+
+
+def test_micro_readings_empty_when_nothing_present():
+    from atlas.site.composition import micro_readings
+    assert micro_readings([claim("Protein", 2.92)]) == []

@@ -74,3 +74,30 @@ def macro_split(claims: list[dict]) -> dict | None:
         "dry_total": dry_total,
         "total": round(water["high"] + dry_total, 2),
     }
+
+
+# Headline micronutrients in reading order. Micronutrients span 0.053 mg to
+# 6260 ug and share no meaningful axis, so they are listed, never drawn on a
+# common scale (spec §5).
+MICRONUTRIENTS = (
+    "Vitamin K (phylloquinone)",
+    "Vitamin C, total ascorbic acid",
+    "Lutein + zeaxanthin",
+    "Carotene, beta",
+    "Calcium, Ca",
+    "Potassium, K",
+    "Manganese, Mn",
+    "Iron, Fe",
+)
+
+
+def micro_readings(claims: list[dict], limit: int = 5) -> list[dict]:
+    """Headline micronutrients that are present, in declared order."""
+    rows = []
+    for label in MICRONUTRIENTS:
+        r = reading(claims, label)
+        if r is not None:
+            rows.append(r)
+        if len(rows) == limit:
+            break
+    return rows
