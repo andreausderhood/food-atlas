@@ -1,3 +1,5 @@
+from html.parser import HTMLParser
+
 import pytest
 
 
@@ -77,6 +79,87 @@ def test_render_site_evidence_and_navigation(payload, tmp_path):
     assert "apple--honeycrisp.html" in index
 
 
+class _SurfaceSlicer(HTMLParser):
+    """Collect the HTML that is NOT nested inside any <details> element.
+
+    The reading surface is a DOM fact, not a text-position one. The earlier
+    version of this guard sliced at the first literal '<details class="register"'
+    substring, which (a) missed chips inside plain <details> and (b) silently
+    shrank to 8.9% of a real kale.html once an earlier register appeared above
+    the one it split on. Nesting depth is measured here instead, so a chip is
+    compliant when it sits inside ANY <details> -- register-classed or not,
+    open or closed -- which is the constraint the plan actually ruled on.
+    """
+
+    def __init__(self, html: str):
+        super().__init__(convert_charrefs=False)
+        self.html = html
+        self._line_start = [0]
+        for line in html.splitlines(keepends=True):
+            self._line_start.append(self._line_start[-1] + len(line))
+        self.depth = 0
+        self.max_depth = 0
+        self._span_open = 0
+        self.spans: list[tuple[int, int]] = []
+        self.feed(html)
+        self.close()
+        if self.depth == 0:
+            self.spans.append((self._span_open, len(html)))
+
+    def _index(self) -> int:
+        line, offset = self.getpos()
+        return self._line_start[line - 1] + offset
+
+    def handle_starttag(self, tag, attrs):
+        if tag != "details":
+            return
+        if self.depth == 0:
+            self.spans.append((self._span_open, self._index()))
+        self.depth += 1
+        self.max_depth = max(self.max_depth, self.depth)
+
+    def handle_endtag(self, tag):
+        if tag != "details" or not self.depth:
+            return
+        self.depth -= 1
+        if self.depth == 0:
+            self._span_open = self.html.index(">", self._index()) + 1
+
+    @property
+    def outside(self) -> str:
+        return "".join(self.html[a:b] for a, b in self.spans)
+
+
+def reading_surface(html: str) -> str:
+    """Everything a reader sees without opening a disclosure control."""
+    return _SurfaceSlicer(html).outside
+
+
+def test_reading_surface_follows_dom_nesting_not_text_position():
+    """The checker itself: containment, at any depth, in any <details>."""
+    import re
+    crafted = (
+        '<p>lede</p>'
+        '<details><summary>Growing here</summary>'
+        '<p>grown <span class="chip tier-3">T3</span></p></details>'
+        '<details class="register"><summary>Measurements</summary>'
+        '<span class="chip tier-1">T1</span>'
+        '<details><span class="chip tier-2">T2</span></details>'
+        '</details>'
+        '<p>tail</p>')
+    surface = reading_surface(crafted)
+    # Chips inside a plain <details>, a register, and a nested <details> are all off-surface.
+    assert 'class="chip tier-' not in surface
+    assert not re.search(r"\bT[1-5]\b", surface)
+    assert "lede" in surface and "tail" in surface
+    # ...and a chip that is genuinely outside every <details> is caught.
+    leaked = reading_surface(crafted + '<span class="chip tier-4">T4</span>')
+    assert 'class="chip tier-4"' in leaked
+    assert re.search(r"\bT[1-5]\b", leaked)
+    # Text position alone would have missed the first chip: it precedes the register.
+    assert 'class="chip tier-3"' in crafted.split('<details class="register"')[0]
+
+
 def test_tier_marks_never_appear_on_the_reading_surface(payload, tmp_path):
     """T1-T5 is internal vocabulary (spec §5, Global Constraints)."""
     import re
@@ -87,7 +170,11 @@ def test_tier_marks_never_appear_on_the_reading_surface(payload, tmp_path):
              src="SRC-A", tier=4, derivation="editorial", flags=[], ref=None))
     render_site(payload, tmp_path)
     entry = (tmp_path / "foods/apple.html").read_text()
-    surface = entry.split('<details class="register"')[0]
+    surface = reading_surface(entry)
+    # Guard against a vacuous pass: the slicer must have seen real disclosure
+    # controls and must still be leaving the masthead on the surface.
+    assert _SurfaceSlicer(entry).max_depth >= 1
+    assert "entry-masthead" in surface and 'class="entry-profiles"' in surface
     assert 'class="chip tier-' not in surface
     assert not re.search(r"\bT[1-5]\b", surface)
 
