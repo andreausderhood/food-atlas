@@ -7,6 +7,7 @@ from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
 
+from atlas.site.composition import macro_split, micro_readings
 from atlas.site.images import DATA_DIR, image_for
 from atlas.site.nutrition import nutrition_profile
 from atlas.site.profiles import research_profile, season_records
@@ -21,6 +22,11 @@ def _label(field: str, payload: dict) -> str:
         key = field.removeprefix("contains:")
         return payload["molecules"].get(key, {}).get("name", key)
     return payload["nutrients"].get(field, {}).get("name", field)
+
+
+def labelled_claims(food: dict, payload: dict) -> list[dict]:
+    """Attach the display label the composition model matches on."""
+    return [c | {"label": _label(c["field"], payload)} for c in food["claims"]]
 
 
 def _amount(claim: dict) -> str:
@@ -172,8 +178,10 @@ def render_site(payload: dict, out: Path) -> list[Path]:
     write("molecules.html", "molecules.html.j2", "", molecules=molecule_rows(payload))
     for food in payload["foods"]:
         related = [r for r in rows if r["family"] == row_map[food["id"]]["family"] and r["id"] != food["id"]]
+        labelled = labelled_claims(food, payload)
         write(f"foods/{slug(food['id'])}.html", "food.html.j2", "../",
               food=food, row=row_map[food["id"]], related=related, sections=sections(food, payload),
+              composition={"macro": macro_split(labelled), "micro": micro_readings(labelled)},
               nutrition=nutrition_profile(food), research=research_profile(food["claims"]),
               organism_claims=organisms[food["taxon"]].get("claims", []))
     ids = [f["id"] for f in payload["foods"] if f["level"] == "taxon_food"][:3]

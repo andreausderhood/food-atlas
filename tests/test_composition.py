@@ -121,3 +121,16 @@ def test_micro_readings_respect_the_limit():
 def test_micro_readings_empty_when_nothing_present():
     from atlas.site.composition import micro_readings
     assert micro_readings([claim("Protein", 2.92)]) == []
+
+
+def test_labelled_claims_resolve_nutrient_and_molecule_names():
+    from atlas.site.build import labelled_claims
+    payload = dict(nutrients={"nutrient:fdc:1003": {"name": "Protein"}},
+                   molecules={"quercetin": {"name": "Quercetin"}})
+    food = dict(claims=[
+        dict(group="nutrition", field="nutrient:fdc:1003", v=2.92, src="SRC-A", tier=1),
+        dict(group="molecules", field="contains:quercetin", v="present", src="SRC-B", tier=3),
+        dict(group="nutrition", field="nutrient:fdc:9999", v=1.0, src="SRC-A", tier=1),
+    ])
+    rows = labelled_claims(food, payload)
+    assert [r["label"] for r in rows] == ["Protein", "Quercetin", "nutrient:fdc:9999"]
