@@ -26,6 +26,19 @@ def register(sub):
     submit.add_argument("file", type=Path)
     review = commands.add_parser("review", help="inspect a proposal; does not approve or publish")
     review.add_argument("proposal_id")
+    sciverse = commands.add_parser(
+        "sciverse", help="plan or run the Sciverse harvest over open gaps")
+    sciverse.add_argument("--rule", type=int, choices=(5, 6), default=None)
+    sciverse.add_argument("--subject", default=None,
+                          help="subject prefix, e.g. food:apple")
+    sciverse.add_argument("--max-gaps", type=int, default=None)
+    sciverse.add_argument("--top-k", type=int, default=8)
+    sciverse.add_argument("--per-gap-calls", type=int, default=2)
+    sciverse.add_argument("--run-id", default=None)
+    sciverse.add_argument("--refresh-cache", action="store_true",
+                          help="ignore cached Sciverse responses")
+    sciverse.add_argument("--execute", action="store_true",
+                          help="run against the live API (default: plan only)")
 
 
 def initialize(root: Path):
@@ -73,12 +86,33 @@ def status(root: Path):
                 "ready": [asdict(t) for t in ready[:10]]}
 
 
+def sciverse(root: Path, args) -> dict:
+    from atlas.research.sciverse.pipeline import (
+        CachedClient, DEFAULT_OUT_DIR, ResponseCache, load_names, read_gaps)
+    from atlas.research.sciverse import pipeline as sciverse_pipeline
+    gaps = read_gaps(root, rule=args.rule, subject_prefix=args.subject,
+                     limit=args.max_gaps)
+    names = load_names(root)
+    if not args.execute:
+        return {"mode": "plan", "gaps": len(gaps), "plan": [
+            {"gap_id": gap.gap_id, "subject": gap.subject, "field": gap.field,
+             "rule": gap.rule, "query": sciverse_pipeline.build_query(gap, names)}
+            for gap in gaps]}
+    cache = ResponseCache(root / DEFAULT_OUT_DIR / "cache")
+    client = CachedClient(cache, refresh=args.refresh_cache, timeout=90.0)
+    return sciverse_pipeline.harvest(
+        client, gaps, names, root / DEFAULT_OUT_DIR, run_id=args.run_id,
+        per_gap_calls=args.per_gap_calls, top_k=args.top_k, pause=1.0)
+
+
 def dispatch(args, root: Path):
     try:
         if args.research_cmd == "init":
             initialize(root)
         from atlas.research.lifecycle import next_item, submit, review
-        if args.research_cmd == "next":
+        if args.research_cmd == "sciverse":
+            result = sciverse(root, args)
+        elif args.research_cmd == "next":
             result = next_item(root, args.lease_by)
         elif args.research_cmd == "submit":
             result = submit(root, json.loads(args.file.read_text(encoding="utf-8")))

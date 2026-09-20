@@ -9,3 +9,4 @@ data/raw/**
 data/build/
 data/research/
 Resources/
+.env
