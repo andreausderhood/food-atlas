@@ -57,7 +57,25 @@ Pipeline. Source of truth bleibt Git.
 
 ---
 
-## 2. Phase A — Datenbasis konsolidieren (Woche 1)
+## A0 — Food Plants International (verifiziert 2026-09-21)
+
+`fms.cmsvr.com/fmi/webd/Food_Plants_World` = **"Edible Plants of the World"**
+(Food Plants International), FileMaker WebDirect, live:
+
+- **35.103 Datensätze** — Pflanzen, die "somewhere recorded as being used as food"
+- Felder (aus dem Sort-Dialog bestätigt): **Botanical Names, COUNTRIES,
+  Distribution, EDIBLE PARTS, DESCRIPTION, REGIONS**
+- Kein API, kein Bulk-Export; Bulk-Scraping über die WebDirect-UI ist
+  unzuverlässig (Disclaimer/Sort-Gate) und lizenzrechtlich ungeklärt → **Rule 9:
+  Klasse unknown bis Klärung, kein Import.**
+- Rolle im System: **Funnel-Quelle** (Species-Discovery), keine Messquelle.
+  Integrationsweg: (a) Anfrage an FPI für einen Datenexport/Partnership — die DB
+  ist "work in progress", Kooperationen sind ihr Modell; (b) taxonomisches
+  Rückgrat bis dahin aus Kew Plants of the World Online / World Flora Online;
+  (c) die 35k-Botanical-Names-Liste als Discovery-Layer, sobald Lizenz geklärt.
+---
+
+## Phase A — Datenbasis konsolidieren
 
 Ziel: Alle vier Quellen in **einem** einheitlichen Kandidaten-Format, mit
 Herkunft und Lizenz je Zeile.
