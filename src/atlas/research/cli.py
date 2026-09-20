@@ -39,6 +39,8 @@ def register(sub):
                           help="ignore cached Sciverse responses")
     sciverse.add_argument("--execute", action="store_true",
                           help="run against the live API (default: plan only)")
+    sciverse.add_argument("--triage-licenses", action="store_true",
+                          help="classify harvested doc_ids by license text (rule 9)")
 
 
 def initialize(root: Path):
@@ -87,6 +89,9 @@ def status(root: Path):
 
 
 def sciverse(root: Path, args) -> dict:
+    if args.triage_licenses:
+        from atlas.research.sciverse.licensing import triage_licenses
+        return triage_licenses(root)
     from atlas.research.sciverse.pipeline import (
         CachedClient, DEFAULT_OUT_DIR, ResponseCache, load_names, read_gaps)
     from atlas.research.sciverse import pipeline as sciverse_pipeline

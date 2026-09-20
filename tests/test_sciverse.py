@@ -366,6 +366,17 @@ def test_grade_flags_second_hand_and_ratio_values():
     assert "ratio" in hits[0].flags
 
 
+def test_license_classification_from_string_only():
+    from atlas.research.sciverse.licensing import classify
+    assert classify("CC BY 4.0") == ("ship", True)
+    assert classify("CC0") == ("ship", True)
+    assert classify("CC BY-NC") == ("adapter", True)
+    assert classify("CC BY-SA") == ("separate", True)
+    assert classify("All rights reserved") == ("cite", True)
+    assert classify("") == ("unknown", False)
+    assert classify("some unknown custom terms") == ("unknown", False)
+
+
 def test_grade_drops_hits_without_food_context():
     food = frozenset({"kale"})
     cell_noise = _agentic([{"chunk": "Table 3. Lysine 10.2 mg/100 g in fed cell extracts.",

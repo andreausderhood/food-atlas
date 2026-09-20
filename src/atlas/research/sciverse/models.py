@@ -38,11 +38,14 @@ def _optional(d: Any, key: str, types: type | tuple, where: str) -> Any | None:
 
 
 def _int_or_str_int(value: Any, where: str) -> int:
-    """Large int64 totals may arrive as strings."""
+    """Large int64 totals may arrive as strings; the API also ships integral
+    numerics as floats (publication_published_year=2018.0)."""
     if isinstance(value, bool):
         raise ModelParseError(f"{where}: boolean where int expected")
     if isinstance(value, int):
         return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
     if isinstance(value, str):
         try:
             return int(value)
@@ -136,7 +139,9 @@ class MetaRecord:
     def parse(cls, d: dict) -> "MetaRecord":
         where = "meta-search record"
         unique_id = _require(d, "unique_id", str, where)
-        year = _optional(d, "publication_published_year", int, where)
+        year = _optional(d, "publication_published_year", (int, float), where)
+        if isinstance(year, float):
+            year = _int_or_str_int(year, f"{where} publication_published_year")
         return cls(
             unique_id=unique_id,
             doc_id=_optional(d, "doc_id", str, where),
