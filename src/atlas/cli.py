@@ -31,10 +31,14 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("query")
     from atlas.research.cli import register, dispatch
     register(sub)
+    from atlas.unified.cli import register as register_unified, run as run_unified
+    register_unified(sub)
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.cmd == "research":
         return dispatch(args, root)
+    if args.cmd == "coverage":
+        return run_unified(args, root)
     registry = root / "data/registry"
 
     if args.cmd == "fetch":

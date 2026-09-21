@@ -1,0 +1,197 @@
+[
+ {
+  "axis": "species",
+  "closed": true,
+  "collector": "species_identity",
+  "counts": {
+   "context": 26590,
+   "filled": 1,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 0
+  },
+  "denominator": 26591,
+  "key": "species_identity",
+  "label": "Species identity"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "common_names",
+  "counts": {
+   "context": 14829,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 10591,
+   "unsearched": 1171
+  },
+  "denominator": 26591,
+  "key": "common_names",
+  "label": "Common names"
+ },
+ {
+  "axis": "product",
+  "closed": false,
+  "collector": "food_hierarchy",
+  "counts": {
+   "context": 0,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 95783
+  },
+  "denominator": 95783,
+  "key": "food_hierarchy",
+  "label": "Food hierarchy"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "nutrients",
+  "counts": {
+   "context": 0,
+   "filled": 2,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26589
+  },
+  "denominator": 26591,
+  "key": "nutrients",
+  "label": "Nutrients"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "molecules",
+  "counts": {
+   "context": 0,
+   "filled": 2,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26589
+  },
+  "denominator": 26591,
+  "key": "molecules",
+  "label": "Molecules (ChEBI)"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "bioactivity",
+  "counts": {
+   "context": 0,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26591
+  },
+  "denominator": 26591,
+  "key": "bioactivity",
+  "label": "Bioactivity / health"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "seasonality",
+  "counts": {
+   "context": 0,
+   "filled": 2,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26589
+  },
+  "denominator": 26591,
+  "key": "seasonality",
+  "label": "Seasonality"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "distribution",
+  "counts": {
+   "context": 25001,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 1590
+  },
+  "denominator": 26591,
+  "key": "distribution",
+  "label": "Distribution / geography"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": null,
+  "counts": {
+   "context": 0,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26591
+  },
+  "denominator": 26591,
+  "key": "growing",
+  "label": "Growing / agronomy"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": "edible_parts",
+  "counts": {
+   "context": 23381,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 1620,
+   "unsearched": 1590
+  },
+  "denominator": 26591,
+  "key": "edible_parts",
+  "label": "Edible parts"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": null,
+  "counts": {
+   "context": 0,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26591
+  },
+  "denominator": 26591,
+  "key": "varieties",
+  "label": "Varieties / cultivars"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": null,
+  "counts": {
+   "context": 0,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26591
+  },
+  "denominator": 26591,
+  "key": "photos",
+  "label": "Photos"
+ },
+ {
+  "axis": "species",
+  "closed": false,
+  "collector": null,
+  "counts": {
+   "context": 0,
+   "filled": 0,
+   "not_applicable": 0,
+   "searched_empty": 0,
+   "unsearched": 26591
+  },
+  "denominator": 26591,
+  "key": "evidence_chain",
+  "label": "Evidence / provenance chain"
+ }
+]
