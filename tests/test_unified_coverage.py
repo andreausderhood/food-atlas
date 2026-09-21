@@ -1,5 +1,6 @@
 import argparse
 import json
+from pathlib import Path
 
 import pytest
 import yaml
@@ -109,3 +110,66 @@ def test_cli_coverage_check_gate(tmp_path, capsys, monkeypatch):
     _tmp_root(tmp_path, {"zzz nulla": POOL["zzz nulla"]})              # pool shrinks -> regression
     assert ucli.run(parser.parse_args(["coverage", "--check"]), root) == 1
     assert "REGRESSION" in capsys.readouterr().out
+
+
+def test_common_names_collector(tmp_path):
+    s = Store(tmp_path / "u.duckdb")
+    src_id = Source(
+        id="SRC-ID", title="t", publisher="p", url="u", license="CC0", license_class="ship",
+        license_read=True, kind="measurement", independence="independent",
+        supports=("identity",), attribution="a",
+    )
+    claims = [
+        Claim("prod:fdc:100", "identity", "name", "Apple", "SRC-ID", "analytical"),
+    ]
+    s.replace_source("SRC-ID", claims, {"SRC-ID": src_id}, "b1")
+    s.load_edges([Edge("prod:fdc:100", "store species", "manual", 1.0, "b", "a", "d")])
+
+    species = {
+        "malus domestica": {
+            "common_names": ["apple"],
+            "epd": {"path": "p/1"},
+        },
+        "beta vulgaris": {
+            "common_names": [],
+            "epd": {"path": "p/2"},
+        },
+        "wiki species": {
+            "common_names": [],
+            "sources": ["wiki:culinary-fruits"],
+        },
+        "unsearched species": {
+            "common_names": [],
+        },
+        "ledger species": {
+            "common_names": ["ledger name"],
+        },
+        "store species": {
+            "common_names": [],
+            "sources": ["wiki:fruits"],
+        },
+    }
+    u = Universe(
+        species=species,
+        store=s,
+        ledger={"identity": {"ledger species"}},
+    )
+    cells = common_names(u)
+    assert cells["malus domestica"] is Cell.CONTEXT
+    assert cells["beta vulgaris"] is Cell.SEARCHED_EMPTY
+    assert cells["wiki species"] is Cell.SEARCHED_EMPTY
+    assert cells["unsearched species"] is Cell.UNSEARCHED
+    assert cells["ledger species"] is Cell.FILLED
+    assert cells["store species"] is Cell.FILLED
+    s.close()
+
+
+def test_common_names_full_pool_closes_unsearched():
+    root = Path(__file__).resolve().parent.parent
+    u = load_universe(root, with_products=False)
+    cells = common_names(u)
+    r = aggregate("common_names", "Common names", "species", cells, u.species, "common_names")
+    assert r.denominator == 26591
+    assert r.counts[Cell.UNSEARCHED.value] == 0
+    assert r.closed is True
+

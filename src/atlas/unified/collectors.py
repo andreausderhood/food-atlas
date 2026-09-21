@@ -49,7 +49,18 @@ def species_identity(u: Universe) -> dict[str, Cell]:
 
 
 def common_names(u: Universe) -> dict[str, Cell]:
-    return {b: _epd_text_cell(e, e.get("common_names")) for b, e in u.species.items()}
+    cells = {}
+    for b, e in u.species.items():
+        if e.get("common_names"):
+            cells[b] = Cell.CONTEXT
+        elif e.get("epd") or e.get("sources"):
+            cells[b] = Cell.SEARCHED_EMPTY
+        else:
+            cells[b] = Cell.UNSEARCHED
+    for b, c in _group_cells(u, "identity").items():
+        if c is Cell.FILLED or cells.get(b) is Cell.UNSEARCHED:
+            cells[b] = c
+    return cells
 
 
 def distribution(u: Universe) -> dict[str, Cell]:
