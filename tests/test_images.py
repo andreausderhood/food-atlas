@@ -1,47 +1,24 @@
-"""Offline image registry contract; no network access during builds/tests."""
-from pathlib import Path
-import hashlib
+"""Offline image registry contract.
 
-import pytest
+The 33 pilot nodes carry no photograph: the seven Wikimedia pictures were symbolic (a Swedish
+apple tree is not the measured food) and were removed on 2026-09-21 by decision.
+"""
+from pathlib import Path
+
 import yaml
 from jinja2 import Environment, PackageLoader
 
 ROOT = Path(__file__).resolve().parents[1]
-PILOTS = ('apple', 'cabbage', 'broccoli', 'cauliflower', 'kohlrabi', 'brussels-sprout', 'kale')
+FIXTURE = {
+    'url': 'images/example.jpg', 'alt': 'Example', 'credit': 'A. Author', 'license': 'CC0',
+    'license_url': 'https://example.org/license', 'source_url': 'https://example.org/source',
+    'reference_label': 'Reference photograph.',
+}
 
 
-@pytest.mark.parametrize('slug', PILOTS)
-def test_pilot_image_has_local_asset_and_provenance(slug):
-    from atlas.site.images import image_for
-    image = image_for({'id': f'food:{slug}', 'level': 'taxon_food'})
-    assert image is not None
-    assert image['url'].startswith('images/')
-    asset = ROOT / 'data' / image['url']
-    assert asset.is_file()
-    assert 1000 < asset.stat().st_size < 500_000
-    assert hashlib.sha256(asset.read_bytes()).hexdigest() == image['sha256']
-    assert image['width'] > 0 and image['height'] > 0
-    for field in ('alt', 'credit', 'license', 'license_url', 'source_url', 'original_url', 'retrieved', 'changes'):
-        assert image[field]
-    assert image['source_url'].startswith('https://commons.wikimedia.org/')
-    assert image['reference_label']
-
-
-def test_non_mapped_ids_stay_imageless():
-    from atlas.site.images import image_for
-    # Unknown IDs, organisms and garbage inputs still resolve to None;
-    # there is no code-level fallback.
-    for bad in (None, {}, 'apple', 'org:malus-domestica', 'food:nonexistent'):
-        assert image_for(bad) is None
-
-
-def test_object_and_string_ids_and_copy():
-    from atlas.foods import FoodNode
-    from atlas.site.images import image_for
-    assert image_for(FoodNode('food:apple', 'taxon_food', 'Apple')) == image_for('food:apple')
-    changed = image_for('food:apple')
-    changed['alt'] = 'bad'
-    assert image_for('food:apple')['alt'] != 'bad'
+def food_ids():
+    foods = yaml.safe_load((ROOT / 'data/registry/foods.yaml').read_text())
+    return {k for k in foods if k != 'excluded_foodatlas'}
 
 
 def render_image(**kwargs):
@@ -49,37 +26,45 @@ def render_image(**kwargs):
     return env.get_template('_plant_image.html.j2').render(**kwargs)
 
 
-def test_template_local_root_credit_and_reference():
+def test_no_pilot_node_resolves_to_an_image():
     from atlas.site.images import image_for
-    image = image_for('food:apple')
-    text = render_image(plant_image=image, root='../')
-    assert 'src="../images/apple.jpg"' in text
-    assert image['reference_label'] in text
-    assert image['credit'] in text
-    assert image['license'] in text
-    assert image['source_url'] in text
-    assert image['license_url'] in text
+    ids = food_ids()
+    assert len(ids) == 33
+    assert all(image_for(fid) is None for fid in ids)
+
+
+def test_registry_tombstones_every_food_so_the_research_queue_stays_quiet():
+    images = yaml.safe_load((ROOT / 'data/registry/images.yaml').read_text())
+    # research/queue.py enqueues an "image" task for every food id that is missing here
+    assert set(images) == food_ids()
+    for fid, entry in images.items():
+        assert entry.get('removed') and 'url' not in entry, fid
+
+
+def test_no_photograph_is_left_in_data_images():
+    assert not list((ROOT / 'data' / 'images').glob('*.jpg'))
+
+
+def test_non_mapped_ids_stay_imageless():
+    from atlas.foods import FoodNode
+    from atlas.site.images import image_for
+    for bad in (None, {}, 'apple', 'org:malus-domestica', 'food:nonexistent'):
+        assert image_for(bad) is None
+    assert image_for(FoodNode('food:apple', 'taxon_food', 'Apple')) is None
+
+
+def test_template_local_root_credit_and_reference():
+    text = render_image(plant_image=FIXTURE, root='../')
+    assert 'src="../images/example.jpg"' in text
+    for field in ('reference_label', 'credit', 'license', 'source_url', 'license_url'):
+        assert FIXTURE[field] in text
     assert 'loading="lazy"' in text
 
 
-def test_template_absence_and_minimal_external_image():
+def test_template_absence_tombstone_and_minimal_external_image():
     assert '<img' not in render_image(plant_image=None, root='../')
+    assert '<img' not in render_image(plant_image={'removed': 'symbolic image'}, root='../')
     text = render_image(plant_image={'url': 'https://example.org/photo.jpg', 'alt': '<plant>'}, root='../')
     assert 'src="https://example.org/photo.jpg"' in text
     assert '&lt;plant&gt;' in text
     assert 'None' not in text
-
-
-def test_registry_covers_every_food_and_labels_references():
-    images = yaml.safe_load((ROOT / 'data/registry/images.yaml').read_text())
-    foods = yaml.safe_load((ROOT / 'data/registry/foods.yaml').read_text())
-    food_ids = {k for k in foods if k != 'excluded_foodatlas'}
-    # Every food entry has an explicit image mapping; mapping stays explicit-only.
-    assert set(images) == food_ids
-    # Only the seven taxon-level foods carry an original photograph; every other
-    # entry must visibly label its image as a taxon reference, not the thing itself.
-    taxa = {f'food:{slug}' for slug in PILOTS}
-    for fid, img in images.items():
-        assert img['reference_label']
-        if fid not in taxa:
-            assert 'reference' in img['reference_label'].lower(), fid

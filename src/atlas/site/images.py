@@ -1,7 +1,8 @@
 """Offline, explicitly mapped photographs for the pilot plant atlas.
 
 No name, species, parent, part or cultivar fallback is permitted. Images are
-reference photographs, not botanical identification evidence. Keep the registry
+reference photographs, not botanical identification evidence. The registry may
+hold tombstones ({removed: reason}); they resolve to no image. Keep the registry
 and data/images together; the site builder copies assets into output/images.
 """
 from __future__ import annotations
@@ -40,4 +41,4 @@ def image_for(food: Any) -> dict[str, Any] | None:
     if not isinstance(food_id, str):
         return None
     image = _registry().get(food_id)
-    return dict(image) if image else None
+    return dict(image) if image and image.get("url") else None

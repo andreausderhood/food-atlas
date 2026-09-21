@@ -1,599 +1,101 @@
-# Explicit food-ID mappings only. No inferred cultivar, part or processed-form images.
-# License/creator metadata verified from Wikimedia Commons imageinfo extmetadata.
-
+# Explicit food-ID mappings only. A tombstone ({removed}) keeps the id known so the research queue does not open an image task; image_for() returns None for it.
+# A photograph returns only as a licensed, attributed image of the exact entry.
 food:apple:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: 'Species reference: Särsö apple tree; not a cultivar identification.'
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cabbage:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Taxon reference photograph; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:broccoli:
-  url: images/broccoli.jpg
-  alt: Two harvested broccoli heads with green florets and cut stalks.
-  credit: David Monniaux
-  license: CC BY-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-sa/3.0/
-  source_url: https://commons.wikimedia.org/wiki/File:Broccoli_DSC00861.png
-  original_url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Broccoli_DSC00861.png/960px-Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Broccoli DSC00861.png
-  source_description: two Broccoli heads
-  reference_label: Taxon reference photograph; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 782
-  sha256: 3da4d4322ec3586ace6ad0aba4bccd7c681ca0c5d210455d3fa8b26d1116bd47
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cauliflower:
-  url: images/cauliflower.jpg
-  alt: White cauliflower head surrounded by green leaves.
-  credit: Rjcastillo
-  license: CC BY-SA 4.0
-  license_url: https://creativecommons.org/licenses/by-sa/4.0
-  source_url: https://commons.wikimedia.org/wiki/File:Brassica_oleracea_var._botrytis_(Coliflor).jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/b/b2/Brassica_oleracea_var._botrytis_%28Coliflor%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Brassica_oleracea_var._botrytis_%28Coliflor%29.jpg/960px-Brassica_oleracea_var._botrytis_%28Coliflor%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Brassica oleracea var. botrytis (Coliflor).jpg
-  source_description: Brassica oleracea var. botrytis (Cauliflower).
-  reference_label: Taxon reference photograph; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 669
-  sha256: 9851877f483532f8a57594fc96790c3fa27ec35280e77730f1fdfdd5da674124
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:kohlrabi:
-  url: images/kohlrabi.jpg
-  alt: Pale green kohlrabi plants with swollen stems growing in soil.
-  credit: Toubib at Dutch Wikipedia
-  license: CC BY-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-sa/3.0/
-  source_url: https://commons.wikimedia.org/wiki/File:Koolrabi.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/4/41/Koolrabi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Koolrabi.jpg/960px-Koolrabi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Koolrabi.jpg
-  source_description: koolrabi eigen foto
-  reference_label: Taxon reference photograph; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 720
-  height: 960
-  sha256: 3bc61535c71899d2c9a673985df92c5e5cdae6dd171b0502fc486f8f76d73dcf
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:brussels-sprout:
-  url: images/brussels-sprout.jpg
-  alt: Brussels sprout plant with broad blue-green leaves around a central stalk.
-  credit: AdamRedwine
-  license: CC BY-SA 4.0
-  license_url: https://creativecommons.org/licenses/by-sa/4.0
-  source_url: https://commons.wikimedia.org/wiki/File:Brassica_Oleracea_Gemmifera.JPG
-  original_url: https://upload.wikimedia.org/wikipedia/commons/b/b0/Brassica_Oleracea_Gemmifera.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Brassica_Oleracea_Gemmifera.JPG/960px-Brassica_Oleracea_Gemmifera.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Brassica Oleracea Gemmifera.JPG
-  source_description: Brassica oleracea var. gemmifera, mature plant.
-  reference_label: Taxon reference photograph; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 720
-  height: 960
-  sha256: 8ae2ef07637458d4d2664b0b4d00194cfe20c9ecb2a072bed40b18b277f8f51c
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:kale:
-  url: images/kale.jpg
-  alt: Bundle of curly green kale leaves with cut stalks against a white background.
-  credit: Evan-Amos
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Kale-Bundle.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/4/4b/Kale-Bundle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Kale-Bundle.jpg/960px-Kale-Bundle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Kale-Bundle.jpg
-  source_description: A bundle of kale.
-  reference_label: Taxon reference photograph; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 608
-  sha256: b0bf8fbd306136bb63aa2ea2ed7c519c0157042293447009b5741c4f915b9589
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.flesh:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this plant part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.peel:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this plant part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.fuji:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Species reference photograph of Malus domestica; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.gala:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Species reference photograph of Malus domestica; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.golden-delicious:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Species reference photograph of Malus domestica; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.granny-smith:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Species reference photograph of Malus domestica; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.honeycrisp:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Species reference photograph of Malus domestica; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.red-delicious:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Species reference photograph of Malus domestica; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.juice:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this processed form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.sweet-cider:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this processed form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.pomace:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this processed form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.cider:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this processed form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.dried:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this processed form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:apple.sauce:
-  url: images/apple.jpg
-  alt: Red apples among green leaves on a tree in Barkedal, Sweden.
-  credit: W.carter
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/1/19/Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tree_with_red_apples_in_Barkedal_4.jpg/960px-Tree_with_red_apples_in_Barkedal_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Tree with red apples in Barkedal 4.jpg
-  source_description: Tree with red apples 'Särsö' in Barkedal, Lysekil Municipality, Sweden. The apples
-    ripened early and were unusually red on the side facing south and the camera, caused by the uncharacteristically
-    many hours of sunlight during the hot summer of 2018.
-  reference_label: Reference photograph of the taxon Malus domestica; not this processed form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 960
-  sha256: 0488cc30d73f25d8d16e4ce760c00df8fb849ed1009d4e5e980bd1d22638fd39
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cabbage.green:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Species reference photograph of Brassica oleracea var. capitata; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cabbage.red:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Species reference photograph of Brassica oleracea var. capitata; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cabbage.savoy:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Species reference photograph of Brassica oleracea var. capitata; not a cultivar identification.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cabbage.leaf:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Reference photograph of the taxon Brassica oleracea var. capitata; not this plant part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cabbage.juice:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Reference photograph of the taxon Brassica oleracea var. capitata; not this processed
-    form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:sauerkraut:
-  url: images/cabbage.jpg
-  alt: Green cabbage with broad overlapping leaves, photographed from above.
-  credit: Forest & Kim Starr
-  license: CC BY 3.0
-  license_url: https://creativecommons.org/licenses/by/3.0
-  source_url: https://commons.wikimedia.org/wiki/File:Starr_080103-1276_Brassica_oleracea_var._capitata.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Starr_080103-1276_Brassica_oleracea_var._capitata.jpg/960px-Starr_080103-1276_Brassica_oleracea_var._capitata.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Starr 080103-1276 Brassica oleracea var. capitata.jpg
-  source_description: 'Brassica oleracea var. capitata (habit). Location: Maui, Lowes Garden Center Kahului'
-  reference_label: Reference photograph of the taxon Brassica oleracea var. capitata; not this processed
-    form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 720
-  sha256: 62c05201dc64adc259535d09cca4517251c40fa147a777f09307cdc85091cda6
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:broccoli.leaf:
-  url: images/broccoli.jpg
-  alt: Two harvested broccoli heads with green florets and cut stalks.
-  credit: David Monniaux
-  license: CC BY-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-sa/3.0/
-  source_url: https://commons.wikimedia.org/wiki/File:Broccoli_DSC00861.png
-  original_url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Broccoli_DSC00861.png/960px-Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Broccoli DSC00861.png
-  source_description: two Broccoli heads
-  reference_label: Reference photograph of the taxon Brassica oleracea var. italica; not this plant part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 782
-  sha256: 3da4d4322ec3586ace6ad0aba4bccd7c681ca0c5d210455d3fa8b26d1116bd47
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:broccoli.stalk:
-  url: images/broccoli.jpg
-  alt: Two harvested broccoli heads with green florets and cut stalks.
-  credit: David Monniaux
-  license: CC BY-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-sa/3.0/
-  source_url: https://commons.wikimedia.org/wiki/File:Broccoli_DSC00861.png
-  original_url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Broccoli_DSC00861.png/960px-Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Broccoli DSC00861.png
-  source_description: two Broccoli heads
-  reference_label: Reference photograph of the taxon Brassica oleracea var. italica; not this plant part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 782
-  sha256: 3da4d4322ec3586ace6ad0aba4bccd7c681ca0c5d210455d3fa8b26d1116bd47
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:broccoli.sprouts:
-  url: images/broccoli.jpg
-  alt: Two harvested broccoli heads with green florets and cut stalks.
-  credit: David Monniaux
-  license: CC BY-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-sa/3.0/
-  source_url: https://commons.wikimedia.org/wiki/File:Broccoli_DSC00861.png
-  original_url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Broccoli_DSC00861.png/960px-Broccoli_DSC00861.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Broccoli DSC00861.png
-  source_description: two Broccoli heads
-  reference_label: Reference photograph of the taxon Brassica oleracea var. italica; not this processed
-    form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 782
-  sha256: 3da4d4322ec3586ace6ad0aba4bccd7c681ca0c5d210455d3fa8b26d1116bd47
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:cauliflower.leaf:
-  url: images/cauliflower.jpg
-  alt: White cauliflower head surrounded by green leaves.
-  credit: Rjcastillo
-  license: CC BY-SA 4.0
-  license_url: https://creativecommons.org/licenses/by-sa/4.0
-  source_url: https://commons.wikimedia.org/wiki/File:Brassica_oleracea_var._botrytis_(Coliflor).jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/b/b2/Brassica_oleracea_var._botrytis_%28Coliflor%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Brassica_oleracea_var._botrytis_%28Coliflor%29.jpg/960px-Brassica_oleracea_var._botrytis_%28Coliflor%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Brassica oleracea var. botrytis (Coliflor).jpg
-  source_description: Brassica oleracea var. botrytis (Cauliflower).
-  reference_label: Reference photograph of the taxon Brassica oleracea var. botrytis; not this plant part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 669
-  sha256: 9851877f483532f8a57594fc96790c3fa27ec35280e77730f1fdfdd5da674124
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:kohlrabi.leaf:
-  url: images/kohlrabi.jpg
-  alt: Pale green kohlrabi plants with swollen stems growing in soil.
-  credit: Toubib at Dutch Wikipedia
-  license: CC BY-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-sa/3.0/
-  source_url: https://commons.wikimedia.org/wiki/File:Koolrabi.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/4/41/Koolrabi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Koolrabi.jpg/960px-Koolrabi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Koolrabi.jpg
-  source_description: koolrabi eigen foto
-  reference_label: Reference photograph of the taxon Brassica oleracea var. gongylodes; not this plant
-    part.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 720
-  height: 960
-  sha256: 3bc61535c71899d2c9a673985df92c5e5cdae6dd171b0502fc486f8f76d73dcf
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
 food:kale.frozen:
-  url: images/kale.jpg
-  alt: Bundle of curly green kale leaves with cut stalks against a white background.
-  credit: Evan-Amos
-  license: CC0
-  license_url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
-  source_url: https://commons.wikimedia.org/wiki/File:Kale-Bundle.jpg
-  original_url: https://upload.wikimedia.org/wikipedia/commons/4/4b/Kale-Bundle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original
-  download_url: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Kale-Bundle.jpg/960px-Kale-Bundle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
-  retrieved: '2026-09-17'
-  title: Kale-Bundle.jpg
-  source_description: A bundle of kale.
-  reference_label: Reference photograph of the taxon Brassica oleracea var. acephala; not this processed
-    form.
-  changes: Resized to at most 960 pixels per side and re-encoded as optimized JPEG; no crop.
-  width: 960
-  height: 608
-  sha256: b0bf8fbd306136bb63aa2ea2ed7c519c0157042293447009b5741c4f915b9589
+  removed: Symbolic reference photograph, not the measured food; removed 2026-09-21
+    by decision.
