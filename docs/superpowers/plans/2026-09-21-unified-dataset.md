@@ -306,7 +306,70 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
 
 ---
 
-## 7. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
+## 7. Welle 2 Detail-Tasks (National Public Domain & Open Nutrition)
+
+Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), Diff-Guard und Review dazwischen.
+
+### Task 16: Base Ingestion Architecture & CLI (`atlas ingest`)
+**Ziel:** Einheitliche Ingestion-Architektur mit `BaseIngestAdapter` und CLI-Befehl `atlas ingest` bereitstellen.
+- **Files:**
+  - Create: `src/atlas/ingest/base.py` (Standard-Adapter-Interface & Registry)
+  - Modify: `src/atlas/cli.py` (Befehl `atlas ingest <src_id> <path>` verdrahten)
+  - Test: `tests/test_ingest_base.py`
+- [ ] **Step 1:** Failing Test für Ingest-CLI und Adapter-Interface schreiben (`tests/test_ingest_base.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** `BaseIngestAdapter` in `src/atlas/ingest/base.py` und `atlas ingest` in `src/atlas/cli.py` implementieren.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 17: FDC Foundation & SR Legacy Streaming Adapter (`bulk_fdc`)
+**Ziel:** Schnellen, streaming-fähigen FDC-Parser bauen, der 8.262 Produkte nach Regel 6′ (`prod:fdcf:*`, `prod:fdcs:*`, `basis="as_described"`, `food_part="product"`) in `unified.duckdb` streamt.
+- **Files:**
+  - Create: `src/atlas/ingest/bulk_fdc.py` (FDC Streaming Adapter)
+  - Modify: `src/atlas/ingest/base.py` (Adapter registrieren)
+  - Test: `tests/test_ingest_fdc_stream.py`
+- [ ] **Step 1:** Failing Test für FDC Streaming Adapter schreiben (`tests/test_ingest_fdc_stream.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** FDC Streaming Adapter implementieren und Ingest beider FDC-Quellen ausführen.
+- [ ] **Step 4:** Test grün verifizieren (Store-Zahlen & 0 Contract Rejects).
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 18: European Nutrition Adapters (Ciqual & Swiss FCDB)
+**Ziel:** Ingest-Adapter für ANSES Ciqual 2024 und Swiss FCDB v7.1 implementieren und ausführen.
+- **Files:**
+  - Create: `src/atlas/ingest/ciqual.py` (Ciqual Adapter)
+  - Create: `src/atlas/ingest/swiss_fcdb.py` (Swiss FCDB Adapter)
+  - Modify: `src/atlas/ingest/base.py` (Adapter registrieren)
+  - Test: `tests/test_ingest_european.py`
+- [ ] **Step 1:** Failing Test für europäische Adapter schreiben (`tests/test_ingest_european.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Adapter implementieren und Ingest ausführen.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 19: Identity Cluster Proposals & Paritätsprüfung
+**Ziel:** Vorschläge für Kanten (`product -> species`) generieren, Parität der Pilot-Arten (*Malus domestica*, *Brassica oleracea*) absichern und exakte Matches ($\ge 0.95$) in `edges.jsonl` übernehmen.
+- **Files:**
+  - Create: `tests/test_unified_parity.py`
+  - Modify: `data/registry/identity/edges.jsonl`
+- [ ] **Step 1:** Failing Paritätstest schreiben (`tests/test_unified_parity.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Cluster-Vorschläge anwenden und Kanten eintragen.
+- [ ] **Step 4:** Paritätstest grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 20: Welle 2 Baseline & Ratchet-Schluss
+**Ziel:** Coverage messen, Nutrients $\ge 108$ Arten und Food Hierarchy Produkte verifizieren, Baseline aktualisieren und Ratchet verriegeln.
+- **Files:**
+  - Modify: `docs/coverage/baseline.json`
+- [ ] **Step 1:** `atlas coverage` ausführen und Werte prüfen (Nutrients $\ge 108$ Arten).
+- [ ] **Step 2:** `atlas coverage --write-baseline` ausführen.
+- [ ] **Step 3:** `atlas coverage --check` verifizieren.
+- [ ] **Step 4:** Commit & Welle 2 Review.
+
+---
+
+## 8. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
 
 | Agent / Model | Orca Role | Primary Responsibility | Input Artifacts | Output Artifacts |
 |:---|:---|:---|:---|:---|
