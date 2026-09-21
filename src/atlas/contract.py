@@ -5,7 +5,7 @@ import re
 import math
 from dataclasses import dataclass, field
 
-from atlas.claims import BASES, DERIVATION_TIER, Claim, Gap
+from atlas.claims import BASES, DERIVATION_TIER, PRODUCT_PREFIX, Claim, Gap
 from atlas.registry import Source
 
 UNVERIFIED = "SRC-UNVERIFIED"
@@ -68,6 +68,10 @@ def check(claim: Claim, sources: dict[str, Source]) -> Gap | None:
         return _gap(claim, 3, f"{source.id} does not support claim group {claim.group!r}.")
     if claim.is_amount and (not claim.unit or claim.basis not in BASES or not claim.food_part):
         return _gap(claim, 6, "Amount without unit, basis or food part.")
+    if claim.is_amount and claim.subject.startswith(PRODUCT_PREFIX) != (claim.basis == "as_described"):
+        return _gap(claim, 6, "Basis as_described belongs to product records only, and a product record may use no other basis.")
+    if claim.is_amount and claim.subject.startswith(PRODUCT_PREFIX) and claim.food_part != "product":
+        return _gap(claim, 6, "A product record describes its own sample: food_part must be 'product'.")
     if claim.is_amount and claim.derivation == "extracted":
         return _gap(claim, 10, "Machine-extracted amount; the primary measurement is not confirmed.")
     if "secondhand" in claim.flags:

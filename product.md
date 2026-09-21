@@ -53,7 +53,7 @@ This is inherited from Victorinox. Rules 1–5 carry over. Rules 6–10 are new,
    - its basis: fresh weight, dry weight or as sold;
    - the food part it refers to.
 
-   An amount without a basis is not published. It becomes a gap.
+   An amount without a basis is not published. It becomes a gap. A claim about a **source product record** (`prod:…`) declares basis `as_described` (per 100 g of the product as the record describes it) and food part `product`. The record is the sample. Only curated `food:` nodes use fresh weight, dry weight or as sold. Species-level roll-ups group by the approved part and form of the identity edge and never mix products.
 7. **Predictions are never shown as measurements.** Model outputs carry the model name, its version and its confidence tier.
 8. **Bioactivity is evidence, never a health claim.** The atlas says *"compound-level assay evidence associated with anti-inflammatory activity"*. It never says *"anti-inflammatory food"*.
 9. **License gate.** Every source declares its license and whether the data may be redistributed. Only sources that allow open redistribution, including commercial reuse, can ship in the atlas. An unread license is a build failure, just like a broken link. Sources of class `cite` may back single curated facts (marked `curated`) but are never bulk-imported, and no text is copied from them.

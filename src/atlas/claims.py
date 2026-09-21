@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-BASES = ("fresh_weight", "dry_weight", "as_sold")
+BASES = ("fresh_weight", "dry_weight", "as_sold", "as_described")
+PRODUCT_PREFIX = "prod:"   # a claim about one source record; the record itself says what was measured
 AMOUNT_GROUPS = ("nutrition", "molecules")
 DERIVATION_TIER: dict[str, int] = {
     "analytical": 1,
