@@ -14,6 +14,7 @@ import yaml
 from atlas.unified.cells import Cell
 from atlas.unified.geo import normalize_distribution
 from atlas.unified.identity import Edge
+from atlas.unified.parts import normalize_edible_parts
 from atlas.unified.store import Store
 
 
@@ -63,7 +64,15 @@ def distribution(u: Universe) -> dict[str, Cell]:
 
 
 def edible_parts(u: Universe) -> dict[str, Cell]:
-    return {b: _epd_text_cell(e, (e.get("epd") or {}).get("edible_parts")) for b, e in u.species.items()}
+    cells = {
+        b: _epd_text_cell(e, normalize_edible_parts((e.get("epd") or {}).get("edible_parts")))
+        for b, e in u.species.items()
+    }
+    for group in ("edible_parts", "parts"):
+        for b, c in _group_cells(u, group).items():
+            if c is Cell.FILLED or cells.get(b) != Cell.FILLED:
+                cells[b] = c
+    return cells
 
 
 def food_hierarchy(u: Universe) -> dict[str, Cell]:
