@@ -92,9 +92,10 @@ class Store:
 
     def load_edges(self, edges: list[Edge]) -> None:
         self.con.execute("DELETE FROM product_species")
-        self.con.executemany(
-            "INSERT INTO product_species VALUES (?,?,?,?,?)",
-            [(e.product, e.species, e.method, e.confidence, e.batch) for e in edges if e.status == "approved"])
+        rows = [(e.product, e.species, e.method, e.confidence, e.batch) for e in edges if e.status == "approved"]
+        if rows:  # duckdb executemany raises on an empty parameter list
+            self.con.executemany(
+                "INSERT INTO product_species VALUES (?,?,?,?,?)", rows)
 
     def species_with_claims(self, group: str) -> set[str]:
         """Species that own at least one accepted datapoint in `group`, through an approved edge."""

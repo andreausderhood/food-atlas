@@ -46,3 +46,13 @@ def test_species_attach_only_through_approved_edges(tmp_path):
     assert s.species_with_claims("nutrition") == {"malus domestica"}
     assert s.species_searched_empty("nutrition") == {"beta vulgaris"}  # read, but the claim was rejected
     s.close()
+
+
+def test_load_edges_survives_an_empty_or_all_rejected_list(tmp_path):
+    s = Store(tmp_path / "u.duckdb")                                # duckdb executemany raises on empty lists
+    s.load_edges([])                                                # so an empty pool must not crash the load
+    s.load_edges([Edge("prod:bls:B1", "zea mays", "manual", 1.0, "b", "a", "d", status="rejected")])
+    assert s.count("product_species") == 0
+    s.load_edges([Edge("prod:bls:B1", "zea mays", "manual", 1.0, "b", "a", "d")])
+    assert s.count("product_species") == 1
+    s.close()
