@@ -156,3 +156,217 @@ def resolver(edges: list[Edge]) -> Callable[[str], str | None]:
     """product id -> binomial for approved edges, None otherwise."""
     table = {e.product: e.species for e in edges if e.status == "approved"}
     return table.get
+
+
+# ---------------------------------------------------------------------------
+# Proposal generation (Task 19)
+# ---------------------------------------------------------------------------
+
+import re
+
+_PROPOSALS_DIR = Path("data/research/proposals")
+
+
+def _normalize_name(name: str) -> str:
+    """Lowercase, strip punctuation, collapse whitespace for matching."""
+    return re.sub(r"[^a-z0-9\s]", "", name.lower()).strip()
+
+
+def _build_matcher_index(pool: dict) -> dict:
+    """Pre-compute lookup structures for fast product-to-species matching.
+
+    Returns dict with keys:
+      - exact_binomial: {normalized_name: binomial}
+      - exact_common: {normalized_common_name: binomial}
+      - common_substring: {normalized_binomial: [binomial, ...]}  (for fuzzy)
+      - binomial_set: set of all normalized binomials
+    """
+    exact_binomial: dict[str, str] = {}
+    exact_common: dict[str, str] = {}
+    common_substring: dict[str, list[str]] = {}
+    binomial_set: set[str] = set()
+
+    for binomial, entry in pool.items():
+        norm_b = _normalize_name(binomial)
+        exact_binomial[norm_b] = binomial
+        binomial_set.add(norm_b)
+
+        for cn in entry.get("common_names") or []:
+            norm_cn = _normalize_name(cn)
+            if not norm_cn:
+                continue
+            # Only keep the first common name per species for exact matching
+            if norm_cn not in exact_common:
+                exact_common[norm_cn] = binomial
+            # Index for substring fuzzy matching
+            common_substring.setdefault(norm_cn, []).append(binomial)
+
+    return {
+        "exact_binomial": exact_binomial,
+        "exact_common": exact_common,
+        "common_substring": common_substring,
+        "binomial_set": binomial_set,
+    }
+
+
+def match_product_to_species(
+    product_name: str,
+    pool: dict,
+    index: dict | None = None,
+    min_confidence: float = 0.5,
+) -> list[dict]:
+    """Match a product name against the species pool using pre-built index.
+
+    Returns proposal dicts with keys: source, record, name, species,
+    match_class, confidence.
+    """
+    norm = _normalize_name(product_name)
+    if not norm:
+        return []
+    if index is None:
+        index = _build_matcher_index(pool)
+
+    results: list[dict] = []
+    seen: set[str] = set()
+    norm_words = set(norm.split())
+
+    # 1) Exact binomial match → exact_binomial, confidence 1.0
+    if norm in index["exact_binomial"]:
+        binomial = index["exact_binomial"][norm]
+        results.append({"species": binomial, "match_class": "exact_binomial", "confidence": 1.0})
+        seen.add(binomial)
+
+    # 2) Exact common name match → common_exact, confidence 0.85
+    if norm in index["exact_common"]:
+        binomial = index["exact_common"][norm]
+        if binomial not in seen:
+            results.append({"species": binomial, "match_class": "common_exact", "confidence": 0.85})
+            seen.add(binomial)
+
+    # 3) Any word in product name matches a common name exactly → common_exact
+    for w in norm_words:
+        if w in index["exact_common"]:
+            binomial = index["exact_common"][w]
+            if binomial not in seen:
+                results.append({"species": binomial, "match_class": "common_exact", "confidence": 0.85})
+                seen.add(binomial)
+                break
+        # Also check singular form (strip trailing 's')
+        singular = w.rstrip('s')
+        if singular and singular != w and singular in index["exact_common"]:
+            binomial = index["exact_common"][singular]
+            if binomial not in seen:
+                results.append({"species": binomial, "match_class": "common_exact", "confidence": 0.85})
+                seen.add(binomial)
+                break
+
+    # 4) Product name contains a common name as a whole word → fuzzy, confidence 0.6
+    for cn, binomials in index["common_substring"].items():
+        if len(cn) < 4:
+            continue  # skip short names that cause false substring matches
+        if cn in norm_words:
+            for b in binomials:
+                if b not in seen:
+                    results.append({"species": b, "match_class": "fuzzy", "confidence": 0.6})
+                    seen.add(b)
+                    break
+            if any(b in seen for b in binomials):
+                break  # only one fuzzy per product
+
+    # 5) Product name contains a binomial as substring → fuzzy, confidence 0.6
+    for nb in index["binomial_set"]:
+        if nb not in seen and nb != norm and nb in norm:
+            results.append({"species": index["exact_binomial"][nb], "match_class": "fuzzy", "confidence": 0.6})
+            seen.add(nb)
+            break  # only one fuzzy per product
+
+    return [r for r in results if r["confidence"] >= min_confidence]
+
+
+def generate_proposals(
+    products: list[dict],
+    pool: dict | None = None,
+    out_dir: Path | None = None,
+) -> Path:
+    """Generate identity proposals for all products and write to proposals dir.
+
+    Each product dict must have keys: source, id, name.
+    Returns the path to the written proposals JSONL file.
+    """
+    if pool is None:
+        from atlas.unified.collectors import load_pool
+        pool = load_pool(Path("."))
+    out_dir = out_dir or _PROPOSALS_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    index = _build_matcher_index(pool)
+    proposals: list[dict] = []
+    for rec in products:
+        matches = match_product_to_species(rec["name"], pool, index=index)
+        for m in matches:
+            proposals.append({
+                "source": rec["source"],
+                "record": rec["id"],
+                "name": rec["name"],
+                "species": m["species"],
+                "match_class": m["match_class"],
+                "confidence": m["confidence"],
+            })
+
+    out_path = out_dir / "identity-proposals.jsonl"
+    with out_path.open("w", encoding="utf-8") as f:
+        for p in proposals:
+            f.write(json.dumps(p, ensure_ascii=False) + "\n")
+    return out_path
+
+
+def apply_exact_matches(
+    proposals: list[dict],
+    edges_path: Path,
+    batch: str = "t19",
+    approver: str = "auto",
+    today: str = "2026-09-22",
+) -> list[dict]:
+    """Auto-approve exact_binomial proposals with confidence >= AUTO_APPROVE threshold.
+
+    Writes approved edges to edges_path (JSONL). Returns the list of approved
+    proposal dicts (for parity checking, etc.).
+    """
+    threshold = AUTO_APPROVE.get("exact_binomial", 2.0)
+    approved: list[dict] = []
+    for p in proposals:
+        if p["match_class"] == "exact_binomial" and p["confidence"] >= threshold:
+            approved.append(p)
+
+    edges = [
+        Edge(
+            product=product_id(p["source"], p["record"]),
+            species=p["species"],
+            method=p["match_class"],
+            confidence=p["confidence"],
+            batch=batch,
+            approved_by=approver,
+            approved_at=today,
+            status="approved",
+            relation="derives_from",
+        )
+        for p in approved
+    ]
+
+    # Append to existing edges if file exists
+    existing = load_edges(edges_path) if edges_path.is_file() else []
+    existing_keys = {(e.product, e.species) for e in existing}
+    new_edges = [e for e in edges if (e.product, e.species) not in existing_keys]
+    all_edges = existing + new_edges
+    write_edges(edges_path, all_edges)
+    return approved
+
+
+def check_parity(proposals: list[dict], pilot_species: list[str]) -> bool:
+    """Return True when every pilot species has at least one proposal.
+
+    Parity means both pilot species are represented in the generated
+    proposals, not necessarily auto-approved edges.
+    """
+    proposal_species = {p["species"] for p in proposals}
+    return all(sp in proposal_species for sp in pilot_species)
