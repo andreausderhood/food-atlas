@@ -226,6 +226,7 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
 **Ziel:** Anbauparameter (Temperatur, Boden-pH, Regen, Höhe) aus EPD und FAO ECOCROP in den Kollektor `growing` einspeisen.
 - **Files:**
   - Modify: `src/atlas/unified/collectors.py` (Kollektor `growing` implementieren)
+  - Modify: `src/atlas/unified/fields.py` (Kollektor `growing` verdrahten)
   - Modify: `tools/build_species_pool.py` (Anbaudaten im Pool verankern)
   - Test: `tests/test_unified_growing.py`
 - [ ] **Step 1:** Failing Test für `growing`-Kollektor schreiben (`tests/test_unified_growing.py`).

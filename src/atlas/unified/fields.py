@@ -22,7 +22,7 @@ FIELDS: tuple[Field, ...] = (
     Field("bioactivity", "Bioactivity / health", "species", "human trials", "bioactivity"),
     Field("seasonality", "Seasonality", "species", "expand calendar DB", "seasonality"),
     Field("distribution", "Distribution / geography", "species", "parse to country codes", "distribution"),
-    Field("growing", "Growing / agronomy", "species", "ECOCROP ingest"),
+    Field("growing", "Growing / agronomy", "species", "ECOCROP ingest", "growing"),
     Field("edible_parts", "Edible parts", "species", "normalize part vocabulary", "edible_parts"),
     Field("varieties", "Varieties / cultivars", "species", "fetch Mansfeld + Khoury"),
     Field("photos", "Photos", "species", "ZIM harvest"),
