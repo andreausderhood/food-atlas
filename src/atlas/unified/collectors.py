@@ -15,6 +15,7 @@ from atlas.unified.cells import Cell
 from atlas.unified.geo import normalize_distribution
 from atlas.unified.identity import Edge
 from atlas.unified.parts import normalize_edible_parts
+from atlas.unified.photos import lookup_photo_status
 from atlas.unified.store import Store
 
 
@@ -113,11 +114,20 @@ def growing(u: Universe) -> dict[str, Cell]:
     return cells
 
 
+def photos(u: Universe) -> dict[str, Cell]:
+    cells = {b: lookup_photo_status(b) for b in u.species}
+    for group in ("photos", "photo"):
+        for b, c in _group_cells(u, group).items():
+            if c is Cell.FILLED or cells.get(b) != Cell.FILLED:
+                cells[b] = c
+    return cells
+
+
 COLLECTORS: dict[str, Callable[[Universe], dict[str, Cell]]] = {
     "species_identity": species_identity, "common_names": common_names, "distribution": distribution,
     "edible_parts": edible_parts, "food_hierarchy": food_hierarchy, "nutrients": nutrients,
     "molecules": molecules, "bioactivity": bioactivity, "seasonality": seasonality,
-    "growing": growing,
+    "growing": growing, "photos": photos,
 }
 
 

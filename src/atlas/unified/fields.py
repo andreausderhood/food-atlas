@@ -25,7 +25,7 @@ FIELDS: tuple[Field, ...] = (
     Field("growing", "Growing / agronomy", "species", "ECOCROP ingest", "growing"),
     Field("edible_parts", "Edible parts", "species", "normalize part vocabulary", "edible_parts"),
     Field("varieties", "Varieties / cultivars", "species", "fetch Mansfeld + Khoury"),
-    Field("photos", "Photos", "species", "ZIM harvest"),
+    Field("photos", "Photos", "species", "ZIM harvest", "photos"),
     Field("evidence_chain", "Evidence / provenance chain", "species", "audit-hash layer"),
 )
 FIELD_KEYS = tuple(f.key for f in FIELDS)
