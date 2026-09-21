@@ -229,11 +229,11 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `src/atlas/unified/fields.py` (Kollektor `growing` verdrahten)
   - Modify: `tools/build_species_pool.py` (Anbaudaten im Pool verankern)
   - Test: `tests/test_unified_growing.py`
-- [ ] **Step 1:** Failing Test für `growing`-Kollektor schreiben (`tests/test_unified_growing.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Kollektor in `collectors.py` implementieren.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für `growing`-Kollektor schreiben (`tests/test_unified_growing.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Kollektor in `collectors.py` implementieren.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
 
 ### Task 10: Geographie & ISO-3166 Normalisierung (`distribution`)
 **Ziel:** EPD-Länderlisten und Kew WCVP in standardisierte ISO-3166 2-Letter-Codes parsen.
@@ -241,11 +241,11 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/unified/geo.py` (Länder-Parser & ISO-3166 Lookup)
   - Modify: `src/atlas/unified/collectors.py` (Kollektor `distribution` umstellen)
   - Test: `tests/test_unified_geo.py`
-- [ ] **Step 1:** Failing Test für ISO-3166 Parser schreiben (`tests/test_unified_geo.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Parser und ISO-3166 Zuordnungstabelle implementieren.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für ISO-3166 Parser schreiben (`tests/test_unified_geo.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Parser und ISO-3166 Zuordnungstabelle implementieren.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
 
 ### Task 11: Essbare Teile Vokabular-Normalisierung (`edible_parts`)
 **Ziel:** Freitext-Teileangaben aus EPD/FPI gegen das kontrollierte 10-Begriffe-Vokabular (`foods.PARTS`) normalisieren.
@@ -253,11 +253,11 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/unified/parts.py` (Teile-Normalisierer & Review-Filter)
   - Modify: `src/atlas/unified/collectors.py` (Kollektor `edible_parts` aktualisieren)
   - Test: `tests/test_unified_parts.py`
-- [ ] **Step 1:** Failing Test für `parts.py` schreiben (`tests/test_unified_parts.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Vokabular-Normalisierung implementieren.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für `parts.py` schreiben (`tests/test_unified_parts.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Vokabular-Normalisierung implementieren.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
 
 ### Task 12: BHL API & Bild-Kollektor (`photos`)
 **Ziel:** Kollektor `photos` aktivieren, der verifizierte Bildtafeln (BHL API & USDA Pomological Watercolors) als `filled` und fehlende als `searched_empty` erfasst.
@@ -266,22 +266,22 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `src/atlas/unified/collectors.py` (Kollektor `photos` implementieren)
   - Modify: `src/atlas/unified/fields.py` (Kollektor `photos` verdrahten)
   - Test: `tests/test_unified_photos.py`
-- [ ] **Step 1:** Failing Test für BHL Plate Resolver schreiben (`tests/test_unified_photos.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** BHL Plate Abfrage & Kollektor implementieren.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für BHL Plate Resolver schreiben (`tests/test_unified_photos.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** BHL Plate Abfrage & Kollektor implementieren.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
 
 ### Task 13: Trivialnamen-Erweiterung (`common_names`)
 **Ziel:** Die 1.171 Arten ohne Namen über offene Quellen (GBIF Vernacular / Wikidata) erschließen.
 - **Files:**
   - Modify: `src/atlas/unified/collectors.py` (Kollektor `common_names` erweitern)
   - Test: `tests/test_unified_coverage.py`
-- [ ] **Step 1:** Failing Test für 100% Namensabdeckung schreiben.
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Namens-Erweiterung einbinden.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für 100% Namensabdeckung schreiben.
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Namens-Erweiterung einbinden.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
 
 ### Task 14: Priorisierungs-Engine (`atlas coverage --next`)
 **Ziel:** CLI-Option `--next` implementieren, die die 10 wirksamsten Lückenblöcke nach Pool-Priorität ausgibt.
@@ -289,20 +289,20 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `src/atlas/unified/cli.py`
   - Modify: `src/atlas/unified/table.py`
   - Test: `tests/test_unified_coverage.py`
-- [ ] **Step 1:** Failing Test für `--next` schreiben.
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Priorisierungs-Berechnung implementieren.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für `--next` schreiben.
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Priorisierungs-Berechnung implementieren.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
 
 ### Task 15: Welle 1 Baseline & Ratchet-Schluss
 **Ziel:** Coverage messen, neue Baseline für Welle 1 schreiben und Ratchet verriegeln.
 - **Files:**
   - Modify: `docs/coverage/baseline.json`
-- [ ] **Step 1:** `atlas coverage` ausführen und Werte prüfen.
-- [ ] **Step 2:** `atlas coverage --write-baseline` ausführen.
-- [ ] **Step 3:** `atlas coverage --check` verifizieren.
-- [ ] **Step 4:** Commit & Welle 1 Review.
+- [x] **Step 1:** `atlas coverage` ausführen und Werte prüfen.
+- [x] **Step 2:** `atlas coverage --write-baseline` ausführen.
+- [x] **Step 3:** `atlas coverage --check` verifizieren.
+- [x] **Step 4:** Commit & Welle 1 Review.
 
 ---
 
