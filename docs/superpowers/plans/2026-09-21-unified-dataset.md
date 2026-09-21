@@ -264,6 +264,7 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
 - **Files:**
   - Create: `src/atlas/unified/photos.py` (BHL API Client & Plate Linker)
   - Modify: `src/atlas/unified/collectors.py` (Kollektor `photos` implementieren)
+  - Modify: `src/atlas/unified/fields.py` (Kollektor `photos` verdrahten)
   - Test: `tests/test_unified_photos.py`
 - [ ] **Step 1:** Failing Test für BHL Plate Resolver schreiben (`tests/test_unified_photos.py`).
 - [ ] **Step 2:** Test fehlschlagen sehen.
