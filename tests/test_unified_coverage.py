@@ -109,6 +109,8 @@ def test_cli_coverage_check_gate(tmp_path, capsys, monkeypatch):
     from atlas.site import catalog
     monkeypatch.setattr(catalog, "_fdc_rows", lambda: [])              # a temp root has no raw files
     monkeypatch.setattr(catalog, "_bls_rows", lambda: [])
+    monkeypatch.setattr(catalog, "_ciqual_rows", lambda: [])
+    monkeypatch.setattr(catalog, "_swiss_rows", lambda: [])
     root = _tmp_root(tmp_path, POOL)
     parser = argparse.ArgumentParser()
     ucli.register(parser.add_subparsers(dest="cmd"))
@@ -224,6 +226,8 @@ def test_cli_coverage_next_flag(tmp_path, capsys, monkeypatch):
     from atlas.site import catalog
     monkeypatch.setattr(catalog, "_fdc_rows", lambda: [])
     monkeypatch.setattr(catalog, "_bls_rows", lambda: [])
+    monkeypatch.setattr(catalog, "_ciqual_rows", lambda: [])
+    monkeypatch.setattr(catalog, "_swiss_rows", lambda: [])
     pool = {
         "high prio": {"priority": 1, "in_atlas": False},
         "low prio": {"priority": 4, "in_atlas": False},

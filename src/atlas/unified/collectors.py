@@ -197,7 +197,9 @@ def load_universe(root: Path, with_products: bool = True) -> Universe:
     products: list[str] = []
     if with_products:
         from atlas.site import catalog
-        products = [product_id(r["source"], r["id"]) for r in catalog._fdc_rows() + catalog._bls_rows()]
+        rows = (catalog._fdc_rows() + catalog._bls_rows()
+                + catalog._ciqual_rows() + catalog._swiss_rows())
+        products = [product_id(r["source"], r["id"]) for r in rows]
     edges = load_edges(root / EDGES_PATH)
     store_file = root / STORE_PATH
     store = Store(store_file) if store_file.is_file() else None

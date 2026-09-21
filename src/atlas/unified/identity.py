@@ -20,6 +20,8 @@ SOURCE_SHORT = {
     "SRC-FDC-FOUNDATION-2026-04": "fdcf",
     "SRC-FDC-SRLEGACY-2018-04": "fdcs",
     "SRC-BLS-4.0": "bls",
+    "SRC-CIQUAL-2025": "ciq",
+    "SRC-SWISS-FCDB-V7.1": "swiss",
 }
 STATUSES = ("approved", "rejected")
 AUTO_APPROVE = {"exact_binomial": 0.95}   # pre-filled "approve" in the review sheet, still reviewable

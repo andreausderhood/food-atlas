@@ -44,3 +44,47 @@ def _bls_rows(root: Path = Path(".")) -> list[dict]:
                 if rec_id:
                     rows.append({"source": BLS_SOURCE, "id": rec_id, "name": r.get("Food name", r.get("name", ""))})
     return rows
+
+
+CIQUAL_SOURCE = "SRC-CIQUAL-2025"
+SWISS_SOURCE = "SRC-SWISS-FCDB-V7.1"
+
+
+def _ciqual_rows(root: Path = Path(".")) -> list[dict]:
+    """Product records from the Ciqual 2025 ALIM table (raw XML)."""
+    folder = root / "data/raw/ciqual-2025"
+    hits = sorted(folder.rglob("alim_*.xml"))
+    if not hits:
+        return []
+    from xml.etree.ElementTree import iterparse
+    rows = []
+    for _, el in iterparse(hits[0], events=("end",)):
+        if el.tag != "ALIM":
+            continue
+        code = (el.findtext("alim_code") or "").strip()
+        if code:
+            rows.append({"source": CIQUAL_SOURCE, "id": code,
+                         "name": (el.findtext("alim_nom_eng") or el.findtext("alim_nom_fr") or "").strip()})
+        el.clear()
+    return rows
+
+
+def _swiss_rows(root: Path = Path(".")) -> list[dict]:
+    """Product records from Swiss FCDB v7.1 'Generic Foods' (raw xlsx); blank spreadsheet rows are skipped."""
+    folder = root / "data/raw/swiss-fcdb"
+    hits = sorted(folder.rglob("*.xlsx"))
+    if not hits:
+        return []
+    import openpyxl
+    wb = openpyxl.load_workbook(hits[0], read_only=True, data_only=True)
+    try:
+        ws = wb["Generic Foods"]
+        rows = []
+        for r in ws.iter_rows(min_row=4, values_only=True):   # header is row 3
+            rec_id = r[0]
+            if rec_id is None:
+                continue                                      # trailing blank rows, not real foods
+            rows.append({"source": SWISS_SOURCE, "id": str(rec_id), "name": str(r[3] or "")})
+        return rows
+    finally:
+        wb.close()
