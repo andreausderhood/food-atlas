@@ -12,6 +12,7 @@ from typing import Callable
 import yaml
 
 from atlas.unified.cells import Cell
+from atlas.unified.geo import normalize_distribution
 from atlas.unified.identity import Edge
 from atlas.unified.store import Store
 
@@ -50,7 +51,15 @@ def common_names(u: Universe) -> dict[str, Cell]:
 
 
 def distribution(u: Universe) -> dict[str, Cell]:
-    return {b: _epd_text_cell(e, (e.get("epd") or {}).get("distribution")) for b, e in u.species.items()}
+    cells = {
+        b: _epd_text_cell(e, normalize_distribution((e.get("epd") or {}).get("distribution")))
+        for b, e in u.species.items()
+    }
+    for group in ("geography", "origin"):
+        for b, c in _group_cells(u, group).items():
+            if c is Cell.FILLED or cells.get(b) != Cell.FILLED:
+                cells[b] = c
+    return cells
 
 
 def edible_parts(u: Universe) -> dict[str, Cell]:
