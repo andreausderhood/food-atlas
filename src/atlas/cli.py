@@ -33,12 +33,16 @@ def main(argv: list[str] | None = None) -> int:
     register(sub)
     from atlas.unified.cli import register as register_unified, run as run_unified
     register_unified(sub)
+    from atlas.ingest.base import register_cli as register_ingest, run as run_ingest
+    register_ingest(sub)
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.cmd == "research":
         return dispatch(args, root)
     if args.cmd == "coverage":
         return run_unified(args, root)
+    if args.cmd == "ingest":
+        return run_ingest(args, root)
     registry = root / "data/registry"
 
     if args.cmd == "fetch":
