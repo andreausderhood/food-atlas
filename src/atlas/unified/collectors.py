@@ -35,7 +35,9 @@ def _epd_text_cell(entry: dict, value) -> Cell:
     """Context cell: present -> CONTEXT; profile read but empty -> SEARCHED_EMPTY; no profile -> UNSEARCHED."""
     if value:
         return Cell.CONTEXT
-    return Cell.SEARCHED_EMPTY if (entry.get("epd") or {}).get("path") else Cell.UNSEARCHED
+    epd = entry.get("epd")
+    is_epd = bool((epd or {}).get("path")) or isinstance(epd, dict) or "epd-zim" in entry.get("sources", [])
+    return Cell.SEARCHED_EMPTY if is_epd else Cell.UNSEARCHED
 
 
 def species_identity(u: Universe) -> dict[str, Cell]:
@@ -87,10 +89,17 @@ def seasonality(u: Universe) -> dict[str, Cell]:
     return _group_cells(u, "season")
 
 
+def growing(u: Universe) -> dict[str, Cell]:
+    cells = {b: _epd_text_cell(e, (e.get("epd") or {}).get("grow")) for b, e in u.species.items()}
+    cells.update(_group_cells(u, "growing"))
+    return cells
+
+
 COLLECTORS: dict[str, Callable[[Universe], dict[str, Cell]]] = {
     "species_identity": species_identity, "common_names": common_names, "distribution": distribution,
     "edible_parts": edible_parts, "food_hierarchy": food_hierarchy, "nutrients": nutrients,
     "molecules": molecules, "bioactivity": bioactivity, "seasonality": seasonality,
+    "growing": growing,
 }
 
 
