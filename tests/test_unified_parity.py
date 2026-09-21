@@ -46,6 +46,13 @@ def _load_proposals(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+@pytest.fixture(autouse=True)
+def _proposals_tmp_dir(monkeypatch, tmp_path):
+    """Fixture data must never overwrite the real proposals file in the repo."""
+    import atlas.unified.identity as identity_mod
+    monkeypatch.setattr(identity_mod, "_PROPOSALS_DIR", tmp_path / "proposals")
+
+
 def _pool():
     return load_pool(Path("."))
 

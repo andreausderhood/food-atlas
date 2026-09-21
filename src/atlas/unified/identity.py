@@ -301,17 +301,28 @@ def generate_proposals(
 
     index = _build_matcher_index(pool)
     proposals: list[dict] = []
+    seen_pair: set[tuple] = set()
     for rec in products:
-        matches = match_product_to_species(rec["name"], pool, index=index)
-        for m in matches:
-            proposals.append({
-                "source": rec["source"],
-                "record": rec["id"],
-                "name": rec["name"],
-                "species": m["species"],
-                "match_class": m["match_class"],
-                "confidence": m["confidence"],
-            })
+        candidates = [("name", rec["name"])]
+        sci = rec.get("sci") if isinstance(rec, dict) else None
+        if sci:
+            candidates.append(("sci", sci))
+        for field, text in candidates:
+            matches = match_product_to_species(text, pool, index=index)
+            for m in matches:
+                key = (rec["source"], rec["id"], m["species"], m["match_class"])
+                if key in seen_pair:
+                    continue
+                seen_pair.add(key)
+                proposals.append({
+                    "source": rec["source"],
+                    "record": rec["id"],
+                    "name": rec["name"],
+                    "sci": sci or "",
+                    "species": m["species"],
+                    "match_class": m["match_class"],
+                    "confidence": m["confidence"],
+                })
 
     out_path = out_dir / "identity-proposals.jsonl"
     with out_path.open("w", encoding="utf-8") as f:

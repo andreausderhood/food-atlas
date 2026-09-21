@@ -63,7 +63,9 @@ def _ciqual_rows(root: Path = Path(".")) -> list[dict]:
             continue
         code = (el.findtext("alim_code") or "").strip()
         if code:
-            rows.append({"source": CIQUAL_SOURCE, "id": code,
+            sci_el = el.find("alim_nom_sci")
+            sci = "" if sci_el is None or sci_el.get("missing") is not None else (sci_el.text or "").strip()
+            rows.append({"source": CIQUAL_SOURCE, "id": code, "sci": sci,
                          "name": (el.findtext("alim_nom_eng") or el.findtext("alim_nom_fr") or "").strip()})
         el.clear()
     return rows
