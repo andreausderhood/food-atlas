@@ -16,14 +16,14 @@
  },
  {
   "axis": "species",
-  "closed": false,
+  "closed": true,
   "collector": "common_names",
   "counts": {
-   "context": 14829,
-   "filled": 0,
+   "context": 14827,
+   "filled": 2,
    "not_applicable": 0,
-   "searched_empty": 10591,
-   "unsearched": 1171
+   "searched_empty": 11762,
+   "unsearched": 0
   },
   "denominator": 26591,
   "key": "common_names",
@@ -109,10 +109,10 @@
   "closed": false,
   "collector": "distribution",
   "counts": {
-   "context": 25001,
+   "context": 23990,
    "filled": 0,
    "not_applicable": 0,
-   "searched_empty": 0,
+   "searched_empty": 1011,
    "unsearched": 1590
   },
   "denominator": 26591,
@@ -122,13 +122,13 @@
  {
   "axis": "species",
   "closed": false,
-  "collector": null,
+  "collector": "growing",
   "counts": {
-   "context": 0,
+   "context": 10756,
    "filled": 0,
    "not_applicable": 0,
-   "searched_empty": 0,
-   "unsearched": 26591
+   "searched_empty": 14245,
+   "unsearched": 1590
   },
   "denominator": 26591,
   "key": "growing",
@@ -139,10 +139,10 @@
   "closed": false,
   "collector": "edible_parts",
   "counts": {
-   "context": 23381,
+   "context": 22512,
    "filled": 0,
    "not_applicable": 0,
-   "searched_empty": 1620,
+   "searched_empty": 2489,
    "unsearched": 1590
   },
   "denominator": 26591,
@@ -167,13 +167,13 @@
  {
   "axis": "species",
   "closed": false,
-  "collector": null,
+  "collector": "photos",
   "counts": {
    "context": 0,
-   "filled": 0,
+   "filled": 2,
    "not_applicable": 0,
    "searched_empty": 0,
-   "unsearched": 26591
+   "unsearched": 26589
   },
   "denominator": 26591,
   "key": "photos",
