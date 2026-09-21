@@ -84,3 +84,7 @@ def run(args, root: Path) -> int:
         store.close()
     print(f"{args.src_id}: {stats.accepted} accepted · {stats.rejected} rejected")
     return 0
+
+
+# Import bulk adapters so they self-register on module load.
+from atlas.ingest import bulk_fdc  # noqa: E402, F401
