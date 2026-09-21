@@ -197,3 +197,171 @@ SRC-USDA-DR-DUKE:
   independence: independent
   supports: [molecules, bioactivity, traditional_use]
   attribution: "U.S. Department of Agriculture, Agricultural Research Service. Dr. Duke's Phytochemical and Ethnobotanical Databases."
+SRC-USDA-POMOLOGICAL:
+  title: "USDA Pomological Watercolors Collection"
+  publisher: "U.S. Department of Agriculture, National Agricultural Library"
+  url: "https://usdawatercolors.nal.usda.gov/"
+  license: "Public Domain"
+  license_url: "https://usdawatercolors.nal.usda.gov/pom/about.xhtml"
+  license_class: public_domain
+  license_read: true
+  kind: registry
+  independence: independent
+  supports: [identity]
+  attribution: "U.S. Department of Agriculture, National Agricultural Library. USDA Pomological Watercolor Collection. usdawatercolors.nal.usda.gov."
+SRC-CIQUAL-2024:
+  title: "Table de composition nutritionnelle des aliments Ciqual (2024)"
+  publisher: "ANSES (Agence nationale de sécurité sanitaire de l'alimentation, de l'environnement et du travail)"
+  url: "https://ciqual.anses.fr/"
+  license: "Open Licence 2.0 (Etalab)"
+  license_url: "https://www.etalab.gouv.fr/licence-ouverte-open-licence/"
+  license_class: open_license
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "ANSES. Table de composition nutritionnelle des aliments Ciqual (2024). ciqual.anses.fr."
+SRC-SWISS-FCDB-V7.1:
+  title: "Swiss Food Composition Database (Version 7.1, 2026)"
+  publisher: "Federal Food Safety and Veterinary Office (FSVO)"
+  url: "https://naehrwertdaten.ch/"
+  license: "Open Government Data (FSVO Open Use)"
+  license_url: "https://naehrwertdaten.ch/terms-of-use"
+  license_class: open_license
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "Federal Food Safety and Veterinary Office (FSVO). Swiss Food Composition Database, Version 7.1. naehrwertdaten.ch."
+SRC-UK-COFID-2021:
+  title: "Composition of Foods Integrated Dataset (CoFID)"
+  publisher: "Public Health England / Office for Health Improvement and Disparities"
+  url: "https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid"
+  license: "Open Government Licence v3.0 (OGL)"
+  license_url: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+  license_class: open_license
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "Public Health England. McCance and Widdowson's The Composition of Foods Integrated Dataset (CoFID). gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid."
+SRC-AUSTRALIA-AFCD-2022:
+  title: "Australian Food Composition Database (AFCD, Release 2)"
+  publisher: "Food Standards Australia New Zealand (FSANZ)"
+  url: "https://www.foodstandards.gov.au/science-data/afcd"
+  license: "CC-BY-4.0"
+  license_url: "https://creativecommons.org/licenses/by/4.0/"
+  license_class: open_license
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "Food Standards Australia New Zealand (FSANZ). Australian Food Composition Database. foodstandards.gov.au/science-data/afcd."
+SRC-FAO-BIOFOODCOMP-4.0:
+  title: "FAO/INFOODS Food Composition Database for Biodiversity (BioFoodComp4.0)"
+  publisher: "Food and Agriculture Organization of the United Nations"
+  url: "https://www.fao.org/infoods/infoods/tables-and-databases/faoinfoods-databases/en/"
+  license: "FAO Open Terms"
+  license_url: "https://www.fao.org/contact-us/terms/en/"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "FAO/INFOODS Food Composition Database for Biodiversity (BioFoodComp4.0). Rome, FAO."
+SRC-FAO-WAFCT-2019:
+  title: "FAO/INFOODS West African Food Composition Table (WAFCT 2019)"
+  publisher: "Food and Agriculture Organization of the United Nations"
+  url: "https://www.fao.org/documents/card/en/c/ca2640en"
+  license: "CC-BY-NC-SA-3.0-IGO / Factual citation"
+  license_url: "https://www.fao.org/contact-us/terms/en/"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "FAO. (2019). West African Food Composition Table. Rome, FAO."
+SRC-NAEB:
+  title: "Native American Ethnobotany Database (NAEB)"
+  publisher: "Daniel E. Moerman / University of Michigan-Dearborn"
+  url: "http://naeb.brit.org/"
+  license: "Open Content / Educational Research"
+  license_url: "http://naeb.brit.org/about/"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, traditional_use]
+  attribution: "Moerman, D. E. (1998). Native American Ethnobotany. Timber Press / Botanical Research Institute of Texas. naeb.brit.org."
+SRC-HERB-TCM:
+  title: "HERB Database: High-throughput Experiment- and Reference-guided TCM Database"
+  publisher: "Peking University & Beijing University of Chinese Medicine"
+  url: "http://herb.ac.cn/"
+  license: "Open Academic Access"
+  license_url: "http://herb.ac.cn/help/"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, molecules, bioactivity, traditional_use]
+  attribution: "Fang, S. et al. (2021). HERB: a high-throughput experiment- and reference-guided database of traditional Chinese medicine. Nucleic Acids Research, 49(D1), D1197-D1206."
+SRC-TCMSP:
+  title: "TCMSP: Traditional Chinese Medicine Systems Pharmacology Database and Analysis Platform"
+  publisher: "Northwest University"
+  url: "https://old.tcmsp-e.com/tcmsp.php"
+  license: "Open Academic Access"
+  license_url: "https://old.tcmsp-e.com/tcmsp.php"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, molecules, bioactivity, traditional_use]
+  attribution: "Ru, J. et al. (2014). TCMSP: a database of systems pharmacology for drug discovery from herbal medicines. Journal of Cheminformatics, 6, 13."
+SRC-IMPPAT-2.0:
+  title: "IMPPAT 2.0: Indian Medicinal Plants, Phytochemistry And Therapeutics"
+  publisher: "The Institute of Mathematical Sciences (IMSc), Chennai"
+  url: "https://cb.imsc.res.in/imppat/"
+  license: "CC-BY-NC-SA-4.0 / Factual citation"
+  license_url: "https://cb.imsc.res.in/imppat/terms"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, molecules, bioactivity, traditional_use]
+  attribution: "Mohanraj, K. et al. (2018). IMPPAT: A curated database of Indian Medicinal Plants, Phytochemistry And Therapeutics. Scientific Reports, 8, 4329. cb.imsc.res.in/imppat/."
+SRC-CINE:
+  title: "CINE Traditional Food Systems of Indigenous Peoples"
+  publisher: "Centre for Indigenous Peoples' Nutrition and Environment (CINE), McGill University"
+  url: "https://www.mcgill.ca/cine/resources/data"
+  license: "Open Academic / CINE Citation Terms"
+  license_url: "https://www.mcgill.ca/cine/"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition, traditional_use]
+  attribution: "Kuhnlein, H. V. et al. CINE Traditional Food Systems. Centre for Indigenous Peoples' Nutrition and Environment, McGill University."
+SRC-HISTORICAL-MONOGRAPHS:
+  title: "Historical Botanical & Culinary Treatises (Dioscorides, Hildegard, Fuchs, Bock, Culpeper)"
+  publisher: "Public Domain Historical Monograph Corpus / BHL / Internet Archive"
+  url: "https://archive.org/"
+  license: "Public Domain"
+  license_url: "https://creativecommons.org/publicdomain/mark/1.0/"
+  license_class: public_domain
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, traditional_use]
+  attribution: "Historical botanical treatises and medical texts in the public domain. Citations cite author, work, edition, and chapter/page."
+SRC-BOTANICAL-MONOGRAPHS:
+  title: "Authoritative Food Plant Monographs (T.K. Lim, Sturtevant, Kunkel, Facciola, Hedrick)"
+  publisher: "Scientific Academic Press / Reference Monograph Corpus"
+  url: "https://doi.org/"
+  license: "Factual citation with strict source reference"
+  license_url: "https://www.gnu.org/licenses/license-list.html"
+  license_class: cite
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, growing, geography, traditional_use]
+  attribution: "Authoritative reference monographs on edible and medicinal plants. Citations cite author, title, volume, and exact page number."

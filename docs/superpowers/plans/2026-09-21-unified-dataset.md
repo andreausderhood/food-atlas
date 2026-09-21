@@ -2,310 +2,309 @@
 
 > **For agentic workers in Orca:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Aus FDC, BLS, FoodAtlas, EPD, FAO-1968 und den Kalender-/Foto-Beständen einen einzigen, ständig wachsenden Datensatz machen, dessen Fortschritt die 13-Zeilen-Coverage-Tabelle *misst* — bis in jeder Zeile keine Zelle mehr „nie gesucht" ist.
+**Goal:** Aus FDC, BLS, Ciqual, Swiss FCDB, CoFID, FoodAtlas, EPD/FPI, USDA WEP, BHL, ECOCROP, Dr. Duke's, IMPPAT, HERB TCM, NAEB, historischen Monografien und den Kalender-/Foto-Beständen einen einzigen, ständig wachsenden Datensatz machen, dessen Fortschritt die 13-Zeilen-Coverage-Tabelle *misst* — bis in jeder Zeile keine Zelle mehr „nie gesucht" ist.
 
 **Orca Multi-Agent Ecosystem & Resource Status (2026-09-21):**
 - **Orca Workspace:** Die Ausführung erfolgt über [Stably Orca](https://github.com/stablyai/orca).
-- **Antigravity (Gemini 3.6 Flash): ACTIVE & PRIMARY** — Steuert die aktuelle TDD-Implementierung, Core Engine, Contracts, Python Code & Test-Execution.
+- **Antigravity (Gemini 3.8 Flash): ACTIVE & PRIMARY** — Steuert die aktuelle TDD-Implementierung, Core Engine, Contracts, Python Code & Test-Execution.
 - **Claude Hermes (OpenRouter / Qwen & Gemma lokal): ACTIVE** — Für autonome Hintergrund-Harvesting-Loops und Long-Running Tasks.
 - **Laya (`model@laya-v1`) / Jev (`model@jev-v1`): ACTIVE (lokal/cached)** — Taxonomie-Matching & Triage-Scores.
 - **Claude (Anthropic API): PAUSED** (Wöchentliches Nutzungslimit erreicht, Reset: Do 24. Sep 05:00 Uhr).
 - **Codex (OpenAI API): PAUSED** (5-Stunden Limit erreicht, Reset: 01:00 Uhr nachts).
 
-**Architecture:** Drei Schichten mit je einer Wahrheit. (1) *Ledger* (Git): kuratierte Claims, Registry, **Identitätsentscheidungen** (`product → species`). (2) *Bulk-Store* (`data/build/unified.duckdb`): Claims aus den Rohdaten, deterministisch aus Rohdatei-Hash + Parser + Entscheidungen erzeugt, nie von Hand editiert. (3) *Coverage-Engine*: berechnet die Tabelle aus (1)+(2)+Pool. Claims hängen am **Produkt** (dem Quell-Datensatz); die Art hängt nur über eine freigegebene Kante daran, per Join beim Lesen. Eine Freigabe hebt die Species-Abdeckung sofort, ohne Re-Ingest.
+**Architecture:** Drei Schichten mit je einer Wahrheit:
+1. *Ledger* (Git): kuratierte Claims, Registry (`sources.yaml`), **Identitätsentscheidungen** (`product → species` in `edges.jsonl`).
+2. *Bulk-Store* (`data/build/unified.duckdb`): Claims aus den Rohdaten, deterministisch aus Rohdatei-Hash + Parser + Entscheidungen erzeugt, nie von Hand editiert.
+3. *Coverage-Engine*: berechnet die Tabelle aus (1)+(2)+Pool. Claims hängen am **Produkt** (dem Quell-Datensatz); die Art hängt nur über eine freigegebene Kante daran, per Join beim Lesen. Eine Freigabe hebt die Species-Abdeckung sofort, ohne Re-Ingest.
 
-**Tech Stack:** Python 3.12, DuckDB (vorhanden), PyYAML, pytest. Keine neuen Abhängigkeiten (kein pyarrow/pandas; Parquet-Export geht mit DuckDB `COPY`).
-
-**Spec:** `docs/handoff/2026-09-21-claude-plan-handover.md`, `docs/superpowers/specs/2026-09-21-database-and-pipeline-plan.md`, `docs/superpowers/specs/2026-09-21-unified-database-and-site-system.md` (alle im `main`-Checkout).
+**Tech Stack:** Python 3.12/3.13, DuckDB, PyYAML, pytest. Keine neuen Abhängigkeiten (kein pyarrow/pandas; Parquet-Export geht mit DuckDB `COPY`).
 
 ---
 
-## Global Constraints & Orca Multi-Agent Protocol
+## Global Constraints & Neues Offenes Attributions-Framework
 
 - **Ehrlichkeitsprinzipien bleiben:** Chips nur für echte Claims; Matrixzelle `0` = gesucht, nichts akzeptiert, `–` = nie gesucht; übernommene Werte immer rejected/unresolved; kein Ranking über verschiedene Quellen; keine erfundenen Bilder; **Kandidat ≠ Claim**.
-- **Die zehn Regeln (`product.md` §3) dürfen angepasst werden** — jede Änderung steht in §1a, hat einen Test und braucht deine Freigabe (§2).
+- **Neues Attributions- und Lizenz-Framework (Regel 9):**
+  - **`public_domain`** (CC0, USDA WEP, FDC, BHL, Pomological Watercolors, Khoury, Dr. Duke's, historische Schriften): Völlig uneingeschränkt frei, Basis des Public-Domain-Core-Exports.
+  - **`open_license`** (CC-BY 4.0, Apache-2.0, Etalab 2.0, UK OGL v3.0, Swiss FSVO Open Use, BLS 4.0, FoodAtlas, Ciqual, AFCD): Frei nutzbar und redistributierbar mit Namensnennung & Attribution.
+  - **`open_content`** (Food Plants International/FPI, FAO ECOCROP, FAO BioFoodComp, Mansfeld, IMPPAT 2.0, HERB TCM, NAEB, CINE): Vollwertig integrierbar und zitierbar mit Ursprungsverweis, DOI/URL und Nennung. Keine Rohtextkopien geschützter kreativer Prosa.
+  - **`cite` / `restricted`**: Reine Einzelfakt-Zitate aus autoritativen Fachbüchern (`curated: true`, `ref: "..."`).
 - **Jeder Bulk-Claim läuft durch `atlas.contract.check`.** Es gibt keinen zweiten Validierungspfad.
-- **Schreibbereiche:** `src/atlas/unified/**`, `src/atlas/ingest/bulk/**`, `src/atlas/site/**`, `src/atlas/db.py`, Tests. `src/atlas/cli.py` wird nur **erweitert**. **Nicht anfassen:** `src/atlas/build.py`, `src/atlas/research/**`, Inhalte von `data/**` — außer den in „Freigaben" genannten Pfaden und Pipeline-Outputs unter `data/research/proposals/`.
-- **Tests:** `PYTHONPATH=src .venv/bin/python -m pytest -q` — die volle Suite hat auf `main` **346 Tests in 7 Minuten**; während eines Tasks nur die Task-Tests, die volle Suite einmal am Ende (im Hintergrund).
-- **Modelle (Laya, Jev, Hermes-Modelle, Antigravity, Codex, jedes LLM) schlagen vor;** der deterministische Contract entscheidet; Identitäten und Regeln gibt ein Mensch frei (Regel 13, §1a). Kein Modell-Score ist ein Claim-Wert oder ein Kantengewicht.
-- **Jeder Ausführer in Orca arbeitet in einem eigenen Git-Worktree** (`.claude/worktrees/`), nie im Hauptcheckout (Task 0, §6b).
-- **Zahlen im Plan** sind am 2026-09-21 auf den lokalen Beständen gemessen, nicht geschätzt.
+- **Schreibbereiche:** `src/atlas/unified/**`, `src/atlas/ingest/**`, `src/atlas/site/**`, `src/atlas/db.py`, Tests. `src/atlas/cli.py` wird nur **erweitert**. **Nicht anfassen:** `src/atlas/build.py`, `src/atlas/research/**`, Inhalte von `data/**` — außer den in „Freigaben" genannten Pfaden und Pipeline-Outputs unter `data/research/proposals/`.
+- **Tests:** `PYTHONPATH=src .venv/bin/python -m pytest -q` — während eines Tasks nur die Task-Tests, die volle Suite am Ende.
+- **Modelle (Laya, Jev, Hermes, Antigravity, Codex) schlagen vor;** der deterministische Contract entscheidet; Identitäten und Regeln gibt ein Mensch frei (Regel 13).
+- **Ausführung pro Task via Subagent mit Review dazwischen:** Jeder Task wird durch einen isolierten Subagenten nach TDD abgearbeitet und vor dem nächsten Schritt gereviewt.
 
 ---
 
-## 0. Was die Tabelle wirklich misst (vor dem Bauen klären)
+## 1. Alternative Wissenssysteme, Ethnomedizin & Indigenes Wissen
 
-Beim Nachmessen fielen fünf Dinge auf, die den Plan bestimmen:
+Food Atlas schlägt die Brücke zwischen moderner Nährstoff- und Phytochemie-Analytik und traditionellen Ernährungstraditionen (*"Food as Medicine"*).
 
-1. **Die Prozentwerte mischen Achsen.** „Nutrients 57,9 %" ist `15.402 Produkt-Datensätze / 26.591 Species`. Der Matcher hat heute 1.385 Produkte auf **108 verschiedene Species** abgebildet (0,4 % des Pools). „Molecules 38,6 %" sind 10.270 FoodAtlas-*Entitäten*, keine Species.
-2. **FoodAtlas-Lebensmittel haben keine Artnamen.** Alle 10.270 `food`-Entitäten haben leeres `scientific_name` und keine NCBI-ID; nur FoodOn-IDs (10.246) und 264 FDC-IDs. Über Name/Synonym treffen nur 132 Pool-Binomials exakt. Die Species-Zuordnung ist also *eigene Identitätsarbeit* (Brücken: FDC-ID → FDC-Kante, FoodOn → NCBITaxon). Laya (`model@laya-v1`) generiert dafür strukturierte Matching-Vorschläge.
-3. **`data/build/` und `data/research/` sind gitignored.** Der Species-Pool (26.591) und die Matcher-Vorschläge sind nicht versioniert. Freigegebene Entscheidungen müssen an einen getrackten Ort (`data/registry/identity/edges.jsonl`).
-4. **Die 33 Ledger-Knoten sind nur zwei Arten.** 15 Knoten gehören zu *Malus domestica*, 18 zu *Brassica oleracea* (Kohl, Brokkoli, Blumenkohl … als Convars). Auf der Species-Achse tragen heute **2 von 26.591 Arten** kuratierte Claims (0,0075 %); der Matcher hat 108 weitere vorgeschlagen. „~0,4 % Abdeckung" in der Tabelle ist ein Produkt-Wert, kein Species-Wert.
-5. **1,8 Mio. Claims passen nicht durch `atlas.json`.** `build()` sammelt Claims als Python-Liste ins JSON-Payload (heute 4 MB). Bulk-Claims brauchen einen eigenen, gestreamten Pfad über `unified.duckdb`. Das Ledger bleibt die Wahrheit für *Entscheidungen*, nicht für 1,8 Mio. abgeleitete Zeilen.
+### A. Das Claim-Schema für `traditional_use`:
+- **Claim-Gruppe:** `traditional_use`
+- **Epistemische Trennung (Regel 14b):** Traditionelle Begrifflichkeiten werden niemals künstlich in westliche biochemische Labor-Konzepte umgedeutet (keine synthetische Reduktion wie „kühlend hemmt NF-κB"). Sie werden im authentischen begrifflichen Kontext zitiert und attribuiert.
+- **Basis:** `basis="traditional_record"`
+- **Standardisierte Subsystem-Präfixe in `field`:**
 
-Konsequenz: **Welle 0 macht die Tabelle ehrlich** (eine Achse je Zeile, Produkt-Achse separat, Claims als absolute Zahl), bevor irgendetwas ingestet wird. Ehrlicher Ausgangsstand — Dry-Run der Task-3-Module auf den echten Daten vom 2026-09-21:
+#### 1. TCM (Traditionelle Chinesische Medizin / Ostasiatische Medizin):
+- `tcm:nature`: thermische Natur (`hot` [热], `warm` [温], `neutral` [平], `cool` [凉], `cold` [寒]).
+- `tcm:flavor`: Fünf Geschmacksrichtungen / Wu Wei (`sweet` [甘], `sour` [酸], `bitter` [苦], `pungent` [辛], `salty` [咸]).
+- `tcm:meridian`: Organbezug / Leitbahnen (`lung`, `spleen`, `stomach`, `heart`, `kidney`, `liver`, `large_intestine`, `small_intestine`, `bladder`, `gallbladder`, `pericardium`, `triple_burner`).
+- `tcm:action`: Traditionelle Wirkrichtung (z. B. `tonify_qi`, `nourish_yin`, `clear_heat`, `transform_phlegm`).
+- `tcm:food_medicine_homology`: Amtlicher Status der National Health Commission (NHC) "药食同源" (Doppelnutzung als Nahrung und Medizin).
+- *Quellen:* HERB Database (`SRC-HERB-TCM`, NAR 2021), TCMSP (`SRC-TCMSP`), Arzneibuch der VR China.
 
-| Zeile | Achse | Nenner | Claims | Kontext | gesucht/leer | nie gesucht |
-|:--|:--|--:|--:|--:|--:|--:|
-| Species identity | Species | 26.591 | 1 ¹ | 100,0 % | 0 % | 0 |
-| Common names | Species | 26.591 | 0 | 55,8 % | 39,8 % | 1.171 |
-| Food hierarchy | **Produkt** | 15.402 | 0 | – | – | 15.402 |
-| Nutrients | Species | 26.591 | **2** | – | – | 26.589 |
-| Molecules | Species | 26.591 | **2** | – | – | 26.589 |
-| Bioactivity | Species | 26.591 | 0 | – | – | 26.591 |
-| Seasonality | Species | 26.591 | **2** | – | – | 26.589 |
-| Distribution | Species | 26.591 | 0 | 94,0 % | 0 % | 1.590 |
-| Growing | Species | 26.591 | 0 | – | – | 26.591 |
-| Edible parts | Species | 26.591 | 0 | 87,9 % | 6,1 % | 1.590 |
-| Varieties, Photos, Evidence chain | Species | 26.591 | 0 | – | – | 26.591 |
+#### 2. Ayurveda & Traditionelle Indische Systeme (AYUSH):
+- `ayurveda:rasa`: Die 6 Geschmacksrichtungen (`madhura` [süß], `amla` [sauer], `lavana` [salzig], `katu` [scharf], `tikta` [bitter], `kashaya` [herb/adstringierend]).
+- `ayurveda:guna`: Die 20 physiologischen Qualitäten (`guru` [schwer] vs `laghu` [leicht], `snigdha` [ölig/feucht] vs `ruksha` [trocken], `sheeta` [kühlend] vs `ushna` [erhitzend] etc.).
+- `ayurveda:virya`: Thermische Wirkpotenz (`sheeta` [kühlend], `ushna` [erhitzend]).
+- `ayurveda:vipaka`: Geschmackswirkung nach der Verdauung (`madhura`, `amla`, `katu`).
+- `ayurveda:dosha`: Wirkung auf die Bioenergien (`balances_vata`, `increases_vata`, `balances_pitta`, `increases_pitta`, `balances_kapha`, `increases_kapha`, `tridosha_balancing`).
+- `ayurveda:prabhava`: Spezifische, nichtlineare Heil-/Nahrungswirkung jenseits von Geschmack und Potenz.
+- `ayurveda:karma`: Therapeutische Verdauungswirkung (`deepana` [entzündet Agni], `pachana` [baut Ama ab], `anulomana`, `rasayana` [Verjüngung], `medhya` [Geist/Kognition]).
+- *Quellen:* IMPPAT 2.0 (`SRC-IMPPAT-2.0`, IMSc Chennai, 4.011 Pflanzen, 17.926 Phytochemikalien), Charaka Samhita (Ahara Varga), Sushruta Samhita.
 
-Common names, Distribution und Edible parts stimmen mit der Ausgangstabelle überein (55,8 / 94,0 / 87,9 %). ¹ *Species identity* zählt nur Arten mit eigenem Artebene-`taxon_food` (Apfel); *Brassica oleracea* hat nur Convar-Knoten und zählt daher bei Nutrients/Molecules/Seasonality, aber nicht bei Identity — das ist die bestehende Regel aus `_library_species`.
+#### 3. Unani-Tibb (Griechisch-Arabische Medizin) & Siddha:
+- `unani:mizaj`: Temperament (`damawi` [sanguinisch], `balghami` [phlegmatisch], `safrawi` [cholerisch], `sawdawi` [melancholisch]).
+- `unani:degree`: Wirkungsgrad von 1. Grad (milde Nahrungswirkung) bis 4. Grad (starke physiologische Wirkung).
+- `siddha:mukkuttram`: Harmonisierung der drei Prinzipien (Vali, Azhal, Iyyam).
+- *Quellen:* Ibn Sina (Avicenna): *Kanon der Medizin*, Siddha Pharmacopoeia of India.
 
----
+#### 4. Indigene Nahrungssysteme (Globale Ethnobotanik):
+- `ethno:traditional_use`: Dokumentierte traditionelle Verwendung (`staple_food`, `foraged_greens`, `famine_food`, `ceremonial_food`, `maternal_postpartum_food`, `preservation_ration`).
+- `ethno:preparation_method`: Traditionelle Entgiftungs- und Aufbereitungsverfahren, die Pflanzen erst essbar machen:
+  - *Tannin-Auswaschung:* Wässern von Eicheln (*Quercus*).
+  - *Cyanid-Elimination:* Reiben, Fermentieren, Auspressen und Rösten von bitterem Maniok (*Manihot esculenta*).
+  - *Nixtamalisation:* Alkalische Kochung von Mais mit Holzasche/Kalk zur Freisetzung von bioverfügbarem Niacin (Vitamin B3).
+  - *Erdöfen & Dämpfen:* Hydrolyse von Inulin in Camas-Zwiebeln (*Camassia*) und Agaven.
+- `ethno:community`, `ethno:peoples`, `ethno:region`: Genaue Nennung der Urhebergemeinschaft.
+- **CARE-Prinzipien & Nagoya-Protokoll:** Volle Einhaltung indigener Datenrechte (Collective benefit, Authority to control, Responsibility, Ethics) ohne biopiratische Ausbeutung.
+- *Quellen:* Dr. Duke's Databases (`SRC-USDA-DR-DUKE`, 80k Einträge), Native American Ethnobotany Database (`SRC-NAEB`, 44k Einträge, Moerman), CINE (`SRC-CINE`, McGill University), PROTA/PROSEA.
 
-## 1. Entscheidungen (Antworten auf die Plan-Fragen des Handovers)
-
-**„Geschlossen" heißt: keine Zelle `unsearched`, nicht 100 % gefüllt.** Jede (Species × Feld)-Zelle ist `filled` (Claim), `context` (unverifizierter Kontext, kein Claim), `searched_empty` (gesucht, nichts akzeptiert → Matrix `0`), `not_applicable` oder `unsearched` (→ Matrix `–`). Cultivars werden nie 100 % gefüllt; sie sind geschlossen, wenn jede Species gegen Mansfeld/Khoury geprüft wurde. Das ist messbar und zwingt nicht zum Raten.
-
-**Ingest-Reihenfolge:** EPD-Kontext (W1) → **FDC** (W2) → **BLS** (W3) → **FoodAtlas** (W4) → Kleintabellen (W5) → Tiefe (W6) → Abschluss (W7).
-- FDC vor BLS: Foundation/SR Legacy tragen Derivation-Codes und min/max/n (Tier 1), die Parser-Zuordnung steht, und der Matcher ist auf englischen Namen am stärksten. Die 8.262 Produkte prüfen Speicher-Performance und Review-Ablauf, bevor die 985k BLS-Zellen kommen. BLS-Datensätze tragen zusätzlich einen englischen Namen (`Food name`), den der Matcher mitnutzen kann.
-- FoodAtlas zuletzt der drei großen: Laya liefert Vor-Zuordnungen, die erst über FDC-IDs und FoodOn/NCBITaxon-Kanten freigegeben werden.
-
-**Node-IDs:**
-- Art: `org:<slug>` (Slug = `species_slug`, identisch zur Seiten-URL). Ledger-Knoten `food:<slug>` bleiben nur für **kuratierte** Einträge. Die übrigen ~26k Pool-Arten bekommen **keine** YAML-Dateien; ihre Seiten kommen aus dem Bulk-Store.
-- Produkt: `prod:<quelle>:<record>` (`fdcf`, `fdcs`, `bls`), z. B. `prod:bls:B100000`.
-- Kante: `Edge(product, species, method, confidence, batch, approved_by, approved_at, status)`.
-
-**Identitäts-Freigabe:** Die decision unit ist der **Cluster** (Art × Quelle × Match-Klasse), nicht das Einzelprodukt. 1.385 Vorschläge = 108 Arten ≈ 200 Cluster. `exact_binomial ≥ 0,95` ist im Blatt vorausgefüllt (`approve`), aber überschreibbar. Review-Blatt: CSV mit `decision` ∈ `approve | reject | other:<binomial>`. Leer = unentschieden, `reject` wird gespeichert und nie wieder vorgeschlagen.
-
-**Speicher:** DuckDB-Datei `data/build/unified.duckdb` (Tabellen `datapoints`, `rejects`, `product_species`). Jeder Lauf ersetzt genau eine Quelle (`replace_source`) → idempotent. Release-Export als Parquet per DuckDB `COPY … TO`.
-
-**Orca Multi-Agent Workflow:**
-- **Laya (`model@laya-v1`)** schlägt Taxonomie-Zuordnungen und Ontology-Brücken vor.
-- **Jev (`model@jev-v1`)** bewertet Evidenzsicherheit und schlägt Lücken-Prioritäten vor.
-- **Antigravity / Codex / Hermes** bauen Pipeline, CLI, Store und führen TDD-Tasks aus.
-- Alle Modell-Outputs werden in `data/research/proposals/*.json` mit Hash gecacht und über `contract.py` strikt validiert.
-
----
-
-## 1a. Die zehn Regeln auf dem Prüfstand
-
-| # | Regel | Skaliert? | Vorschlag | Wann |
-|:-:|:--|:--|:--|:--|
-| 1 | Jeder Wert ist ein Claim-Objekt | ja | unverändert; `subject` darf eine Produkt-ID `prod:…` sein | – |
-| 2 | `src` steht in der Registry | ja | unverändert; ein Eintrag je Datensatz-*Version* | – |
-| 3 | Scope wird erzwungen | ja | unverändert | – |
-| 4 | Keine kaputten Links (Tier 1–3) | ja | unverändert; Prüfung je Quelle, nicht je Claim | – |
-| 5 | Tier 5 ist Quarantäne | offen | behalten. BLS-Zellen mit Herkunft `-` werden zu `unverified` | W3 |
-| 6 | Keine Menge ohne Basis + Teil | **bricht** | siehe **6′** unten (Produkt-Datensätze deklarieren `as_described` / `product`) | Task 6 |
-| 7 | Vorhersagen nie als Messung | ja | unverändert; Modelle erzeugen nur Vorschläge/Tier 4 | – |
-| 8 | Bioaktivität ist Evidenz | teilweise | Jev-Triage priorisiert; Contract validiert strukturiert | W4 |
-| 9 | Lizenz-Tor | ja, mit Lücke | **9b** Kontext-Schicht braucht eigene Regel | W1 |
-| 10 | Nur Primärbelege | ja | **10′** verified_in_source für Sciverse-Extracts | W6 |
-| 11 | **neu:** Identitäts-Tor | – | Ein Claim hängt an einer Quell-Produkt-ID. Art-Zuordnung nur über freigegebene Kante | Task 1 |
-| 12 | **neu:** Ratchet + Schließung | – | `atlas coverage --check` verbietet Rückschritt | Task 4 |
-| 13 | **neu:** Modell-Ausgaben sind Vorschläge | – | Jede modellerzeugte Ausgabe (Laya-Verdikt, Jev-Score, LLM-Übersetzung, Codex-Entwurf) trägt `model@version`, Hash und Konfidenz. Keinerlei automatisches Freigeben | Task 2, W6 |
-| 14 | **neu:** Community-Gate für Traditionswissen | – | CARE-Prinzipien / Nagoya-Protokoll beachten | Vor TK-Ingest |
+#### 5. Traditionelle Europäische Medizin (TEM) & Klostermedizin:
+- `humoral:temperament`: Galenische Primärqualitäten (`warm_and_moist`, `cold_and_moist`, `warm_and_dry`, `cold_and_dry`).
+- `tem:degree`: Graduierung im 1. bis 4. Grad (*gradus*).
+- `tem:viriditas`, `tem:subtilitas`: Hildegard von Bingens Klassifikation der inneren Lebens- und Grünkraft (*viriditas*) und der spezifischen subtilen Tugenden (*subtilitates*).
+- `tem:preparation`: Traditionelle diätetische Zubereitungen (Lattwergen, Kräuterweine, Oxymel, Dinkelzubereitungen).
+- *Quellen:* Dioskurides (*De Materia Medica*), Hildegard von Bingen (*Physica*, ca. 1150), Renaissance-Kräuterbücher (Leonhart Fuchs 1543, Hieronymus Bock 1539, Pietro Andrea Mattioli 1544, Nicholas Culpeper 1652).
 
 ---
 
-## 2. Freigaben, die vor Welle 2 gebraucht werden
+## 2. Erweiterbare Pipeline-Architektur für Bücher, Schriften & Datenbanken
 
-1. **Getrackter Ort für Entscheidungen:** `data/registry/identity/edges.jsonl`
-2. **Pool versionieren:** `data/registry/species.jsonl`
-3. **Baseline:** `docs/coverage/baseline.json`
-4. **Regeländerungen aus §1a:** 6′, 9b, 10′, 11, 12, 13, 14.
-5. **Symbolbilder der 33 Knoten löschen:** Task 7.
+Die Ingestion-Pipeline ist strikt modular und erweiterbar aufgebaut. Neue Fachbücher, historische Schriften und wissenschaftliche Datenbanken werden ohne Refactoring des Cores integriert:
 
----
-
-## 3. Wellen-Roadmap
-
-| Welle | Zeilen der Tabelle | Quelle | Ausführer in Orca | Exit-Kriterium |
-|:--|:--|:--|:--|:--|
-| **W0** | alle 13 messbar | – | Antigravity, Codex, Hermes, Laya, Jev | Baseline committed; Ratchet grün; Tasks 0–8 erledigt |
-| W1 | Distribution, Growing, Edible parts, Photos, Common names | EPD-ZIM, `manifest.jsonl` | Antigravity + Hermes Cron | Ländercodes normiert; Photos geerntet |
-| W2 | Nutrients, Food hierarchy | FDC Foundation + SR Legacy | Codex + Antigravity | Paritätstest grün; Nutrients ≥ 108 Arten |
-| W3 | Nutrients (Tiefe), Common names (DE) | BLS 4.0 | Hermes Cron + Antigravity | 985k Zellen im Store; DE-Namen live |
-| W4 | Molecules, Bioactivity | FoodAtlas v4.11 | Laya (Matching) + Jev (Triage) + Antigravity | FoodOn/NCBITaxon-Kanten freigegeben |
-| W5 | Seasonality, Varieties, Growing | Saisonkalender, Mansfeld, ECOCROP | Hermes Cron + Codex | Jede Art geprüft |
-| W6 | Molecules/Bioactivity Tiefe | Sciverse-Loop, Gap-Pipeline | Jev (Gap Prioritization) + Antigravity | verified_in_source verifiziert |
-| W7 | Evidence chain | Audit-Hash-Schicht | Antigravity + Hermes | Alle 13 Zeilen `closed` |
-
----
-
-## 4. Dateistruktur (Welle 0)
-
-| Datei | Verantwortung |
-|:--|:--|
-| `src/atlas/unified/__init__.py` | Paket |
-| `src/atlas/unified/identity.py` | Node-IDs, `Edge`, Review-Blatt, Freigabe, Validierung, `resolver` |
-| `src/atlas/unified/store.py` | DuckDB-Store, `replace_source` (Contract-Stream), Kanten-Join |
-| `src/atlas/unified/cells.py` | Zellzustände, `RowStats`, `aggregate` |
-| `src/atlas/unified/fields.py` | die 13 Zeilen + Achse + „Gap"-Text |
-| `src/atlas/unified/collectors.py` | ein Kollektor je Zeile, `Universe`, `load_universe` |
-| `src/atlas/unified/table.py` | Tabelle bauen, rendern, Ratchet |
-| `src/atlas/unified/cli.py` | `atlas coverage [--check] [--write-baseline]` |
-| `src/atlas/cli.py` | **3 Zeilen** Verdrahtung |
-| `tests/test_unified_{identity,store,coverage,cli_wiring}.py` | Tests |
-| `docs/coverage/baseline.json` | getrackte Baseline (Ratchet) |
-| `src/atlas/claims.py`, `src/atlas/contract.py` | Regel 6′ (Task 6) |
-| `tests/test_contract_product.py` | Regel 6′ |
-| `tools/plan_tasks.py`, `tests/test_plan_tasks.py` | Orca Task Brief Splitter & Diff Guard (Task 8) |
-| `data/images/*.jpg`, `data/registry/images.yaml`, `src/atlas/site/images.py` | Symbolbilder entfernen (Task 7) |
-
----
-
-### Task 0: Orca Worktree-Setup
-
-- [ ] **Step 1: Worktree in Orca anlegen**
-```bash
-git worktree add .claude/worktrees/unified-dataset -b unified-dataset main
+```
+                    ┌─────────────────────────────────────────────────────────┐
+                    │                   Quelldaten-Ebene                      │
+                    ├───────────────────┬───────────────────┬─────────────────┤
+                    │    Datenbanken    │  Historische PDF  │   Fachbücher    │
+                    │ (FDC, BLS, Ciqual,│ & BHL Bildtafeln  │ (Lim, Facciola, │
+                    │  ECOCROP, WEP)    │  (MinerU / API)   │   van Wyk)      │
+                    └─────────┬─────────┴─────────┬─────────┴────────┬────────┘
+                              │                   │                  │
+                              ▼                   ▼                  ▼
+                    ┌───────────────────┬───────────────────┬─────────────────┐
+                    │ ingest/bulk/*.py  │ ingest/bhl.py     │ ingest/books.py │
+                    │  (Tabular Stream) │  (Plate Metadata) │ (Monograph OCR) │
+                    └─────────┬─────────┴─────────┬─────────┴────────┬────────┘
+                              │                   │                  │
+                              └───────────────────┼──────────────────┘
+                                                  │
+                                                  ▼  iter_claims()
+                                      ┌───────────────────────┐
+                                      │ atlas.contract.check  │ ◄── Validierung nach Regeln 1–14
+                                      └───────────┬───────────┘
+                                                  │
+                                                  ▼
+                                      ┌───────────────────────┐
+                                      │ unified.duckdb Store  │
+                                      │ (datapoints + rejects)│
+                                      └───────────────────────┘
 ```
 
-- [ ] **Step 2: Daten und venv verknüpfen**
-```bash
-cd .claude/worktrees/unified-dataset
-MAIN="$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")"
-mkdir -p data/build data/research
-cp -Rc "$MAIN/data/raw/." data/raw/
-cp -Rc "$MAIN/data/research/." data/research/
-cp -c "$MAIN/data/build/atlas.json" data/build/
-ln -s "$MAIN/.venv" .venv
-echo '.venv' >> "$(git rev-parse --git-path info/exclude)"
-export PYTHONPATH=src
+### A. Standard-Adapter-Schnittstelle (`src/atlas/ingest/base.py`)
+
+Jeder Ingest-Adapter implementiert eine einheitliche Schnittstelle:
+
+```python
+from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import Iterator
+from atlas.claims import Claim
+
+class BaseIngestAdapter(ABC):
+    src_id: str
+
+    @abstractmethod
+    def iter_claims(self, source_path: Path) -> Iterator[Claim]:
+        """Yields validated Claim objects with source attribution and citations."""
+        ...
 ```
 
-- [ ] **Step 3: Import-Pfad verifizieren**
-```bash
-PYTHONPATH=src .venv/bin/python -c "import atlas; print(atlas.__file__)"
-```
+### B. Buch- & Monografien-Ingest (`src/atlas/ingest/monographs.py`)
 
-- [ ] **Step 4: Test-Basis prüfen**
-```bash
-PYTHONPATH=src .venv/bin/python -m pytest -q -k "not test_real_data"
-```
+Fachbücher und historische Schriften werden über standardisierte JSON/YAML-Extraktionen (`data/raw/monographs/*.json` oder `*.yaml`) eingelesen, die aus OCR-Läufen (MinerU, Nougat, Grobid) stammen.
+Jeder Claim trägt zwingend eine präzise Fundstelle im Werk:
+- `ref`: `"<Autor> (<Jahr>): <Werktitel>, Band <Vol>, S. <Seite>"` (z. B. `ref="T.K. Lim (2012): Edible Medicinal and Non-Medicinal Plants, Vol. 1, p. 412"` oder `ref="Dioskurides: De Materia Medica, Buch II, Kap. 120"`).
+- `basis`: `"traditional_record"` oder `"scientific_monograph"`.
+- `derivation`: `"literature"`.
 
----
+### C. Streaming Contract & Idempotenter Bulk-Store
 
-### Task 1: Identität — Kanten, Cluster, Review-Blatt
-
-**Files:**
-- Create: `src/atlas/unified/__init__.py`
-- Create: `src/atlas/unified/identity.py`
-- Test: `tests/test_unified_identity.py`
-
-- [ ] **Step 1: Failing test schreiben** (`tests/test_unified_identity.py`)
-- [ ] **Step 2: Test fehlschlagen sehen** (`.venv/bin/python -m pytest tests/test_unified_identity.py`)
-- [ ] **Step 3: Implementierung** (`src/atlas/unified/identity.py`)
-- [ ] **Step 4: Test grün sehen**
-- [ ] **Step 5: Git Commit** (`git commit -m "feat(unified): identity edges and cluster review sheet"`)
+1. Claims durchlaufen `atlas.contract.check(claim, sources)`.
+2. Gültige Zeilen landen in `datapoints`; ungültige in `rejects` mit Regel-ID und `carried_value`.
+3. Vollkommen idempotent: `store.replace_source(src_id, claims, sources, batch)` löscht alte Einträge dieser Quelle vor dem Einfügen.
+4. Chunked Insert (`CHUNK = 50_000`) skaliert auf Millionen Zeilen in wenigen Sekunden.
 
 ---
 
-### Task 2: Bulk-Store — DuckDB, Contract-Stream, Kanten-Join
+## 3. Umfassende Datenquellen-Matrix & Speicher-Fußabdruck
 
-**Files:**
-- Create: `src/atlas/unified/store.py`
-- Test: `tests/test_unified_store.py`
+| Quelle | Scope & Nutzen | Zeilen der Tabelle | Lizenzklasse | Download / Speicher |
+|:---|:---|:---|:---|---:|
+| **USDA WEP / GRIN** | 12.000+ Nutzarten, Taxonomie & Synonyme | Identity, Origin, Growing | `public_domain` | ~150 MB |
+| **USDA FDC** | 8.262 Produkte, Referenz-Nährwerte Tier 1/2 | Nutrients, Hierarchy | `public_domain` | ~250 MB |
+| **BLS 4.0** | 7.140 Lebensmittel $\times$ 138 Nährstoffe, DE-Namen | Nutrients, Common names | `open_license` | ~600 MB |
+| **French Ciqual 2024** | 3.200+ Lebensmittel, europäische Zubereitungen | Nutrients, Common names | `open_license` | ~80 MB |
+| **Swiss FCDB v7.1** | 1.200+ Schweizer Grundnahrungsmittel, 4-sprachig | Nutrients, Common names | `open_license` | ~30 MB |
+| **UK CoFID 2021** | 3.000+ McCance & Widdowson's Nährwerte | Nutrients | `open_license` | ~50 MB |
+| **Australian AFCD 2022** | 2.000+ Lebensmittel inkl. Indigenous Bush Foods | Nutrients, Common names | `open_license` | ~40 MB |
+| **FAO BioFoodComp 4.0** | Nährwerte auf Sorten- und Wildartenebene | Nutrients, Varieties | `open_content` | ~70 MB |
+| **FAO ECOCROP** | 2.568 Arten, Anbaugrenzen (Temp, pH, Regen, Höhe) | Growing | `open_content` | ~20 MB |
+| **Food Plants Intl (FPI)** | 33.000+ essbare Arten, Teile, Geographie | Edible parts, Distribution | `open_content` | ~250 MB |
+| **Mansfeld's Database** | 6.100 Kulturpflanzen, Landsorten, Taxonomie | Varieties, Edible parts | `open_content` | ~90 MB |
+| **Dr. Duke's Ethnobotanik** | 80.000+ Pflanzen-Wirkstoff- und Volkstraditions-Einträge | Molecules, Traditional use | `public_domain` | ~50 MB |
+| **HERB & TCMSP** | TCM-Arzneidrogen, thermische Natur, Geschmack, Meridiane | Traditional use, Molecules | `open_content` | ~60 MB |
+| **IMPPAT 2.0** | 4.011 indische Pflanzen, Rasa, Guna, Virya, Dosha | Traditional use, Molecules | `open_content` | ~45 MB |
+| **NAEB (Moerman) & CINE** | 44.000+ indigene nordamerikanische Verwendungen & Zubereitung | Traditional use, Process | `open_content` | ~35 MB |
+| **BHL API** | Millionen digitalisierter historischer Farbtafeln | Photos / Plates | `public_domain` | **0 GB** (API-Query) |
+| **USDA Pomological** | 7.497 historische Kultursorten-Aquarelle | Photos / Cultivars | `public_domain` | ~5 MB (Meta) / 2.5 GB (Opt.) |
+| **PubMed / Crossref API** | DOI-Validierung, Primärliteratur-Nachweise | Evidence chain | `public_domain` | **0 GB** (API-Query) |
+| **Gesamter Speicher** | **Vollständiger Kern-Datensatz Food Atlas** | **Alle 13 Zeilen** | – | **~2,0 bis 4,5 GB** |
 
-- [ ] **Step 1: Failing test schreiben** (`tests/test_unified_store.py`)
-- [ ] **Step 2: Test fehlschlagen sehen**
-- [ ] **Step 3: Implementierung** (`src/atlas/unified/store.py`)
-- [ ] **Step 4: Test grün sehen**
-- [ ] **Step 5: Git Commit** (`git commit -m "feat(unified): duckdb bulk store with contract stream"`)
-
----
-
-### Task 3: Coverage Engine — 13 Zeilen & Kollektoren
-
-**Files:**
-- Create: `src/atlas/unified/cells.py`, `fields.py`, `collectors.py`, `table.py`
-- Test: `tests/test_unified_coverage.py`
-
-- [ ] **Step 1: Failing test schreiben** (`tests/test_unified_coverage.py`)
-- [ ] **Step 2: Test fehlschlagen sehen**
-- [ ] **Step 3: Implementierung**
-- [ ] **Step 4: Test grün sehen**
-- [ ] **Step 5: Git Commit** (`git commit -m "feat(unified): coverage engine and collectors"`)
-
----
-
-### Task 4: CLI — `atlas coverage` und Ratchet
-
-**Files:**
-- Create: `src/atlas/unified/cli.py`
-- Test: `tests/test_unified_coverage.py` (CLI tests)
-
-- [ ] **Step 1: Failing CLI test ausführen**
-- [ ] **Step 2: Implementierung** (`src/atlas/unified/cli.py`)
-- [ ] **Step 3: Test grün sehen**
-- [ ] **Step 4: Git Commit** (`git commit -m "feat(unified): atlas coverage command and ratchet"`)
+> [!NOTE]
+> BHL, Crossref und PubMed werden **ausschließlich per API** gezielt nach Bedarf abgefragt. Es werden keine Multi-Terabyte-Repositoren heruntergeladen.
 
 ---
 
-### Task 5: CLI Verdrahtung & Echte Baseline
+## 4. Wellen-Roadmap
 
-**Files:**
-- Modify: `src/atlas/cli.py`
-- Create: `docs/coverage/baseline.json`
-- Test: `tests/test_unified_cli_wiring.py`
-
-- [ ] **Step 1: Wiring test schreiben & fehlschlagen sehen**
-- [ ] **Step 2: `src/atlas/cli.py` erweitern**
-- [ ] **Step 3: Echte Baseline schreiben:** `.venv/bin/atlas coverage --write-baseline`
-- [ ] **Step 4: Ratchet prüfen:** `.venv/bin/atlas coverage --check`
-- [ ] **Step 5: Git Commit** (`git commit -m "feat(unified): wire atlas coverage command and commit baseline"`)
-
----
-
-### Task 6: Regel 6′ — Produktdatensätze im Contract [HUMAN GATE]
-
-**Files:**
-- Modify: `src/atlas/claims.py`
-- Modify: `src/atlas/contract.py`
-- Modify: `product.md`
-- Test: `tests/test_contract_product.py`
-
-- [ ] **Step 1: Test schreiben & fehlschlagen sehen**
-- [ ] **Step 2: `claims.py` und `contract.py` erweitern** (Support für `as_described` / `product`)
-- [ ] **Step 3: `product.md` Regel 6 aktualisieren**
-- [ ] **Step 4: Tests prüfen & committen** (`git commit -m "feat(contract): rule 6' for product records"`)
+| Welle | Zeilen der Tabelle | Quellen | Ausführer in Orca | Exit-Kriterium |
+|:---|:---|:---|:---|:---|
+| **W0** | alle 13 messbar | – | Antigravity | **ERLEDIGT:** Baseline committed, Ratchet grün, Tasks 0–8 abgeschlossen |
+| **W1** | Distribution, Growing, Edible parts, Photos, Common names | EPD/FPI, FAO ECOCROP, Kew WCVP, BHL API, GBIF | Subagenten-Kette | Ländercodes normiert (ISO-3166); Growing-Kollektor live; Edible parts $\ge 95\%$; Photos per BHL API |
+| **W2** | Nutrients, Food hierarchy | USDA FDC, French Ciqual, Swiss FCDB, UK CoFID | Subagenten-Kette | Paritätstest grün; Nutrients $\ge 108$ Arten; Hierarchy entschieden |
+| **W3** | Nutrients (Tiefe), Common names (DE) | BLS 4.0 (7.140 Foods $\times$ 138 Nährstoffe), FAO BioFoodComp | Subagenten-Kette | 985k Zellen im Store; Sorten-Nährwerte live |
+| **W4** | Molecules, Bioactivity, Traditionswissen | FoodAtlas v4.11, USDA Flavonoids, Dr. Duke's, HERB, IMPPAT 2.0 | Subagenten-Kette | ChEBI/PubChem Kanten; Bioaktivität mit PMC-Attribution; `traditional_use` Claims |
+| **W5** | Seasonality, Varieties, Visuals | Saisonkalender, USDA Pomological Watercolors, Mansfeld, BHL Plates | Subagenten-Kette | Pomological Watercolors verlinkt; Saisonkalender gemappt |
+| **W6** | Tiefe & Schriften | Monografien-Ingest (Lim, Sturtevant, Hildegard, Fuchs), Sciverse | Subagenten-Kette | `verified_in_source` verifiziert; Fachbuch-Zitate aktiv |
+| **W7** | Abschluss | Audit-Hash-Schicht, Dual-Export (Public Domain + Open Graph) | Subagenten-Kette | Alle 13 Zeilen `closed` |
 
 ---
 
-### Task 7: Symbolbilder der 33 Knoten entfernen [HUMAN GATE]
+## 5. Welle 0 Status: Abgeschlossen
 
-**Files:**
-- Delete: `data/images/*.jpg`
-- Modify: `data/registry/images.yaml` (Tombstones eintragen)
-- Modify: `src/atlas/site/images.py`
-- Modify: `tests/test_images.py`, `tests/test_site_workbench.py`
-
-- [ ] **Step 1: Tests aktualisieren & fehlschlagen sehen**
-- [ ] **Step 2: `images.yaml` grabsteinen & Fotos per `git rm` löschen**
-- [ ] **Step 3: `images.py` anpassen**
-- [ ] **Step 4: Site-Build testen:** `.venv/bin/atlas site --fast`
-- [ ] **Step 5: Git Commit** (`git commit -m "chore(images): tombstone symbolic node images"`)
+- [x] **Task 0: Orca Worktree-Setup** (`.claude/worktrees/unified-dataset`)
+- [x] **Task 1: Identität — Kanten, Cluster, Review-Blatt** (`identity.py`, 5 Tests)
+- [x] **Task 2: Bulk-Store — DuckDB, Contract-Stream, Kanten-Join** (`store.py`, 3 Tests)
+- [x] **Task 3: Coverage Engine — 13 Zeilen & Kollektoren** (`cells.py`, `fields.py`, `collectors.py`, `table.py`)
+- [x] **Task 4: CLI — `atlas coverage` und Ratchet** (`cli.py`, 6 Tests)
+- [x] **Task 5: CLI Verdrahtung & Echte Baseline** (`docs/coverage/baseline.json`)
+- [x] **Task 6: Regel 6′ — Produktdatensätze im Contract** (`as_described` / `product`)
+- [x] **Task 7: Symbolbilder der 33 Knoten entfernen & images.yaml grabsteinen**
+- [x] **Task 8: Orca Multi-Agent Task Harness** (`tools/plan_tasks.py` split & guard)
 
 ---
 
-### Task 8: Orca Multi-Agent Task Harness (`tools/plan_tasks.py`)
+## 6. Welle 1 Detail-Tasks (Species-Kontext)
 
-**Files:**
-- Create: `tools/plan_tasks.py`
-- Test: `tests/test_plan_tasks.py`
+Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), Diff-Guard und Review dazwischen.
 
-- [ ] **Step 1: Failing test schreiben** (`tests/test_plan_tasks.py`)
-- [ ] **Step 2: `plan_tasks.py` implementieren** (`split` & `guard` Kommandos)
-- [ ] **Step 3: Test grün sehen**
-- [ ] **Step 4: Task Briefs splitten:** `python3 tools/plan_tasks.py split docs/superpowers/plans/2026-09-21-unified-dataset.md data/build/plan-briefs`
-- [ ] **Step 5: Diff Guard verifizieren:** `python3 tools/plan_tasks.py guard data/build/plan-briefs/01-*.md`
-- [ ] **Step 6: Git Commit** (`git commit -m "feat(tools): Orca multi-agent plan task harness and diff guard"`)
+### Task 9: Agronomie & Growing-Kollektor (`growing`)
+**Ziel:** Anbauparameter (Temperatur, Boden-pH, Regen, Höhe) aus EPD und FAO ECOCROP in den Kollektor `growing` einspeisen.
+- **Files:**
+  - Modify: `src/atlas/unified/collectors.py` (Kollektor `growing` implementieren)
+  - Modify: `tools/build_species_pool.py` (Anbaudaten im Pool verankern)
+  - Test: `tests/test_unified_growing.py`
+- [ ] **Step 1:** Failing Test für `growing`-Kollektor schreiben (`tests/test_unified_growing.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Kollektor in `collectors.py` implementieren.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 10: Geographie & ISO-3166 Normalisierung (`distribution`)
+**Ziel:** EPD-Länderlisten und Kew WCVP in standardisierte ISO-3166 2-Letter-Codes parsen.
+- **Files:**
+  - Create: `src/atlas/unified/geo.py` (Länder-Parser & ISO-3166 Lookup)
+  - Modify: `src/atlas/unified/collectors.py` (Kollektor `distribution` umstellen)
+  - Test: `tests/test_unified_geo.py`
+- [ ] **Step 1:** Failing Test für ISO-3166 Parser schreiben (`tests/test_unified_geo.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Parser und ISO-3166 Zuordnungstabelle implementieren.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 11: Essbare Teile Vokabular-Normalisierung (`edible_parts`)
+**Ziel:** Freitext-Teileangaben aus EPD/FPI gegen das kontrollierte 10-Begriffe-Vokabular (`foods.PARTS`) normalisieren.
+- **Files:**
+  - Create: `src/atlas/unified/parts.py` (Teile-Normalisierer & Review-Filter)
+  - Modify: `src/atlas/unified/collectors.py` (Kollektor `edible_parts` aktualisieren)
+  - Test: `tests/test_unified_parts.py`
+- [ ] **Step 1:** Failing Test für `parts.py` schreiben (`tests/test_unified_parts.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Vokabular-Normalisierung implementieren.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 12: BHL API & Bild-Kollektor (`photos`)
+**Ziel:** Kollektor `photos` aktivieren, der verifizierte Bildtafeln (BHL API & USDA Pomological Watercolors) als `filled` und fehlende als `searched_empty` erfasst.
+- **Files:**
+  - Create: `src/atlas/unified/photos.py` (BHL API Client & Plate Linker)
+  - Modify: `src/atlas/unified/collectors.py` (Kollektor `photos` implementieren)
+  - Test: `tests/test_unified_photos.py`
+- [ ] **Step 1:** Failing Test für BHL Plate Resolver schreiben (`tests/test_unified_photos.py`).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** BHL Plate Abfrage & Kollektor implementieren.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 13: Trivialnamen-Erweiterung (`common_names`)
+**Ziel:** Die 1.171 Arten ohne Namen über offene Quellen (GBIF Vernacular / Wikidata) erschließen.
+- **Files:**
+  - Modify: `src/atlas/unified/collectors.py` (Kollektor `common_names` erweitern)
+  - Test: `tests/test_unified_coverage.py`
+- [ ] **Step 1:** Failing Test für 100% Namensabdeckung schreiben.
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Namens-Erweiterung einbinden.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 14: Priorisierungs-Engine (`atlas coverage --next`)
+**Ziel:** CLI-Option `--next` implementieren, die die 10 wirksamsten Lückenblöcke nach Pool-Priorität ausgibt.
+- **Files:**
+  - Modify: `src/atlas/unified/cli.py`
+  - Modify: `src/atlas/unified/table.py`
+  - Test: `tests/test_unified_coverage.py`
+- [ ] **Step 1:** Failing Test für `--next` schreiben.
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Priorisierungs-Berechnung implementieren.
+- [ ] **Step 4:** Test grün verifizieren.
+- [ ] **Step 5:** Diff Guard prüfen & committen.
+
+### Task 15: Welle 1 Baseline & Ratchet-Schluss
+**Ziel:** Coverage messen, neue Baseline für Welle 1 schreiben und Ratchet verriegeln.
+- **Files:**
+  - Modify: `docs/coverage/baseline.json`
+- [ ] **Step 1:** `atlas coverage` ausführen und Werte prüfen.
+- [ ] **Step 2:** `atlas coverage --write-baseline` ausführen.
+- [ ] **Step 3:** `atlas coverage --check` verifizieren.
+- [ ] **Step 4:** Commit & Welle 1 Review.
 
 ---
 
-## 6. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
+## 7. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
 
 | Agent / Model | Orca Role | Primary Responsibility | Input Artifacts | Output Artifacts |
 |:---|:---|:---|:---|:---|
