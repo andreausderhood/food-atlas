@@ -9,8 +9,11 @@ import yaml
 CLAIM_GROUPS = (
     "identity", "nutrition", "molecules", "bioactivity", "sensory", "origin",
     "geography", "growing", "season", "process", "regulatory", "narrative",
+    "traditional_use",
 )
-LICENSE_CLASSES = ("ship", "cite", "adapter", "separate")
+LICENSE_CLASSES = (
+    "ship", "public_domain", "open_license", "open_content", "cite", "adapter", "separate", "restricted",
+)
 KINDS = (
     "measurement", "compilation", "registry", "research",
     "literature_extraction", "brand_claim", "library_editorial", "unverified",

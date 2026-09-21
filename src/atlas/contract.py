@@ -62,8 +62,9 @@ def check(claim: Claim, sources: dict[str, Source]) -> Gap | None:
         return _gap(claim, 9, f"{source.id} may only be cited fact by fact, not imported in bulk.")
     if source.license_class == "cite" and not claim.ref:
         return _gap(claim, 9, "A cited fact needs a specific reference.")
-    if source.license_class not in ("ship", "cite"):
-        return _gap(claim, 9, f"{source.id} is {source.license_class}-only and cannot ship under MIT.")
+    ALLOWED_SHIP = ("ship", "public_domain", "open_license", "open_content")
+    if source.license_class not in ALLOWED_SHIP and source.license_class != "cite":
+        return _gap(claim, 9, f"{source.id} is {source.license_class}-only and cannot ship under open terms.")
     if claim.group not in source.supports:
         return _gap(claim, 3, f"{source.id} does not support claim group {claim.group!r}.")
     if claim.is_amount and (not claim.unit or claim.basis not in BASES or not claim.food_part):

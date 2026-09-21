@@ -147,5 +147,53 @@ SRC-UNVERIFIED:
   license_read: false
   kind: unverified
   independence: library_editorial
-  supports: [identity, nutrition, molecules, bioactivity, sensory, origin, geography, growing, season, process, regulatory, narrative]
+  supports: [identity, nutrition, molecules, bioactivity, sensory, origin, geography, growing, season, process, regulatory, narrative, traditional_use]
   attribution: "—"
+SRC-BHL:
+  title: "Biodiversity Heritage Library (BHL)"
+  publisher: "Biodiversity Heritage Library Consortium / Smithsonian"
+  url: "https://www.biodiversitylibrary.org/"
+  license: "Public Domain / CC0 (historical botanical plates)"
+  license_url: "https://www.biodiversitylibrary.org/permissions"
+  license_class: public_domain
+  license_read: true
+  kind: registry
+  independence: independent
+  supports: [identity]
+  attribution: "Biodiversity Heritage Library (biodiversitylibrary.org). Historical botanical illustrations."
+SRC-FOOD-PLANTS-INTL:
+  title: "Food Plants International Database"
+  publisher: "Food Plants International"
+  url: "https://foodplantsinternational.com/"
+  license: "Open Content / Educational Fair Use"
+  license_url: "https://foodplantsinternational.com/about/"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, geography, growing]
+  attribution: "French, B. Food Plants International: Edible Plants of the World. foodplantsinternational.com."
+SRC-USDA-GRIN-WEP:
+  title: "USDA GRIN World Economic Plants (WEP)"
+  publisher: "U.S. Department of Agriculture, Agricultural Research Service"
+  url: "https://npgsweb.ars-grin.gov/gringlobal/taxon/taxonomysearch"
+  license: "Public Domain"
+  license_url: "https://www.ars-grin.gov/"
+  license_class: public_domain
+  license_read: true
+  kind: registry
+  independence: independent
+  supports: [identity, origin, growing]
+  attribution: "USDA, ARS, National Plant Germplasm System. Germplasm Resources Information Network (GRIN-Taxonomy). National Germplasm Resources Laboratory, Beltsville, Maryland."
+SRC-USDA-DR-DUKE:
+  title: "Dr. Duke's Phytochemical and Ethnobotanical Databases"
+  publisher: "U.S. Department of Agriculture, Agricultural Research Service"
+  url: "https://phytochem.nal.usda.gov/"
+  license: "Public Domain"
+  license_url: "https://www.ars-grin.gov/"
+  license_class: public_domain
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [molecules, bioactivity, traditional_use]
+  attribution: "U.S. Department of Agriculture, Agricultural Research Service. Dr. Duke's Phytochemical and Ethnobotanical Databases."
