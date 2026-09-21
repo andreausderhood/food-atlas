@@ -20,7 +20,15 @@ from atlas.unified.collectors import (
 from atlas.unified.fields import FIELDS
 from atlas.unified.identity import Edge, write_edges
 from atlas.unified.store import Store
-from atlas.unified.table import build_table, regressions, render_text, write_json
+from atlas.unified.table import (
+    Action,
+    build_table,
+    next_actions,
+    regressions,
+    render_next,
+    render_text,
+    write_json,
+)
 
 POOL = {
     "malus domestica": {"common_names": ["apple"], "in_atlas": True,
@@ -172,4 +180,67 @@ def test_common_names_full_pool_closes_unsearched():
     assert r.denominator == 26591
     assert r.counts[Cell.UNSEARCHED.value] == 0
     assert r.closed is True
+
+
+def test_next_actions_prioritizes_by_pool_priority_and_gaps():
+    species = {
+        "priority one": {"priority": 1, "common_names": []},
+        "priority two": {"priority": 2, "common_names": []},
+        "default priority": {"common_names": []},  # priority defaults to 4
+    }
+    products = ["prod:bls:P1", "prod:bls:P2"]
+    u = Universe(species=species, products=products)
+    actions = next_actions(u, limit=10)
+    assert len(actions) <= 10
+    assert len(actions) > 0
+
+    # Verify priority ordering (P1 before P2 before P4)
+    priorities = [a.priority for a in actions]
+    assert priorities == sorted(priorities)
+    assert priorities[0] == 1
+
+    # Verify action attributes and dict access
+    top = actions[0]
+    assert isinstance(top, Action)
+    assert top.priority == 1
+    assert top.unsearched > 0
+    assert top.gap != ""
+    assert top["priority"] == top.priority
+    assert top["gap"] == top.gap
+    assert top.as_dict()["unsearched"] == top.unsearched
+
+    # Verify limit parameter
+    limited = next_actions(u, limit=2)
+    assert len(limited) == 2
+
+    # Verify render helper
+    text = render_next(actions)
+    assert "priority" in text.lower()
+    assert "action / gap" in text.lower()
+    assert "P1" in text
+
+
+def test_cli_coverage_next_flag(tmp_path, capsys, monkeypatch):
+    from atlas.site import catalog
+    monkeypatch.setattr(catalog, "_fdc_rows", lambda: [])
+    monkeypatch.setattr(catalog, "_bls_rows", lambda: [])
+    pool = {
+        "high prio": {"priority": 1, "in_atlas": False},
+        "low prio": {"priority": 4, "in_atlas": False},
+    }
+    root = _tmp_root(tmp_path, pool)
+    parser = argparse.ArgumentParser()
+    ucli.register(parser.add_subparsers(dest="cmd"))
+
+    # Without --next: no Next actions section
+    assert ucli.run(parser.parse_args(["coverage"]), root) == 0
+    out_standard = capsys.readouterr().out
+    assert "Next actions:" not in out_standard
+
+    # With --next: prints top recommended next actions/gap blocks
+    assert ucli.run(parser.parse_args(["coverage", "--next"]), root) == 0
+    out_next = capsys.readouterr().out
+    assert "Next actions:" in out_next
+    assert "P1" in out_next
+
 
