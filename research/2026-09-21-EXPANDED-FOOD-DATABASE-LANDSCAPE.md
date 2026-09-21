@@ -99,8 +99,9 @@ Under our updated model, Food Atlas aims to maximize scientific completeness and
 #### 8. Biodiversity Heritage Library (BHL) Plates
 - **URL:** `https://www.biodiversitylibrary.org/`
 - **License:** Public Domain / CC0 (for historical pre-1928 botanical plates)
+- **API Key:** Configured in `.env` (`BHL_API_KEY`)
 - **Scope:** Millions of digitized high-resolution botanical plates from classical works (Curtis's Botanical Magazine, Flora Londinensis, Köhler's Medizinal-Pflanzen).
-- **Role in Food Atlas:** Provides authentic species-level botanical illustrations with verifiable page-level BHL URLs.
+- **Role in Food Atlas:** Provides authentic species-level botanical illustrations with verifiable page-level BHL URLs. Dynamically queried via BHL API `NameSearch` and `GetItemPages` without needing bulk image downloads.
 
 #### 9. USDA Flavonoid & Isoflavone Databases
 - **Publisher:** USDA Agricultural Research Service
@@ -110,15 +111,46 @@ Under our updated model, Food Atlas aims to maximize scientific completeness and
 
 ---
 
-## 4. Immediate Roadmap Recommendations
+## 4. Traditional Chinese Medicine (TCM), Ethnomedicine & Indigenous Knowledge
 
-To maximize coverage table gains while maintaining total legal and provenance clarity, the ingestion sequence is structured as follows:
+Food species often blur the boundary between culinary sustenance and traditional medicine (*"Food as Medicine"*). The following resources provide open, structured knowledge for traditional applications:
+
+| Database | Scope | Coverage & Key Features | License & Accessibility |
+|:---|:---|:---|:---|
+| **Dr. Duke's Phytochemical & Ethnobotanical Databases** (USDA ARS) | Global ethnobotany & traditional uses | 80,000+ records linking plants to folk medicinal uses, phytochemical constituents, and ethnobotanical reports worldwide. | **Public Domain (US Govt)** · Bulk CSV / Parquet (~50 MB) |
+| **HERB (High-throughput Experiment- & Reference-guided TCM)** | Traditional Chinese Medicine | 1,293 Chinese medicinal herbs, 4,964 ingredients, 19,418 target genes. Published in *Nucleic Acids Research* (2021). | Open Academic Access (`http://herb.ac.cn/`) |
+| **TCMSP (TCM Systems Pharmacology)** | Chinese Pharmacopoeia | 499 herbs, 29,384 chemicals, with oral bioavailability (OB) and drug-likeness (DL) properties. | Open Academic Access |
+| **CINE Traditional Food Systems** (McGill University) | Indigenous peoples' nutrition | Extensive nutrient compositions and cultural uses of traditional plant and animal foods from Arctic, First Nations, and global indigenous communities. | Academic Citation / Open Content |
+| **PROTA / PROSEA** | Tropical Africa & Southeast Asia | Detailed ethnobotanical monographs, traditional recipes, and medicinal preparation methods for thousands of indigenous species. | Open Access / CC BY-NC-SA (factual citations under `open_content`) |
+| **WHO Monographs on Selected Medicinal Plants** | Global pharmacopeial standards | 4 volumes published by WHO evaluating traditional uses alongside experimental pharmacology and clinical safety data. | WHO Open Access (PDFs / Structured text) |
+
+*Rule 14 (Community-Gate) applies:* Traditional knowledge claims must always credit the community of origin and cite the ethnobotanical record without synthetic Western extrapolation.
+
+---
+
+## 5. Storage & Download Footprint (How many GB?)
+
+Integrating these databases does **NOT** require downloading massive terabytes of raw data. The footprint breaks down as follows:
+
+| Component | Nature of Data | Estimated Download / Disk Size | Handling Strategy |
+|:---|:---|---:|:---|
+| **Tabular & Relational Data**<br>(FDC, BLS, Ciqual, Swiss FCDB, ECOCROP, WEP, GBIF names) | CSV, JSON, DuckDB, Parquet | **~1.2 GB** | Bulk downloaded once into `data/raw/` and indexed into `data/build/unified.duckdb`. |
+| **FPI / EPD Snapshot** | Text / ZIM dump | **~250 MB** | Already locally present in `data/research/scope/`. |
+| **Dr. Duke's Ethnobotanical DB** | Parquet / CSV | **~50 MB** | Lightweight bulk download. |
+| **USDA Pomological Watercolors** | Metadata + 7,497 JPEG plates | **~2.5 GB** *(optional)* | Metadata is 5 MB. Images can be cached locally (~2.5 GB) or served directly via USDA NAL image URLs (0 GB local). |
+| **BHL (Biodiversity Heritage Library)** | 60M+ pages | **0 GB local** *(API-driven)* | We do **not** download the BHL repository. The BHL API (`BHL_API_KEY`) queries pages dynamically and links directly to high-res BHL plate URLs. |
+| **Total Disk Requirement** | Core Unified Dataset | **~1.5 to 4.0 GB** | Easily fits on any standard workstation with zero storage bottlenecks. |
+
+---
+
+## 6. Immediate Roadmap Recommendations
 
 1. **Wave 1 (Species Context):**
    - Ingest **EPD / FPI** (Country codes to ISO-3166, parts to `foods.PARTS`, growing parameters).
    - Ingest **FAO ECOCROP** (Agronomic limits).
    - Ingest **Kew WCVP / POWO** (Native/introduced ranges).
    - Wire **GBIF Vernacular Names** for the remaining 1,171 unsearched species names.
+   - Wire **BHL API** for dynamic plate queries on species pages.
 
 2. **Wave 2 (National Public Domain & Open Nutrition):**
    - **FDC Foundation & SR Legacy** (8,262 products).
@@ -128,8 +160,9 @@ To maximize coverage table gains while maintaining total legal and provenance cl
 3. **Wave 3 (German Deep Nutrition):**
    - **BLS 4.0** (7,140 foods $\times$ 138 nutrients).
 
-4. **Wave 4 (Phytochemistry & Deep Composition):**
+4. **Wave 4 (Phytochemistry, Ethnobotany & Deep Composition):**
    - **FoodAtlas v4.11** (193k compounds) + **USDA Flavonoids** (Public Domain analytical concentrations).
+   - **Dr. Duke's Ethnobotanical DB** (Traditional & folk uses).
    - Link via InChIKey / ChEBI / PubChem.
 
 5. **Wave 5 (Cultivars, Biodiversity & Visuals):**
