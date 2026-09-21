@@ -56,7 +56,7 @@ def test_table_roundtrip_and_ratchet(tmp_path):
 def test_nutrients_and_hierarchy_follow_the_edges(tmp_path):
     s = Store(tmp_path / "u.duckdb")
     claims = [Claim("prod:bls:B1", "nutrition", "nutrient:bls:VITC", 4.6, "SRC-X", "analytical",
-                    unit="mg", basis="fresh_weight", food_part="whole"),
+                    unit="mg", basis="as_described", food_part="product"),
               Claim("prod:bls:B2", "nutrition", "nutrient:bls:VITC", 4.6, "SRC-X", "analytical", unit="mg")]
     s.replace_source("SRC-X", claims, {"SRC-X": SRC}, "b1")
     u = Universe(species=POOL, products=["prod:bls:B1", "prod:bls:B2", "prod:bls:B3"], store=s)

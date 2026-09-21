@@ -10,7 +10,7 @@ SRC = Source(id="SRC-X", title="t", publisher="p", url="u", license="CC0", licen
 
 def claim(subject, field="nutrient:bls:VITC", **kw):
     base = dict(subject=subject, group="nutrition", field=field, v=4.6, src="SRC-X", derivation="analytical",
-                unit="mg", basis="fresh_weight", food_part="whole")
+                unit="mg", basis="as_described", food_part="product")
     return Claim(**(base | kw))
 
 
