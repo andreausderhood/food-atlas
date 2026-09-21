@@ -221,6 +221,18 @@ SRC-CIQUAL-2024:
   independence: independent
   supports: [identity, nutrition]
   attribution: "ANSES. Table de composition nutritionnelle des aliments Ciqual (2024). ciqual.anses.fr."
+SRC-CIQUAL-2025:
+  title: "Table de composition nutritionnelle des aliments Ciqual (2025)"
+  publisher: "ANSES (Agence nationale de sécurité sanitaire de l'alimentation, de l'environnement et du travail)"
+  url: "https://doi.org/10.57745/RDMHWY"
+  license: "Open Licence 2.0 (Etalab)"
+  license_url: "https://www.etalab.gouv.fr/licence-ouverte-open-licence/"
+  license_class: open_license
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "ANSES. Table de composition nutritionnelle des aliments Ciqual (2025). doi.org/10.57745/RDMHWY."
 SRC-SWISS-FCDB-V7.1:
   title: "Swiss Food Composition Database (Version 7.1, 2026)"
   publisher: "Federal Food Safety and Veterinary Office (FSVO)"
