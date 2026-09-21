@@ -88,3 +88,5 @@ def run(args, root: Path) -> int:
 
 # Import bulk adapters so they self-register on module load.
 from atlas.ingest import bulk_fdc  # noqa: E402, F401
+from atlas.ingest import ciqual  # noqa: E402, F401
+from atlas.ingest import swiss_fcdb  # noqa: E402, F401
