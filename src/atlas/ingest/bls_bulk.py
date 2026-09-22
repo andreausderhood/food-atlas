@@ -65,9 +65,37 @@ def _load_bls_code_map(root: Path) -> dict[str, FoodNode]:
     return mapping
 
 
+def _row_claim(row, vi, oi, ri, headers, code, *, subject, basis_v, part_v, src_id) -> Claim | None:
+    """One BLS cell → one nutrition claim, or None for 'ohne Angabe' ('-') cells."""
+    value = row[vi] if vi < len(row) else None
+    if value is None or value == "" or str(value).strip() == "-":
+        return None
+    origin = "" if oi >= len(row) or row[oi] is None else str(row[oi]).strip()
+    if origin == "-":
+        origin = ""
+    if origin and origin not in HERKUNFT:
+        raise UnmappedDerivation(f"BLS Datenherkunft {origin!r} in column {headers[oi]!r}")
+    tag, name, unit = parse_value_header(headers[vi])
+    reference = row[ri] if ri < len(row) else None
+    ref = "bls:" + code
+    if reference is not None and str(reference).strip() not in ("", "-"):
+        ref += f"; {str(reference).strip()}"
+    return Claim(
+        subject=subject,
+        group="nutrition",
+        field=f"nutrient:bls:{tag}",
+        v=float(value) if isinstance(value, (int, float)) else str(value).strip(),
+        unit=unit,
+        basis=basis_v,
+        food_part=part_v,
+        src=src_id,
+        derivation=HERKUNFT.get(origin, "unverified"),
+        ref=ref,
+    )
+
+
 class BlsAdapter(BaseIngestAdapter):
     """Streaming BLS 4.0 adapter: yields nutrition claims row by row."""
-
     src_id = "SRC-BLS-4.0"
 
     def load(self, root: Path, path: Path) -> Iterator[Claim]:
@@ -81,35 +109,24 @@ class BlsAdapter(BaseIngestAdapter):
                 raise ValueError("no 'Datenherkunft' columns found in the BLS workbook")
             for row in rows:
                 code = "" if row[0] is None else str(row[0]).strip()
-                node = bls_to_food.get(code)
-                if node is None:
+                if not code:
                     continue
+                node = bls_to_food.get(code)
+                if node is not None:
+                    # Welle-0 semantics first: curated food-node claims (basis from the node).
+                    for vi, oi, ri in triples:
+                        c = _row_claim(row, vi, oi, ri, headers, code,
+                                       subject=node.id, basis_v=basis(node), part_v=food_part(node),
+                                       src_id=self.src_id)
+                        if c is not None:
+                            yield c
+                # Rule 6' product records: every BLS row is a product (as_described/product).
                 for vi, oi, ri in triples:
-                    value = row[vi] if vi < len(row) else None
-                    if value is None or value == "":
-                        continue
-                    origin = "" if row[oi] is None else str(row[oi]).strip()
-                    if origin == "-":
-                        origin = ""
-                    if origin and origin not in HERKUNFT:
-                        raise UnmappedDerivation(
-                            f"BLS Datenherkunft {origin!r} in column {headers[oi]!r}"
-                        )
-                    tag, name, unit = parse_value_header(headers[vi])
-                    key = f"nutrient:bls:{tag}"
-                    reference = row[ri] if ri < len(row) else None
-                    yield Claim(
-                        subject=node.id,
-                        group="nutrition",
-                        field=key,
-                        v=float(value) if isinstance(value, (int, float)) else str(value),
-                        unit=unit,
-                        basis=basis(node),
-                        food_part=food_part(node),
-                        src=self.src_id,
-                        derivation=HERKUNFT.get(origin, "unverified"),
-                        ref=f"bls:{code}" + (f"; {reference}" if reference else ""),
-                    )
+                    c = _row_claim(row, vi, oi, ri, headers, code,
+                                   subject=f"prod:bls:{code}", basis_v="as_described", part_v="product",
+                                   src_id=self.src_id)
+                    if c is not None:
+                        yield c
         finally:
             wb.close()
 

@@ -23,7 +23,7 @@ HERKUNFT = {
     "Labelangabe": "label",
     "Logische Null": "assumed_zero",
     "Logische Annahme": "imputed",
-    "Spuren": "trace",
+    "Spuren": "trace",   # cells carry the literal value 'TR'
 }
 ORIGIN_HEADER = re.compile(r"herkunft", re.IGNORECASE)
 UNIT = re.compile(r"\[\s*([^\]/]+?)\s*(?:/\s*100\s*g)?\s*\]")

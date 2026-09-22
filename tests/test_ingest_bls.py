@@ -63,3 +63,37 @@ def test_bls_adapter_maps_german_names(project, bls_dir):
     claims = list(adapter.load(project, bls_dir))
     apple_refs = [c.ref for c in claims if "F110100" in (c.ref or "")]
     assert len(apple_refs) >= 1, "BLS apple code F110100 should appear in refs"
+
+
+def test_bls_bulk_product_claims_for_every_row(project, bls_dir):
+    """Rule 6': every BLS row yields prod:bls:<code> claims with as_described/product, even unmapped rows."""
+    adapter = BlsAdapter()
+    claims = list(adapter.load(project, bls_dir))
+    bulk = [c for c in claims if c.subject == "prod:bls:F999999"]
+    assert len(bulk) >= 2                       # unmapped row still gets product claims
+    for c in bulk:
+        assert c.basis == "as_described" and c.food_part == "product"
+
+
+def test_bls_dash_cells_are_skipped(project, bls_dir):
+    """'-' means 'ohne Angabe' — no claim, no reject; it is not a measurement."""
+    adapter = BlsAdapter()
+    claims = list(adapter.load(project, bls_dir))
+    assert all(c.v != "-" for c in claims)
+
+
+def test_bls_trace_cells_carry_TR_as_rejectables(project, bls_dir):
+    """'TR' (Spuren) is yielded honestly; the contract rejects it as non-numeric."""
+    from openpyxl import load_workbook
+    path = next(bls_dir.rglob("BLS_4_0_Daten_*.xlsx"))
+    wb = load_workbook(path)
+    ws = wb.active
+    ws.append(["G000000", "Spinat roh", "Spinach raw", 21, "Analyse", "R4", "TR", "Spuren", "R5"])
+    wb.save(path)
+    wb.close()
+    claims = list(BlsAdapter().load(project, bls_dir))
+    tr = [c for c in claims if c.v == "TR"]
+    assert len(tr) == 1                          # only the VITC cell carries TR
+    c = tr[0]
+    assert c.subject == "prod:bls:G000000"
+    assert c.derivation == "trace"
