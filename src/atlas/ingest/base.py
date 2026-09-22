@@ -93,4 +93,5 @@ from atlas.ingest import cofid  # noqa: E402, F401
 from atlas.ingest import bulk_fdc  # noqa: E402, F401
 from atlas.ingest import bulk_foodatlas  # noqa: E402, F401
 from atlas.ingest import ciqual  # noqa: E402, F401
+from atlas.ingest import duke  # noqa: E402, F401
 from atlas.ingest import swiss_fcdb  # noqa: E402, F401
