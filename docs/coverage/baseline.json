@@ -38,9 +38,9 @@
    "filled": 38710,
    "not_applicable": 0,
    "searched_empty": 0,
-   "unsearched": 81957
+   "unsearched": 95154
   },
-  "denominator": 120667,
+  "denominator": 133864,
   "key": "food_hierarchy",
   "label": "Food hierarchy"
  },
@@ -65,10 +65,10 @@
   "collector": "molecules",
   "counts": {
    "context": 0,
-   "filled": 2,
+   "filled": 747,
    "not_applicable": 0,
    "searched_empty": 0,
-   "unsearched": 26589
+   "unsearched": 25844
   },
   "denominator": 26591,
   "key": "molecules",
