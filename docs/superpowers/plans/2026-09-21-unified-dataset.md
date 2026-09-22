@@ -378,11 +378,11 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `src/atlas/unified/identity.py` (Matcher-Regeln 3–5)
   - Modify: `tests/test_unified_parity.py`
   - Pipeline-Output: `data/research/proposals/identity-proposals.jsonl` (regeneriert)
-- [ ] **Step 1:** Failing Regressions-Tests schreiben: „Peppers, bell, green, raw" darf *kein* *Piper nigrum*-Proposal erzeugen; „Mushroom, lion's mane" kein *Agaricus*; True Positives müssen bestehen bleiben („Almonds" → *Prunus dulcis*, „Black currant" → *Ribes nigrum*, „Apple" → *Malus domestica*).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Matcher anpassen: Multi-Word-Common-Names nur als Phrase-Exact; Single-Word-Match nur wenn das Wort im Pool eindeutig ist (genau eine Art trägt diesen Common Name) oder der Phrase-Kontext die Art disambiguiert; generische Kategorienwörter (mushroom, beans, peppers, berries …) als Single-Word-Match ausgeschlossen.
-- [ ] **Step 4:** Proposals über alle 100.483 Produkte neu generieren; Cluster-Delta gegen Vorher (546 `common_exact`-Cluster / 230 Arten / 47.838 Produkte) berichten.
-- [ ] **Step 5:** Volle Suite grün, Guard, Commit.
+- [x] **Step 1:** Failing Regressions-Tests schreiben: „Peppers, bell, green, raw" darf *kein* *Piper nigrum*-Proposal erzeugen; „Mushroom, lion's mane" kein *Agaricus*; True Positives müssen bestehen bleiben („Almonds" → *Prunus dulcis*, „Black currant" → *Ribes nigrum*, „Apple" → *Malus domestica*).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Matcher anpassen: Multi-Word-Common-Names nur als Phrase-Exact; Single-Word-Match nur wenn das Wort im Pool eindeutig ist (genau eine Art trägt diesen Common Name) oder der Phrase-Kontext die Art disambiguiert; generische Kategorienwörter (mushroom, beans, peppers, berries …) als Single-Word-Match ausgeschlossen.
+- [x] **Step 4:** Proposals über alle 100.483 Produkte neu generieren; Cluster-Delta gegen Vorher (546 `common_exact`-Cluster / 230 Arten / 47.838 Produkte) berichten.
+- [x] **Step 5:** Volle Suite grün, Guard, Commit.
 
 ### Task 22: Review-Blatt & Human-Gate-Runde (Common-Exact-Cluster)
 **Ziel:** Die gereinigten Cluster als Review-Blatt exportieren, André geben pro Cluster frei (Regel 13), Approvals nach `edges.jsonl`. Ziel: Nutrients $\ge 108$ Arten.
@@ -404,11 +404,11 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `src/atlas/ingest/base.py` (registrieren)
   - Modify: `src/atlas/site/catalog.py` (`_bls_rows` auf die BLS-4.0-Struktur heben)
   - Test: `tests/test_ingest_bls.py`
-- [ ] **Step 1:** Failing Test (Fixtures aus echten BLS-Zeilen, Regel 6′: `basis="as_described"`, `food_part="product"`, Datenherkunft-Map von `bls.py` übernehmen).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Adapter implementieren, Ingest ausführen, DE-Namen in `generate_proposals` mitschicken.
-- [ ] **Step 4:** Test grün (Store-Zahlen, 0 Contract Rejects — Logische-Null/Annahme-Derivationen ehrlich mappen).
-- [ ] **Step 5:** Guard & Commit.
+- [x] **Step 1:** Failing Test (Fixtures aus echten BLS-Zeilen, Regel 6′: `basis="as_described"`, `food_part="product"`, Datenherkunft-Map von `bls.py` übernehmen).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Adapter implementieren, Ingest ausführen, DE-Namen in `generate_proposals` mitschicken.
+- [x] **Step 4:** Test grün (Store-Zahlen, 0 Contract Rejects — Logische-Null/Annahme-Derivationen ehrlich mappen).
+- [x] **Step 5:** Guard & Commit.
 
 ### Task 24: UK CoFID 2021 Intake & Adapter (W2-Nachlass)
 **Ziel:** McCance & Widdowson's CoFID 2021 (UK OGL v3.0, ~3.000 Foods) ingestieren — war in der W2-Quellenliste, fehlt im Store.
@@ -416,10 +416,10 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/ingest/cofid.py`
   - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (Eintrag ergänzen — Orchestrator)
   - Test: `tests/test_ingest_cofid.py`
-- [ ] **Step 1:** Orchestrator: Intake nach `data/raw/cofid-2021/` + SOURCE.md (URL, SHA-256) + Registry-Eintrag `SRC-COFID-2021`.
-- [ ] **Step 2:** Failing Test, `identity.py` SOURCE_SHORT ergänzen (`prod:cofid`).
-- [ ] **Step 3:** Adapter implementieren, Ingest ausführen.
-- [ ] **Step 4:** Test grün, Guard & Commit.
+- [x] **Step 1:** Orchestrator: Intake nach `data/raw/cofid-2021/` + SOURCE.md (URL, SHA-256) + Registry-Eintrag `SRC-COFID-2021`.
+- [x] **Step 2:** Failing Test, `identity.py` SOURCE_SHORT ergänzen (`prod:cofid`).
+- [x] **Step 3:** Adapter implementieren, Ingest ausführen.
+- [x] **Step 4:** Test grün, Guard & Commit.
 
 ### Task 25: FAO BioFoodComp 4.0 — Sorten-Nährwerte (Varieties-Achse)
 **Ziel:** FAO BioFoodComp 4.0 (`open_content`): Nährwerte auf Sorten- und Wildartenebene → die Varieties-Zeile der Tabelle lebt; Meilenstein „985k Zellen im Store; Sorten-Nährwerte live" (W3-Exit).
@@ -427,18 +427,18 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/ingest/biofoodcomp.py`
   - Modify: `src/atlas/ingest/base.py`, `src/atlas/unified/identity.py` (SOURCE_SHORT), `data/registry/sources.yaml` (Orchestrator)
   - Test: `tests/test_ingest_biofoodcomp.py`
-- [ ] **Step 1:** Orchestrator: Intake nach `data/raw/biofoodcomp-4.0/` + SOURCE.md + Registry `SRC-BFOODCOMP-4.0`.
-- [ ] **Step 2:** Failing Test (Fixtures aus echten Zeilen).
-- [ ] **Step 3:** Adapter implementieren, Ingest ausführen; Claims auf Wild-/Sortenebene mit ehrlicher `derivation`.
-- [ ] **Step 4:** Test grün, Guard & Commit.
+- [x] **Step 1:** Orchestrator: Intake nach `data/raw/biofoodcomp-4.0/` + SOURCE.md + Registry `SRC-BFOODCOMP-4.0`.
+- [x] **Step 2:** Failing Test (Fixtures aus echten Zeilen).
+- [x] **Step 3:** Adapter implementieren, Ingest ausführen; Claims auf Wild-/Sortenebene mit ehrlicher `derivation`.
+- [x] **Step 4:** Test grün, Guard & Commit.
 
 ### Task 26: Welle 3 Baseline & Ratchet-Schluss
 **Ziel:** Coverage messen (Ziele: Nutrients $\ge 108$ Arten nach Task 22, Store-Zellen Richtung 985k), Baseline aktualisieren, Ratchet verriegeln, Welle-3-Review.
 - **Files:**
   - Modify: `docs/coverage/baseline.json`
-- [ ] **Step 1:** `atlas coverage` + Exit-Kriterien prüfen.
-- [ ] **Step 2:** `atlas coverage --write-baseline`, `--check` grün.
-- [ ] **Step 3:** Commit & Welle 3 Review.
+- [x] **Step 1:** `atlas coverage` + Exit-Kriterien prüfen.
+- [x] **Step 2:** `atlas coverage --write-baseline`, `--check` grün.
+- [x] **Step 3:** Commit & Welle 3 Review.
 
 ---
 
