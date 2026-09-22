@@ -179,3 +179,25 @@ def _bfc_rows(root: Path = Path(".")) -> list[dict]:
         return rows
     finally:
         wb.close()
+
+
+FA_SOURCE = "SRC-FOODATLAS-V4.11"
+
+
+def _foodatlas_rows(root: Path = Path(".")) -> list[dict]:
+    """Product records from FoodAtlas v4.11 food entities (raw parquet, duckdb)."""
+    folder = root / "data/raw/foodatlas/foodatlas-v4.11"
+    hits = sorted(folder.rglob("entities.parquet"))
+    if not hits:
+        return []
+    import duckdb
+    con = duckdb.connect()
+    try:
+        rows = con.execute(
+            f"SELECT foodatlas_id, common_name FROM read_parquet('{hits[0]}') "
+            "WHERE entity_type = 'food' ORDER BY foodatlas_id"
+        ).fetchall()
+        return [{"source": FA_SOURCE, "id": str(i), "name": str(n or "")}
+                for i, n in rows if i is not None]
+    finally:
+        con.close()
