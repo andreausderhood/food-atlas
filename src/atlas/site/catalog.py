@@ -131,3 +131,51 @@ def _cofid_rows(root: Path = Path(".")) -> list[dict]:
         return rows
     finally:
         wb.close()
+
+
+BFC_SOURCE = "SRC-BFOODCOMP-4.0"
+
+
+def _bfc_rows(root: Path = Path(".")) -> list[dict]:
+    """Product records from BioFoodComp 4.0 (raw xlsx); blank spreadsheet rows are skipped.
+
+    Streams all 12 category sheets (01 Cereals through 12 Miscellaneous),
+    skipping the per-100gFA fatty-acid sheet and metadata sheets.
+    Scientific name (col 7) and variety (col 8) are included for identity traceability.
+    """
+    folder = root / "data/raw/biofoodcomp-4.0"
+    hits = sorted(folder.rglob("*.xlsx"))
+    if not hits:
+        return []
+    import openpyxl
+    wb = openpyxl.load_workbook(hits[0], read_only=True, data_only=True)
+    try:
+        rows = []
+        for sheet_name in wb.sheetnames:
+            if sheet_name in ("Copyright", "Codes", "Components", "Bibliography"):
+                continue
+            if sheet_name == "09 Fish & Shellfish_Fatty acids":
+                continue
+            if not sheet_name.startswith(("01 ", "02 ", "03 ", "04 ", "05 ", "06 ",
+                                          "07 ", "08 ", "09 ", "10_", "11 ", "12 ")):
+                continue
+            ws = wb[sheet_name]
+            for r in ws.iter_rows(min_row=2, values_only=True):
+                rec_id = r[0]
+                if rec_id is None:
+                    continue
+                rec_id = str(rec_id).strip()
+                if not rec_id:
+                    continue
+                sci_name = r[7] if len(r) > 7 and r[7] is not None else ""
+                variety = r[8] if len(r) > 8 and r[8] is not None else ""
+                rows.append({
+                    "source": BFC_SOURCE,
+                    "id": rec_id,
+                    "name": str(r[5] or r[4] or ""),
+                    "sci": str(sci_name) if sci_name else "",
+                    "variety": str(variety) if variety else "",
+                })
+        return rows
+    finally:
+        wb.close()

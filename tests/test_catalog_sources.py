@@ -33,3 +33,27 @@ def test_cofid_rows_from_real_raw_data():
     assert rows[0]["source"] == "SRC-COFID-2021"
     first = product_id(rows[0]["source"], rows[0]["id"])
     assert first.startswith("prod:cofid:") and first != "prod:cofid:"
+
+
+def test_bfc_rows_from_real_raw_data():
+    """BioFoodComp 4.0 must yield product records from all 12 category sheets."""
+    rows = catalog._bfc_rows()
+    assert len(rows) > 0, "BioFoodComp 4.0 must have product records"
+    assert rows[0]["source"] == "SRC-BFOODCOMP-4.0"
+    first = product_id(rows[0]["source"], rows[0]["id"])
+    assert first.startswith("prod:bfc:") and first != "prod:bfc:"
+
+
+def test_bfc_rows_skip_blank_spreadsheet_rows():
+    """Blank trailing rows in BioFoodComp sheets must be skipped."""
+    rows = catalog._bfc_rows()
+    assert all(r["id"] not in ("", "None") for r in rows)
+
+
+def test_bfc_rows_have_sci_and_variety():
+    """BioFoodComp rows must carry scientific name and variety for identity."""
+    rows = catalog._bfc_rows()
+    sci_rows = [r for r in rows if r.get("sci")]
+    assert len(sci_rows) > 0, "At least some BioFoodComp rows must have scientific names"
+    variety_rows = [r for r in rows if r.get("variety")]
+    assert len(variety_rows) > 0, "At least some BioFoodComp rows must have variety names"

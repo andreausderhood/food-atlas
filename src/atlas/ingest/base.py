@@ -87,6 +87,7 @@ def run(args, root: Path) -> int:
 
 
 # Import bulk adapters so they self-register on module load.
+from atlas.ingest import biofoodcomp  # noqa: E402, F401
 from atlas.ingest import bls_bulk  # noqa: E402, F401
 from atlas.ingest import cofid  # noqa: E402, F401
 from atlas.ingest import bulk_fdc  # noqa: E402, F401
