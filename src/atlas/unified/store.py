@@ -104,6 +104,17 @@ class Store:
             'WHERE d."group" = ?', [group]).fetchall()
         return {r[0] for r in rows}
 
+    def species_native_with_claims(self, group: str) -> set[str]:
+        """Subject slugs (org:<slug>) that directly own accepted datapoints in `group`.
+
+        Species-native sources (e.g. Dr. Duke's ethnobotany) claim at the species
+        itself, not through a product edge; callers map the slug back to a pool binomial.
+        """
+        rows = self.con.execute(
+            'SELECT DISTINCT subject FROM datapoints WHERE "group" = ? AND subject LIKE ?',
+            [group, "org:%"]).fetchall()
+        return {r[0][4:] for r in rows}   # strip the 'org:' prefix
+
     def species_searched_empty(self, group: str) -> set[str]:
         """Species with a linked product whose source was read for `group`, but nothing was accepted."""
         rows = self.con.execute(

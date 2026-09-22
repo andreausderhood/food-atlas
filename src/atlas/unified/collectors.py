@@ -13,7 +13,7 @@ import yaml
 
 from atlas.unified.cells import Cell
 from atlas.unified.geo import normalize_distribution
-from atlas.unified.identity import Edge
+from atlas.unified.identity import Edge, species_id
 from atlas.unified.parts import normalize_edible_parts
 from atlas.unified.photos import lookup_photo_status
 from atlas.unified.store import Store
@@ -99,6 +99,14 @@ def _group_cells(u: Universe, group: str) -> dict[str, Cell]:
     if u.store is not None:
         cells.update({b: Cell.SEARCHED_EMPTY for b in u.store.species_searched_empty(group)})
         cells.update({b: Cell.FILLED for b in u.store.species_with_claims(group)})
+        slug_to_binomial = {}
+        for b in u.species:
+            slug = species_id(b)[4:]          # species_id() = 'org:' + species_slug(binomial)
+            slug_to_binomial[slug] = b
+        for slug in u.store.species_native_with_claims(group):
+            b = slug_to_binomial.get(slug)
+            if b is not None:
+                cells[b] = Cell.FILLED        # species-native claims (Duke): directly on the species
     cells.update({b: Cell.FILLED for b in u.ledger.get(group, ())})
     return {b: c for b, c in cells.items() if b in u.species}
 
