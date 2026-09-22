@@ -55,16 +55,25 @@ class _SimpleTableParser(HTMLParser):
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]):
         if tag in ("td", "th"):
+            if self._in_cell:
+                self._current_row.append("".join(self._current_cell).strip())
             self._in_cell = True
             self._current_cell = []
         elif tag == "tr":
+            if self._in_cell:
+                self._current_row.append("".join(self._current_cell).strip())
+                self._in_cell = False
             self._current_row = []
 
     def handle_endtag(self, tag: str):
         if tag in ("td", "th"):
-            self._in_cell = False
-            self._current_row.append("".join(self._current_cell).strip())
+            if self._in_cell:
+                self._current_row.append("".join(self._current_cell).strip())
+                self._in_cell = False
         elif tag == "tr":
+            if self._in_cell:
+                self._current_row.append("".join(self._current_cell).strip())
+                self._in_cell = False
             if self._current_row:
                 self.rows.append(self._current_row)
 

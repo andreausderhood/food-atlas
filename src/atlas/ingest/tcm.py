@@ -39,7 +39,7 @@ def _extract_binomial(raw: str) -> str:
     m = re.match(r"^([A-Z][a-z]+)\s+([a-z]+)", clean)
     if m:
         return f"{m.group(1)} {m.group(2)}"
-    return clean
+    return ""
 
 
 def parse_properties(prop_str: str) -> tuple[list[str], list[str]]:
@@ -210,23 +210,24 @@ def fetch_herb_detail(herb_id: str, timeout: int = 15) -> dict[str, Any] | None:
     if len(summary_rows) <= 1:
         return None
 
-    # Summary headers: ['Herb id', 'Herb pinyin name', 'Herb Chinese name', 'Herb English name', 'Herb Latin name', 'Properties', 'Meridians', 'Use part', ...]
+    # Summary headers vary dynamically (e.g. Properties/Meridians vs Function/Indication)
     s_row = summary_rows[1]
+    headers = [str(h).lower().strip() for h in summary_rows[0]]
+    s_dict: dict[str, str] = {}
+    for h, val in zip(headers, s_row):
+        v = val.get("title", "") if isinstance(val, dict) else str(val or "")
+        s_dict[h] = v
 
-    def _val(idx: int) -> str:
-        if idx >= len(s_row):
-            return ""
-        v = s_row[idx]
-        return v.get("title", "") if isinstance(v, dict) else str(v or "")
-
-    herb_id_val = _val(0)
-    pinyin = _val(1)
-    chinese = _val(2)
-    english = _val(3)
-    latin = _val(4)
-    properties = _val(5)
-    meridians = _val(6)
-    use_part = _val(7)
+    herb_id_val = s_dict.get("herb id", "")
+    pinyin = s_dict.get("herb pinyin name", "")
+    chinese = s_dict.get("herb chinese name", "")
+    english = s_dict.get("herb english name", "")
+    latin = s_dict.get("herb latin name", "")
+    properties = s_dict.get("properties", "")
+    meridians = s_dict.get("meridians", "")
+    use_part = s_dict.get("use part", "")
+    function_val = s_dict.get("function", "")
+    indication_val = s_dict.get("indication", "")
 
     # Ingredients
     ingredients = []
@@ -239,7 +240,7 @@ def fetch_herb_detail(herb_id: str, timeout: int = 15) -> dict[str, Any] | None:
             if name:
                 ingredients.append({"id": iid, "name": name, "alias": alias})
 
-    species_candidate = _extract_binomial(use_part) or _extract_binomial(latin)
+    species_candidate = _extract_binomial(latin) or _extract_binomial(use_part)
 
     return {
         "herb_id": herb_id_val,
