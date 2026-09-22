@@ -24,3 +24,12 @@ def test_new_sources_are_in_source_short():
     from atlas.unified.identity import SOURCE_SHORT
     assert SOURCE_SHORT["SRC-CIQUAL-2025"] == "ciq"          # matches the adapter prefix prod:ciq
     assert SOURCE_SHORT["SRC-SWISS-FCDB-V7.1"] == "swiss"    # matches the adapter prefix prod:swiss
+    assert SOURCE_SHORT["SRC-COFID-2021"] == "cofid"         # matches the adapter prefix prod:cofid
+
+
+def test_cofid_rows_from_real_raw_data():
+    rows = catalog._cofid_rows()
+    assert len(rows) > 0, "CoFID 2021 must have product records"
+    assert rows[0]["source"] == "SRC-COFID-2021"
+    first = product_id(rows[0]["source"], rows[0]["id"])
+    assert first.startswith("prod:cofid:") and first != "prod:cofid:"

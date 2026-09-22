@@ -198,7 +198,8 @@ def load_universe(root: Path, with_products: bool = True) -> Universe:
     if with_products:
         from atlas.site import catalog
         rows = (catalog._fdc_rows() + catalog._bls_rows()
-                + catalog._ciqual_rows() + catalog._swiss_rows())
+                + catalog._ciqual_rows() + catalog._swiss_rows()
+                + catalog._cofid_rows())
         products = [product_id(r["source"], r["id"]) for r in rows]
     edges = load_edges(root / EDGES_PATH)
     store_file = root / STORE_PATH

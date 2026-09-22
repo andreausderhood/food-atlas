@@ -106,3 +106,28 @@ def _swiss_rows(root: Path = Path(".")) -> list[dict]:
         return rows
     finally:
         wb.close()
+
+
+COFID_SOURCE = "SRC-COFID-2021"
+
+
+def _cofid_rows(root: Path = Path(".")) -> list[dict]:
+    """Product records from CoFID 2021 (raw xlsx); blank spreadsheet rows are skipped."""
+    folder = root / "data/raw/cofid-2021"
+    hits = sorted(folder.rglob("*.xlsx"))
+    hits = [h for h in hits if "oldFoods" not in h.name]
+    if not hits:
+        return []
+    import openpyxl
+    wb = openpyxl.load_workbook(hits[0], read_only=True, data_only=True)
+    try:
+        ws = wb["1.3 Proximates"]
+        rows = []
+        for r in ws.iter_rows(min_row=4, values_only=True):
+            code = r[0]
+            if code is None:
+                continue
+            rows.append({"source": COFID_SOURCE, "id": str(code), "name": str(r[1] or "")})
+        return rows
+    finally:
+        wb.close()
