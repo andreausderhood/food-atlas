@@ -30,11 +30,26 @@ def _bls_rows(root: Path = Path(".")) -> list[dict]:
     folder = root / "data/raw/bls"
     if not folder.is_dir():
         return []
-    # BLS excel or csv if present
-    hits = sorted(folder.rglob("*.csv")) + sorted(folder.rglob("*.xlsx"))
-    if not hits:
-        return []
-    # If a csv food list exists:
+    # BLS 4.0 xlsx: BLS Code, Lebensmittelbezeichnung, Food name, then nutrient triplets
+    xlsx_hits = sorted(folder.rglob("BLS_4_0_Daten_*.xlsx"))
+    if xlsx_hits:
+        import openpyxl
+        wb = openpyxl.load_workbook(xlsx_hits[0], read_only=True, data_only=True)
+        try:
+            ws = wb.worksheets[0]
+            rows = []
+            for r in ws.iter_rows(min_row=2, values_only=True):
+                code = r[0] if r[0] is not None else ""
+                if not str(code).strip():
+                    continue
+                de_name = r[1] if r[1] is not None else ""
+                en_name = r[2] if r[2] is not None else ""
+                rows.append({"source": BLS_SOURCE, "id": str(code).strip(),
+                             "name": str(en_name), "name_de": str(de_name)})
+            return rows
+        finally:
+            wb.close()
+    # Fallback: CSV food list (legacy BLS format)
     csv_hits = sorted(folder.rglob("*food*.csv")) or sorted(folder.rglob("*.csv"))
     rows = []
     if csv_hits:
@@ -42,7 +57,8 @@ def _bls_rows(root: Path = Path(".")) -> list[dict]:
             for r in csv.DictReader(f):
                 rec_id = r.get("BLS_Code") or r.get("code") or r.get("id")
                 if rec_id:
-                    rows.append({"source": BLS_SOURCE, "id": rec_id, "name": r.get("Food name", r.get("name", ""))})
+                    rows.append({"source": BLS_SOURCE, "id": rec_id,
+                                 "name": r.get("Food name", r.get("name", ""))})
     return rows
 
 
