@@ -1,4 +1,5 @@
 """Tests for BHL API plate resolver and photos coverage collector."""
+from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
@@ -232,3 +233,36 @@ def test_photos_collector_ledger_and_store_priority(tmp_path):
     # zzz nulla has no claims -> Cell.UNSEARCHED
     assert cells_store["zzz nulla"] is Cell.UNSEARCHED
     s.close()
+
+
+def test_bhl_plate_cache(tmp_path: Path):
+    from atlas.unified.photos import BHLPlateCache, PlateResolver
+
+    cache_file = tmp_path / "bhl_cache.json"
+    cache = BHLPlateCache(cache_file)
+    assert len(cache) == 0
+
+    # Cache a found plate
+    cache.put("fragaria ananassa", "https://www.biodiversitylibrary.org/page/99999", title="Strawberry")
+    assert cache.get("fragaria ananassa") == "https://www.biodiversitylibrary.org/page/99999"
+    assert cache.status("fragaria ananassa") is Cell.FILLED
+
+    # Cache an empty search (honest empty)
+    cache.put_empty("rare orchid")
+    assert cache.get("rare orchid") is None
+    assert cache.status("rare orchid") is Cell.SEARCHED_EMPTY
+    assert cache.status("completely unknown") is Cell.UNSEARCHED
+
+    # Verify persistence to file
+    cache.save()
+    cache2 = BHLPlateCache(cache_file)
+    assert cache2.get("fragaria ananassa") == "https://www.biodiversitylibrary.org/page/99999"
+    assert cache2.status("rare orchid") is Cell.SEARCHED_EMPTY
+
+    # PlateResolver using cache avoids network
+    mock_session = MagicMock()
+    resolver = PlateResolver(session=mock_session, cache=cache2)
+    res = resolver.resolve("fragaria ananassa")
+    assert res == "https://www.biodiversitylibrary.org/page/99999"
+    mock_session.get.assert_not_called()
+

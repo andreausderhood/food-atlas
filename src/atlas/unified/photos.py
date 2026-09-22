@@ -16,6 +16,7 @@ import json
 import os
 import urllib.parse
 import urllib.request
+from pathlib import Path
 from typing import Any
 
 from atlas.unified.cells import Cell
@@ -200,10 +201,79 @@ def resolve_plate(
     return resolve_bhl_plate(scientific_name, api_key=api_key, session=session)
 
 
+class BHLPlateCache:
+    """Persistent local cache for resolved botanical plates (both hits and honest empty searches)."""
+
+    def __init__(self, path: Path | None = None):
+        self.path = path
+        self.entries: dict[str, dict[str, Any] | None] = {}
+        if path and path.is_file():
+            self.load()
+
+    def __len__(self) -> int:
+        return len(self.entries)
+
+    def load(self) -> None:
+        if not self.path or not self.path.is_file():
+            return
+        try:
+            data = json.loads(self.path.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                self.entries = data
+        except Exception:
+            pass
+
+    def save(self) -> None:
+        if not self.path:
+            return
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(self.entries, indent=2, sort_keys=True), encoding="utf-8")
+
+    def put(self, species: str, url: str, title: str | None = None, source: str = "SRC-BHL") -> None:
+        norm = " ".join(species.lower().split())
+        self.entries[norm] = {
+            "url": url,
+            "title": title or species,
+            "source": source,
+            "license": "public_domain",
+        }
+
+    def put_empty(self, species: str) -> None:
+        norm = " ".join(species.lower().split())
+        self.entries[norm] = None
+
+    def get(self, species: str) -> str | None:
+        norm = " ".join(species.lower().split())
+        item = self.entries.get(norm)
+        if item is None:
+            return None
+        return item.get("url") if isinstance(item, dict) else str(item)
+
+    def status(self, species: str) -> Cell:
+        norm = " ".join(species.lower().split())
+        if norm not in self.entries:
+            return Cell.UNSEARCHED
+        if self.entries[norm] is None:
+            return Cell.SEARCHED_EMPTY
+        return Cell.FILLED
+
+
+DEFAULT_CACHE_PATH = Path("data/build/bhl_plate_cache.json")
+_DEFAULT_CACHE: BHLPlateCache | None = None
+
+
+def get_default_cache() -> BHLPlateCache:
+    global _DEFAULT_CACHE
+    if _DEFAULT_CACHE is None:
+        _DEFAULT_CACHE = BHLPlateCache(DEFAULT_CACHE_PATH)
+    return _DEFAULT_CACHE
+
+
 def lookup_photo_status(
     scientific_name: str,
     verified_plates: dict[str, Any] | None = None,
     searched_empty: set[str] | None = None,
+    cache: BHLPlateCache | None = None,
 ) -> Cell:
     """Look up the photo status Cell for a species name.
 
@@ -220,6 +290,12 @@ def lookup_photo_status(
         return Cell.FILLED
     if norm in s_empty:
         return Cell.SEARCHED_EMPTY
+
+    c = cache or get_default_cache()
+    c_status = c.status(norm)
+    if c_status is not Cell.UNSEARCHED:
+        return c_status
+
     return Cell.UNSEARCHED
 
 
@@ -232,20 +308,40 @@ class PlateResolver:
         session: Any = None,
         verified_plates: dict[str, Any] | None = None,
         searched_empty: set[str] | None = None,
+        cache: BHLPlateCache | None = None,
     ):
         self.api_key = api_key
         self.session = session
         self.verified_plates = dict(VERIFIED_PLATES) if verified_plates is None else verified_plates
         self.searched_empty = set(SEARCHED_EMPTY_SPECIES) if searched_empty is None else searched_empty
+        self.cache = cache
 
     def resolve(self, scientific_name: str) -> str | None:
         norm = " ".join(scientific_name.lower().split())
         if norm in self.verified_plates:
             plate = self.verified_plates[norm]
             return plate["url"] if isinstance(plate, dict) else str(plate)
-        return resolve_bhl_plate(scientific_name, api_key=self.api_key, session=self.session)
+
+        if self.cache is not None:
+            cached = self.cache.get(scientific_name)
+            if cached is not None:
+                return cached
+            if self.cache.status(scientific_name) is Cell.SEARCHED_EMPTY:
+                return None
+
+        res = resolve_bhl_plate(scientific_name, api_key=self.api_key, session=self.session)
+        if self.cache is not None:
+            if res:
+                self.cache.put(scientific_name, res)
+            else:
+                self.cache.put_empty(scientific_name)
+        return res
 
     def status(self, scientific_name: str) -> Cell:
+        if self.cache is not None:
+            s = self.cache.status(scientific_name)
+            if s is not Cell.UNSEARCHED:
+                return s
         return lookup_photo_status(
             scientific_name,
             verified_plates=self.verified_plates,
