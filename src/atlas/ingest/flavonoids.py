@@ -1,6 +1,6 @@
 """Streaming adapter for the USDA Expanded Flavonoid Database R1.1 (public domain).
 
-Yields ``molecules``-group claims keyed to ``prod:flav:Plus-<NDB_No>``
+Yields ``molecules``-group claims keyed to ``prod:flav:<NDB_No>``
 subjects, with field ``molecule:flav:<Nutr_No>`` and derivation mapped
 from the source's Deriv_Cd column.
 """
@@ -33,7 +33,7 @@ class FlavonoidAdapter(BaseIngestAdapter):
     one Claim per FLAV_DAT row without loading the full dataset into RAM."""
 
     src_id = "SRC-USDA-FLAVONOID-EXP-1.1"
-    prefix = "prod:flav:Plus"
+    prefix = "prod:flav:"
 
     def load(self, root: Path, path: Path) -> Iterator[Claim]:
         folder = path if path.name == "flavonoid-exp-1.1" else path
@@ -72,8 +72,8 @@ class FlavonoidAdapter(BaseIngestAdapter):
                 else:
                     derivation = DERIV_MAP.get(deriv_cd, "assumed_zero")
 
-                subject = f"{self.prefix}-{ndb_no}"
-                field = f"molecule:flav:Plus-{nutr_no}"
+                subject = f"{self.prefix}{ndb_no}"
+                field = f"molecule:flav:{nutr_no}"
                 unit = nutrient["unit"]
 
                 ref = None

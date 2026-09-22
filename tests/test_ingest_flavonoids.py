@@ -112,19 +112,19 @@ class TestFlavonoidAdapterRegistration:
 
     def test_adapter_prefix(self, clean_registry):
         adapter = FlavonoidAdapter()
-        assert adapter.prefix == "prod:flav:Plus"
+        assert adapter.prefix == "prod:flav:"
 
 
 class TestFlavonoidClaimShape:
     def test_nonzero_claim_has_correct_shape(self, flavonoid_root):
         adapter = FlavonoidAdapter()
         claims = list(adapter.load(flavonoid_root, flavonoid_root))
-        nonzero = [c for c in claims if c.field == "molecule:flav:Plus-749"]
+        nonzero = [c for c in claims if c.field == "molecule:flav:749"]
         assert len(nonzero) >= 1
         c = nonzero[0]
-        assert c.subject == "prod:flav:Plus-01102"
+        assert c.subject == "prod:flav:01102"
         assert c.group == "molecules"
-        assert c.field == "molecule:flav:Plus-749"
+        assert c.field == "molecule:flav:749"
         assert c.v == 0.81
         assert c.unit == "mg"
         assert c.basis == "as_described"
@@ -135,11 +135,11 @@ class TestFlavonoidClaimShape:
     def test_zero_claim_included_honestly(self, flavonoid_root):
         adapter = FlavonoidAdapter()
         claims = list(adapter.load(flavonoid_root, flavonoid_root))
-        zero = [c for c in claims if c.field == "molecule:flav:Plus-710" and c.v == 0.0]
+        zero = [c for c in claims if c.field == "molecule:flav:710" and c.v == 0.0]
         assert len(zero) >= 1, "Flav_Val=0 must be included as an honest claim, not skipped"
         c = zero[0]
         assert c.derivation == "assumed_zero"
-        assert c.subject == "prod:flav:Plus-01001"
+        assert c.subject == "prod:flav:01001"
         assert c.unit == "mg"
         assert c.basis == "as_described"
         assert c.food_part == "product"
@@ -147,12 +147,12 @@ class TestFlavonoidClaimShape:
     def test_analytical_claim_derivation(self, flavonoid_root):
         adapter = FlavonoidAdapter()
         claims = list(adapter.load(flavonoid_root, flavonoid_root))
-        analytical = [c for c in claims if c.field == "molecule:flav:Plus-770"]
+        analytical = [c for c in claims if c.field == "molecule:flav:770"]
         assert len(analytical) >= 1
         c = analytical[0]
         assert c.derivation == "analytical"
         assert c.v == 0.01
-        assert c.subject == "prod:flav:Plus-01103"
+        assert c.subject == "prod:flav:01103"
 
     def test_claims_are_amount_claims(self, flavonoid_root):
         adapter = FlavonoidAdapter()
@@ -181,12 +181,12 @@ class TestFlavonoidClaimShape:
     def test_subject_uses_plus_ndb_no(self, flavonoid_root):
         adapter = FlavonoidAdapter()
         claims = list(adapter.load(flavonoid_root, flavonoid_root))
-        assert all(c.subject.startswith("prod:flav:Plus-") for c in claims)
+        assert all(c.subject.startswith("prod:flav:") for c in claims)
 
     def test_field_uses_plus_nutr_no(self, flavonoid_root):
         adapter = FlavonoidAdapter()
         claims = list(adapter.load(flavonoid_root, flavonoid_root))
-        assert all(c.field.startswith("molecule:flav:Plus-") for c in claims)
+        assert all(c.field.startswith("molecule:flav:") for c in claims)
 
     def test_v_num_from_flav_val(self, flavonoid_root):
         adapter = FlavonoidAdapter()
