@@ -443,6 +443,49 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
 
 ---
 
+### Task 27: FoodAtlas v4.11 Molecules Adapter (`bulk_foodatlas`)
+**Ziel:** Molekül-Claims aus dem vorhandenen FoodAtlas-v4.11-Bundle (Parquet) in den Bulk-Store streamen — Lebensmittel→Chemikalien mit ChEBI/PubChem-Kanten; Portierung des Legacy-`foodatlas.py` auf die Task-16-Architektur. Futter für die Molecules-Zeile über die 26.606 freigegebenen Kanten.
+- **Files:**
+  - Create: `src/atlas/ingest/bulk_foodatlas.py`
+  - Modify: `src/atlas/ingest/base.py` (registrieren), `src/atlas/unified/identity.py` falls nötig
+  - Test: `tests/test_ingest_foodatlas_bulk.py`
+- [ ] Step 1: Failing Test (echte Parquet-Zeilen als Fixtures)
+- [ ] Step 2: rot
+- [ ] Step 3: Adapter (group=molecules, field=molecule:chebi:<id>, Derivation + Ref-Mapping), Ingest ausführen
+- [ ] Step 4: grün + Store-Zahlen
+- [ ] Step 5: Guard & Commit
+
+### Task 28: Dr. Duke's Ethnobotany (Molecules + Traditional use)
+**Ziel:** USDA Dr. Duke's Phytochemical & Ethnobotanical Database (public_domain): Phytochemikalien je Art (molecules) und Volks-Traditionsverwendungen (traditional_use, group-Mapping prüfen — Claims brauchen `ref` im Werkform `Autor (Jahr): Titel, S. X`).
+- **Files:**
+  - Create: `src/atlas/ingest/duke.py`
+  - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (Orchestrator: Intake + `SRC-DUKE-2026`)
+  - Test: `tests/test_ingest_duke.py`
+- [ ] Step 1: Orchestrator-Intake; Step 2-5: TDD wie üblich; Step 6: Ingest + Bericht
+
+### Task 29: USDA Flavonoids (Molecules-Tiefe)
+**Ziel:** USDA Flavonoids Database (public_domain, ~400 Foods × 5 Klassen mg/100 g) als Product-Claims (`prod:flav:*`), Derivation `analytical`.
+- **Files:**
+  - Create: `src/atlas/ingest/flavonoids.py`
+  - Modify: `src/atlas/ingest/base.py`, Registry (Orchestrator: `SRC-USDA-FLAVONOID`)
+  - Test: `tests/test_ingest_flavonoids.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 30: IMPPAT 2.0 + HERB/TCM (Traditional use)
+**Ziel:** Ayurveda (IMPPAT: Rasa, Guna, Virya, Dosha) und TCM (HERB, TCMSP) als `traditional_use`-Claims; Imppat-Moleküle zusätzlich als `molecules`-Claims. Nicht-numerische Profile werden als nicht-Mengen-Claims mit Feld-Vokabular erfasst.
+- **Files:**
+  - Create: `src/atlas/ingest/tcm.py`, `src/atlas/ingest/imppat.py`
+  - Modify: `src/atlas/ingest/base.py`, Registry (Orchestrator-Intake für alle drei)
+  - Test: `tests/test_ingest_tcm.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 31: Welle 4 Baseline & Ratchet-Schluss
+**Ziel:** Coverage messen (Ziel: Molecules-Kontext auf vielen Arten über Kanten; traditional_use live), Baseline aktualisieren, verriegeln, Welle-4-Review.
+- **Files:**
+  - Modify: `docs/coverage/baseline.json`
+- [ ] `atlas coverage` prüfen → `--write-baseline` → `--check` → Commit & Review
+
+
 ## 8. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
 
 | Agent / Model | Orca Role | Primary Responsibility | Input Artifacts | Output Artifacts |
