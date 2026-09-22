@@ -35,10 +35,10 @@
   "collector": "food_hierarchy",
   "counts": {
    "context": 0,
-   "filled": 136,
+   "filled": 38710,
    "not_applicable": 0,
    "searched_empty": 0,
-   "unsearched": 120531
+   "unsearched": 81957
   },
   "denominator": 120667,
   "key": "food_hierarchy",
@@ -50,10 +50,10 @@
   "collector": "nutrients",
   "counts": {
    "context": 0,
-   "filled": 60,
+   "filled": 217,
    "not_applicable": 0,
    "searched_empty": 0,
-   "unsearched": 26531
+   "unsearched": 26374
   },
   "denominator": 26591,
   "key": "nutrients",
