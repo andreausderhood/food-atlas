@@ -177,3 +177,69 @@ def test_open_candidates_have_lower_confidence():
     assert len(common_exact) > 0, "There should be common_exact proposals as open candidates"
     for p in common_exact:
         assert p["confidence"] < 0.95
+
+
+# --- Task 21: Identity-Matcher Quality — Multi-Word & Qualifier Rules ---
+
+TASK21_PRODUCTS = [
+    {"source": BLS, "id": "T21-1", "name": "Peppers, bell, green, raw"},
+    {"source": BLS, "id": "T21-2", "name": "Mushroom, lion's mane"},
+    {"source": BLS, "id": "T21-3", "name": "Almonds"},
+    {"source": BLS, "id": "T21-4", "name": "Black currant"},
+    {"source": BLS, "id": "T21-5", "name": "Apple"},
+]
+
+
+def test_peppers_bell_no_piper_nigrum_proposal():
+    """'Peppers, bell, green, raw' must NOT produce a Piper nigrum proposal."""
+    pool = _pool()
+    proposals_path = generate_proposals(TASK21_PRODUCTS, pool)
+    proposals = _load_proposals(proposals_path)
+    piper_proposals = [p for p in proposals
+                       if p["species"] == "piper nigrum" and p["name"] == "Peppers, bell, green, raw"]
+    assert len(piper_proposals) == 0, \
+        f"'Peppers, bell, green, raw' must not match piper nigrum, got {piper_proposals}"
+
+
+def test_mushroom_lions_mane_no_agaricus_proposal():
+    """'Mushroom, lion's mane' must NOT produce an Agaricus proposal."""
+    pool = _pool()
+    proposals_path = generate_proposals(TASK21_PRODUCTS, pool)
+    proposals = _load_proposals(proposals_path)
+    agaricus_proposals = [p for p in proposals
+                          if "agaricus" in p["species"] and p["name"] == "Mushroom, lion's mane"]
+    assert len(agaricus_proposals) == 0, \
+        f"'Mushroom, lion's mane' must not match agaricus, got {agaricus_proposals}"
+
+
+def test_almonds_still_matches_prunus_dulcis():
+    """'Almonds' must still produce a Prunus dulcis proposal (true positive)."""
+    pool = _pool()
+    proposals_path = generate_proposals(TASK21_PRODUCTS, pool)
+    proposals = _load_proposals(proposals_path)
+    almond_proposals = [p for p in proposals
+                        if p["name"] == "Almonds" and "prunus dulcis" in p["species"]]
+    assert len(almond_proposals) >= 1, \
+        f"'Almonds' must match prunus dulcis, got {proposals}"
+
+
+def test_black_currant_still_matches_ribes_nigrum():
+    """'Black currant' must still produce a Ribes nigrum proposal (true positive)."""
+    pool = _pool()
+    proposals_path = generate_proposals(TASK21_PRODUCTS, pool)
+    proposals = _load_proposals(proposals_path)
+    currant_proposals = [p for p in proposals
+                         if p["name"] == "Black currant" and "ribes nigrum" in p["species"]]
+    assert len(currant_proposals) >= 1, \
+        f"'Black currant' must match ribes nigrum, got {proposals}"
+
+
+def test_apple_still_matches_malus_domestica():
+    """'Apple' must still produce a Malus domestica proposal (true positive)."""
+    pool = _pool()
+    proposals_path = generate_proposals(TASK21_PRODUCTS, pool)
+    proposals = _load_proposals(proposals_path)
+    apple_proposals = [p for p in proposals
+                       if p["name"] == "Apple" and p["species"] == "malus domestica"]
+    assert len(apple_proposals) >= 1, \
+        f"'Apple' must match malus domestica, got {proposals}"

@@ -164,12 +164,24 @@ def resolver(edges: list[Edge]) -> Callable[[str], str | None]:
 
 import re
 
+GENERIC_CATEGORY_WORDS = frozenset({
+    "mushroom", "mushrooms",
+    "pepper", "peppers",
+    "bean", "beans",
+    "berry", "berries",
+})
+
 _PROPOSALS_DIR = Path("data/research/proposals")
 
 
 def _normalize_name(name: str) -> str:
     """Lowercase, strip punctuation, collapse whitespace for matching."""
     return re.sub(r"[^a-z0-9\s]", "", name.lower()).strip()
+
+
+def _normalize_compact(name: str) -> str:
+    """Lowercase, strip punctuation, remove all whitespace for phrase matching."""
+    return re.sub(r"[^a-z0-9]", "", name.lower())
 
 
 def _build_matcher_index(pool: dict) -> dict:
@@ -237,14 +249,26 @@ def match_product_to_species(
         seen.add(binomial)
 
     # 2) Exact common name match → common_exact, confidence 0.85
+    #    Also try compact normalization (no spaces) so "black currant"
+    #    matches the common name "Blackcurrant" for Ribes nigrum.
     if norm in index["exact_common"]:
         binomial = index["exact_common"][norm]
         if binomial not in seen:
             results.append({"species": binomial, "match_class": "common_exact", "confidence": 0.85})
             seen.add(binomial)
+    compact = _normalize_compact(norm)
+    if compact and compact != norm and compact in index["exact_common"]:
+        binomial = index["exact_common"][compact]
+        if binomial not in seen:
+            results.append({"species": binomial, "match_class": "common_exact", "confidence": 0.85})
+            seen.add(binomial)
 
     # 3) Any word in product name matches a common name exactly → common_exact
+    #    Skip generic category words (mushroom, pepper, bean, berry) that
+    #    cause false positives when they appear as qualifiers in product names.
     for w in norm_words:
+        if w in GENERIC_CATEGORY_WORDS:
+            continue
         if w in index["exact_common"]:
             binomial = index["exact_common"][w]
             if binomial not in seen:
@@ -253,7 +277,7 @@ def match_product_to_species(
                 break
         # Also check singular form (strip trailing 's')
         singular = w.rstrip('s')
-        if singular and singular != w and singular in index["exact_common"]:
+        if singular and singular != w and singular not in GENERIC_CATEGORY_WORDS and singular in index["exact_common"]:
             binomial = index["exact_common"][singular]
             if binomial not in seen:
                 results.append({"species": binomial, "match_class": "common_exact", "confidence": 0.85})
@@ -261,9 +285,12 @@ def match_product_to_species(
                 break
 
     # 4) Product name contains a common name as a whole word → fuzzy, confidence 0.6
+    #    Skip generic category words.
     for cn, binomials in index["common_substring"].items():
         if len(cn) < 4:
             continue  # skip short names that cause false substring matches
+        if cn in GENERIC_CATEGORY_WORDS:
+            continue
         if cn in norm_words:
             for b in binomials:
                 if b not in seen:
