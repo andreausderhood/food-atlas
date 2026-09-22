@@ -282,4 +282,6 @@ class TcmAdapter(BaseIngestAdapter):
                     yield from iter_herb_claims(rec)
 
 
-register(TcmAdapter())
+# NOTE: TcmAdapter is not auto-registered here.
+# It has been superseded by HerbAdapter (herb.py) for JSONL-based ingest.
+# The API-based client remains available for reference only.

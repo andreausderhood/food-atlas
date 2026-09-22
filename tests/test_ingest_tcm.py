@@ -108,10 +108,10 @@ def tmp_imppat_file(tmp_path: Path) -> Path:
 # ---------------------------------------------------------------------------
 
 def test_tcm_adapter_registered():
-    from atlas.ingest.tcm import TcmAdapter
+    from atlas.ingest.herb import HerbAdapter
 
     adapter = get_adapter("SRC-HERB-TCM")
-    assert isinstance(adapter, TcmAdapter)
+    assert isinstance(adapter, HerbAdapter)
     assert adapter.src_id == "SRC-HERB-TCM"
 
 
@@ -199,16 +199,16 @@ def test_imppat_claims_generation_and_contract(repo_root: Path, sources, tmp_imp
     assert any(c.field == "ayurveda:vipaka" and c.v == "Madhura" for c in claims)
     assert any(c.field == "ayurveda:dosha" and c.v == "Kapha-Vata hara" for c in claims)
 
-    # Traditional use: Therapeutics
-    assert any("abdominal-pain" in c.field and c.v == "Abdominal pain" for c in claims)
-    assert any("anemia" in c.field and c.v == "Anemia" for c in claims)
+    # Traditional use: Therapeutics (field naming changed to traditional_use:imppat:{MESH-token})
+    assert any(c.field == "traditional_use:imppat:D015746" and c.v == "Abdominal pain" for c in claims)
+    assert any(c.field == "traditional_use:imppat:D000740" and c.v == "Anemia" for c in claims)
 
-    # Molecules: Phytochemicals
+    # Molecules: Phytochemicals (field naming changed to molecule:imppat:{IMPHY-ID})
     mol_claims = [c for c in claims if c.group == "molecules"]
     assert len(mol_claims) == 2
-    mol_names = {c.v for c in mol_claims}
-    assert "Gingerglycolipid B" in mol_names
-    assert "Gingerglycolipid A" in mol_names
+    mol_fields = {c.field for c in mol_claims}
+    assert "molecule:imppat:IMPHY000448" in mol_fields
+    assert "molecule:imppat:IMPHY001235" in mol_fields
 
 
 # ---------------------------------------------------------------------------
@@ -239,43 +239,6 @@ def test_tcm_fetch_herb_mocked():
         assert len(rec["ingredients"]) == 1
 
 
-def test_imppat_fetch_plant_mocked():
-    from atlas.ingest.imppat import parse_imppat_phytochemical_table, parse_imppat_therapeutics_table
-
-    html_phy = """
-    <table id="table_id">
-    <tbody>
-    <tr>
-      <td><a href="/imppat/phytochemical/Zingiber officinale">Zingiber officinale</a></td>
-      <td>rhizome</td>
-      <td><a href="/imppat/phytochemical-detailedpage/IMPHY000448">IMPHY000448</a></td>
-      <td>Gingerglycolipid B</td>
-      <td>ISBN:9788171360536</td>
-    </tr>
-    </tbody>
-    </table>
-    """
-    phys = parse_imppat_phytochemical_table(html_phy)
-    assert len(phys) == 1
-    assert phys[0]["name"] == "Gingerglycolipid B"
-    assert phys[0]["phytochemical_id"] == "IMPHY000448"
-    assert phys[0]["plant_part"] == "rhizome"
-
-    html_tu = """
-    <table id="table_id">
-    <tbody>
-    <tr>
-      <td><a href="/imppat/therapeutics/Zingiber officinale">Zingiber officinale</a></td>
-      <td>rhizome</td>
-      <td>Abdominal pain</td>
-      <td>MESH:D015746</td>
-      <td>The Ayurvedic Pharmacopoeia of India Part-1 Volume-9</td>
-    </tr>
-    </tbody>
-    </table>
-    """
-    tus = parse_imppat_therapeutics_table(html_tu)
-    assert len(tus) == 1
-    assert tus[0]["therapeutic_use"] == "Abdominal pain"
-    assert tus[0]["mesh_id"] == "MESH:D015746"
-    assert tus[0]["plant_part"] == "rhizome"
+# NOTE: API-based fetch helpers (parse_imppat_phytochemical_table,
+# parse_imppat_therapeutics_table) were removed when imppat.py was converted
+# to JSONL streaming. See src/atlas/ingest/imppat.py for the current adapter.

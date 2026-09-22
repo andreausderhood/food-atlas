@@ -1,21 +1,21 @@
-"""IMPPAT 2.0 Indian Medicinal Plants, Phytochemistry And Therapeutics Ingest Adapter.
+"""IMPPAT 2.0 Indian Medicinal Plants, Phytochemistry And Therapeutics — JSONL streaming ingest adapter.
 
-Produces authentic ``traditional_use`` claims (Ayurvedic properties: Rasa, Guna, Virya,
-Vipaka, Dosha, and therapeutic uses) and non-amount ``molecules`` presence claims
-from IMPPAT 2.0 (https://cb.imsc.res.in/imppat/).
+Produces ``traditional_use`` claims (Ayurvedic properties + therapeutic uses
+from IMPPAT 2.0 JSONL) and non-amount ``molecules`` presence claims.
 
-Licensed under CC-BY-NC-SA-4.0 (open_content with source citation & non-commercial attribution).
-Strictly adheres to Rule 14b (Epistemic Separation): Traditional Ayurvedic concepts are
-cited in authentic native Sanskrit vocabulary and never reduced to Western assays.
+Species-native: no identity edges, no catalog wiring needed.
+Coverage flows via store.species_native_with_claims.
+
+Licensed under CC-BY-NC-4.0 (open_content, flagged).
+Strictly adheres to Rule 14b (Epistemic Separation): Traditional Ayurvedic
+concepts are cited in authentic native Sanskrit vocabulary and never reduced
+to Western assays.
 """
 from __future__ import annotations
 
 import json
 import re
-import urllib.parse
-import urllib.request
 from collections.abc import Iterator
-from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
@@ -25,7 +25,6 @@ from atlas.unified.identity import species_id
 
 SRC_ID = "SRC-IMPPAT-2.0"
 REF_DEFAULT = "Mohanraj, K. et al. (2018). IMPPAT: A curated database of Indian Medicinal Plants, Phytochemistry And Therapeutics. Scientific Reports, 8, 4329. cb.imsc.res.in/imppat/."
-IMPPAT_AJAX_URL = "https://cb.imsc.res.in/imppat/ajax"
 
 
 def _slugify(text: str) -> str:
@@ -34,100 +33,15 @@ def _slugify(text: str) -> str:
     return s.strip("-")
 
 
-def _strip_tags(html_text: str) -> str:
-    """Strip HTML tags and unescape text."""
-    clean = re.sub(r"<[^>]+>", " ", html_text)
-    clean = re.sub(r"\s+", " ", clean)
-    return clean.strip()
-
-
-# ---------------------------------------------------------------------------
-# HTML Table Parsers (Standard Library, zero external dependencies)
-# ---------------------------------------------------------------------------
-
-class _SimpleTableParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.rows: list[list[str]] = []
-        self._current_row: list[str] = []
-        self._current_cell: list[str] = []
-        self._in_cell = False
-
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]):
-        if tag in ("td", "th"):
-            if self._in_cell:
-                self._current_row.append("".join(self._current_cell).strip())
-            self._in_cell = True
-            self._current_cell = []
-        elif tag == "tr":
-            if self._in_cell:
-                self._current_row.append("".join(self._current_cell).strip())
-                self._in_cell = False
-            self._current_row = []
-
-    def handle_endtag(self, tag: str):
-        if tag in ("td", "th"):
-            if self._in_cell:
-                self._current_row.append("".join(self._current_cell).strip())
-                self._in_cell = False
-        elif tag == "tr":
-            if self._in_cell:
-                self._current_row.append("".join(self._current_cell).strip())
-                self._in_cell = False
-            if self._current_row:
-                self.rows.append(self._current_row)
-
-    def handle_data(self, data: str):
-        if self._in_cell:
-            self._current_cell.append(data)
-
-
-def parse_imppat_phytochemical_table(html: str) -> list[dict[str, str]]:
-    """Parse phytochemical table HTML from IMPPAT AJAX response."""
-    parser = _SimpleTableParser()
-    parser.feed(html)
-    out: list[dict[str, str]] = []
-    for row in parser.rows:
-        # Expected row: [Plant, Plant part, IMPPAT Phytochemical ID, Phytochemical name, References]
-        if len(row) >= 4 and not any(h in row[0].lower() for h in ("indian medicinal plant", "plant part")):
-            plant = row[0]
-            part = row[1] if len(row) > 1 else ""
-            phy_id = row[2] if len(row) > 2 else ""
-            name = row[3] if len(row) > 3 else ""
-            ref = row[4] if len(row) > 4 else ""
-            if name:
-                out.append({
-                    "plant_name": plant,
-                    "plant_part": part,
-                    "phytochemical_id": phy_id,
-                    "name": name,
-                    "reference": ref or REF_DEFAULT,
-                })
-    return out
-
-
-def parse_imppat_therapeutics_table(html: str) -> list[dict[str, str]]:
-    """Parse therapeutics table HTML from IMPPAT AJAX response."""
-    parser = _SimpleTableParser()
-    parser.feed(html)
-    out: list[dict[str, str]] = []
-    for row in parser.rows:
-        # Expected row: [Plant, Plant part, Therapeutic use, Identifiers (MESH, etc.), References]
-        if len(row) >= 3 and not any(h in row[0].lower() for h in ("indian medicinal plant", "plant part")):
-            plant = row[0]
-            part = row[1] if len(row) > 1 else ""
-            tu = row[2] if len(row) > 2 else ""
-            mesh = row[3] if len(row) > 3 else ""
-            ref = row[4] if len(row) > 4 else ""
-            if tu:
-                out.append({
-                    "plant_name": plant,
-                    "plant_part": part,
-                    "therapeutic_use": tu,
-                    "mesh_id": mesh,
-                    "reference": ref or REF_DEFAULT,
-                })
-    return out
+def _first_mesh_token(mesh_id: str) -> str:
+    """Extract the first MESH token (without MESH: prefix) from a mesh_id string."""
+    if not mesh_id:
+        return ""
+    for token in mesh_id.split(","):
+        token = token.strip()
+        if token.startswith("MESH:"):
+            return token[5:]
+    return ""
 
 
 # ---------------------------------------------------------------------------
@@ -135,7 +49,11 @@ def parse_imppat_therapeutics_table(html: str) -> list[dict[str, str]]:
 # ---------------------------------------------------------------------------
 
 def iter_imppat_claims(record: dict[str, Any]) -> Iterator[Claim]:
-    """Convert an IMPPAT record dictionary into unified claims."""
+    """Convert an IMPPAT JSONL record dictionary into unified claims.
+
+    Species-native: produces identity (subject = species_id) and claims
+    but no identity edges. Coverage flows via store.species_native_with_claims.
+    """
     plant_name = record.get("plant_name") or ""
     if not plant_name:
         return
@@ -145,7 +63,7 @@ def iter_imppat_claims(record: dict[str, Any]) -> Iterator[Claim]:
     # 1. Ayurvedic Classical Properties (Rasa, Guna, Virya, Vipaka, Dosha)
     ayur = record.get("ayurvedic_properties") or {}
 
-    def _emit_props(field_name: str, values: Any):
+    def _emit_ayurveda_props(field_name: str, values: Any):
         if not values:
             return
         v_list = values if isinstance(values, list) else [values]
@@ -162,110 +80,60 @@ def iter_imppat_claims(record: dict[str, Any]) -> Iterator[Claim]:
                     ref=record.get("reference") or REF_DEFAULT,
                 )
 
-    yield from _emit_props("ayurveda:rasa", ayur.get("rasa"))
-    yield from _emit_props("ayurveda:guna", ayur.get("guna"))
-    yield from _emit_props("ayurveda:virya", ayur.get("virya"))
-    yield from _emit_props("ayurveda:vipaka", ayur.get("vipaka"))
-    yield from _emit_props("ayurveda:dosha", ayur.get("dosha"))
+    yield from _emit_ayurveda_props("ayurveda:rasa", ayur.get("rasa"))
+    yield from _emit_ayurveda_props("ayurveda:guna", ayur.get("guna"))
+    yield from _emit_ayurveda_props("ayurveda:virya", ayur.get("virya"))
+    yield from _emit_ayurveda_props("ayurveda:vipaka", ayur.get("vipaka"))
+    yield from _emit_ayurveda_props("ayurveda:dosha", ayur.get("dosha"))
 
-    # 2. Therapeutic Uses
+    # 2. Therapeutic Uses → traditional_use:imppat:{first-MESH-token}
     for tu_item in record.get("therapeutics") or []:
         tu_name = tu_item.get("therapeutic_use") or ""
         if not tu_name:
             continue
-        slug = _slugify(tu_name)
+        mesh_id = tu_item.get("mesh_id") or ""
+        first_mesh = _first_mesh_token(mesh_id)
         ref = tu_item.get("reference") or record.get("reference") or REF_DEFAULT
-        part = tu_item.get("plant_part")
         yield Claim(
             subject=subject,
             group="traditional_use",
-            field=f"ayurveda:therapeutic-{slug}",
+            field=f"traditional_use:imppat:{first_mesh}" if first_mesh else f"traditional_use:imppat:{_slugify(tu_name)}",
             v=tu_name,
             src=SRC_ID,
             derivation="literature",
-            food_part=part if part else None,
             ref=ref,
         )
 
-    # 3. Phytochemicals (Molecules Presence)
+    # 3. Phytochemicals (Molecules Presence) → molecule:imppat:{IMPHY-ID}
     for phy in record.get("phytochemicals") or []:
         phy_name = phy.get("name") or ""
         if not phy_name:
             continue
-        slug = _slugify(phy_name)
+        phy_id = phy.get("phytochemical_id") or ""
         ref = phy.get("reference") or record.get("reference") or REF_DEFAULT
-        part = phy.get("plant_part")
+        part = phy.get("plant_part") or ""
+        ref_with_part = f"{ref} | {part}" if part else ref
         yield Claim(
             subject=subject,
             group="molecules",
-            field=f"molecule-imppat-{slug}",
+            field=f"molecule:imppat:{phy_id}" if phy_id else f"molecule:imppat:{_slugify(phy_name)}",
             v=phy_name,
             src=SRC_ID,
             derivation="literature",
-            food_part=part if part else None,
-            ref=ref,
+            ref=ref_with_part,
         )
 
 
-# ---------------------------------------------------------------------------
-# Live API Queries
-# ---------------------------------------------------------------------------
-
-def fetch_imppat_phytochemicals(plant_name: str, timeout: int = 15) -> list[dict[str, str]]:
-    """Fetch phytochemicals table for an Indian medicinal plant from IMPPAT AJAX."""
-    post_data = urllib.parse.urlencode({
-        "combine": plant_name,
-        "pid": "",
-        "pname": "",
-        "action": "phytochemical",
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        IMPPAT_AJAX_URL,
-        data=post_data,
-        headers={"Content-Type": "application/x-www-form-urlencoded", "User-Agent": "FoodAtlas/1.0"},
-    )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        res = json.loads(resp.read().decode("utf-8", errors="ignore"))
-    html = res.get("output", "")
-    return parse_imppat_phytochemical_table(html)
-
-
-def fetch_imppat_therapeutics(plant_name: str, timeout: int = 15) -> list[dict[str, str]]:
-    """Fetch therapeutic uses table for an Indian medicinal plant from IMPPAT AJAX."""
-    post_data = urllib.parse.urlencode({
-        "combine": plant_name,
-        "tu": "",
-        "action": "therapeutics",
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        IMPPAT_AJAX_URL,
-        data=post_data,
-        headers={"Content-Type": "application/x-www-form-urlencoded", "User-Agent": "FoodAtlas/1.0"},
-    )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        res = json.loads(resp.read().decode("utf-8", errors="ignore"))
-    html = res.get("output", "")
-    return parse_imppat_therapeutics_table(html)
-
-
-def fetch_imppat_record(plant_name: str, timeout: int = 15) -> dict[str, Any]:
-    """Fetch combined phytochemicals and therapeutics for a plant."""
-    phys = fetch_imppat_phytochemicals(plant_name, timeout=timeout)
-    tus = fetch_imppat_therapeutics(plant_name, timeout=timeout)
-    return {
-        "plant_name": plant_name,
-        "ayurvedic_properties": {},
-        "phytochemicals": phys,
-        "therapeutics": tus,
-    }
-
-
-# ---------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Ingest Adapter
-# ---------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 
 class ImppatAdapter(BaseIngestAdapter):
-    """Streaming ingest adapter for IMPPAT 2.0 Ayurvedic database."""
+    """Streaming JSONL ingest adapter for IMPPAT 2.0.
+
+    Species-native: no identity edges, no catalog wiring needed.
+    Coverage flows via store.species_native_with_claims.
+    """
 
     src_id = SRC_ID
 
@@ -279,12 +147,14 @@ class ImppatAdapter(BaseIngestAdapter):
                         line = line.strip()
                         if line:
                             rec = json.loads(line)
-                            yield from iter_imppat_claims(rec)
+                            if isinstance(rec, dict):
+                                yield from iter_imppat_claims(rec)
             elif f.suffix == ".json":
                 data = json.loads(f.read_text(encoding="utf-8"))
                 records = data if isinstance(data, list) else [data]
                 for rec in records:
-                    yield from iter_imppat_claims(rec)
+                    if isinstance(rec, dict):
+                        yield from iter_imppat_claims(rec)
 
 
 register(ImppatAdapter())

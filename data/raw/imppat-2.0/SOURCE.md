@@ -3,7 +3,7 @@
 - **Source ID:** `SRC-IMPPAT-2.0`
 - **Publisher:** The Institute of Mathematical Sciences (IMSc), Chennai
 - **URL:** https://cb.imsc.res.in/imppat/
-- **License:** CC-BY-NC-SA-4.0 (`open_content`, Non-Commercial attribution flag)
+- **License:** CC-BY-NC-4.0 (`open_content`, NonCommercial — per IMPPAT 2.0 paper Data Availability)
 - **Citation:** Mohanraj, K. et al. (2018). IMPPAT: A curated database of Indian Medicinal Plants, Phytochemistry And Therapeutics. Scientific Reports, 8, 4329. cb.imsc.res.in/imppat/.
 
 ## Structure

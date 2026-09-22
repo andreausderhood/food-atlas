@@ -357,7 +357,7 @@ SRC-IMPPAT-2.0:
   title: "IMPPAT 2.0: Indian Medicinal Plants, Phytochemistry And Therapeutics"
   publisher: "The Institute of Mathematical Sciences (IMSc), Chennai"
   url: "https://cb.imsc.res.in/imppat/"
-  license: "CC-BY-NC-SA-4.0 / Factual citation"
+  license: "CC-BY-NC-4.0 (NonCommercial — flagged; commercial use of these records requires permission)"
   license_url: "https://cb.imsc.res.in/imppat/terms"
   license_class: open_content
   license_read: true
