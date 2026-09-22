@@ -39,6 +39,30 @@ SRC-BLS-4.0:
   independence: independent
   supports: [identity, nutrition]
   attribution: "Max Rubner-Institut (2025): Bundeslebensmittelschlüssel (BLS), Version 4.0 — Deutsche Nährstoffdatenbank. Karlsruhe. DOI: 10.25826/Data20251217-134202-0"
+SRC-COFID-2021:
+  title: "McCance & Widdowson's Composition of Foods Integrated Dataset (CoFID), 2021"
+  publisher: "Department of Health and Social Care (UK) / AFRC Institute of Food Research"
+  url: "https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid"
+  license: "Open Government Licence v3.0"
+  license_url: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+  license_class: open_license
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "Public Health England / Department of Health and Social Care (2021): McCance & Widdowson's Composition of Foods Integrated Dataset (CoFID). gov.uk. OGL v3.0."
+SRC-BFOODCOMP-4.0:
+  title: "FAO INFOODS Food Biodiversity Database (BioFoodComp), Version 4.0"
+  publisher: "Food and Agriculture Organization of the United Nations (FAO)"
+  url: "https://www.fao.org/infoods/infoods/food-biodiversity/en"
+  license: "Open content — full integration and citation with origin reference (plan classification)"
+  license_url: "https://www.fao.org/infoods/infoods/food-biodiversity/en"
+  license_class: open_content
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, nutrition]
+  attribution: "FAO INFOODS: Food Biodiversity Database (BioFoodComp) Version 4.0. fao.org/fileadmin/templates/food_composition/documents/BioFoodComp4.0.xlsx."
 SRC-FOODATLAS-V4.11:
   title: "FoodAtlas knowledge graph bundle v4.11 (CTD-derived rows excluded)"
   publisher: "AI Institute for Next Generation Food Systems, UC Davis"
