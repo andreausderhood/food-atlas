@@ -488,8 +488,69 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `docs/coverage/baseline.json`
 - [x] `atlas coverage` prüfen → `--write-baseline` → `--check` → Commit & Review
 
+---
 
-## 8. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
+## 8. Welle 5 Detail-Tasks (Seasonality, Varieties, Visuals & Bioactivity)
+
+Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), Diff-Guard und Review dazwischen.
+
+### Task 32: USDA Pomological Watercolors Adapter & Visuals (`bulk_pomological`)
+**Ziel:** Die 7.497 historischen pomologischen Aquarelle des USDA (public_domain) als Visuals (`photo:url`, `photo:thumb_url`, `photo:artist`, `photo:year`) und Sorten (`cultivar:name`) in den Bulk-Store streamen.
+- **Files:**
+  - Create: `src/atlas/ingest/pomological.py`
+  - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (Orchestrator: `SRC-USDA-POMOLOGICAL`)
+  - Test: `tests/test_ingest_pomological.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 33: BHL Plate API Live-Resolver & Plate Caching (`photos`)
+**Ziel:** Den BHL-Client (`photos.py`) aktivieren und verifizierte Farbtafeln für Arten ohne Bilder abfragen, mit lokalem Resolution-Cache.
+- **Files:**
+  - Modify: `src/atlas/unified/photos.py`
+  - Modify: `src/atlas/unified/collectors.py`
+  - Test: `tests/test_unified_photos.py`
+- [ ] TDD → BHL Resolver → Guard → Commit
+
+### Task 34: BLE / BZfE Saisonkalender Adapter (`seasonality`)
+**Ziel:** Saisonzeiten (Monate 1–12 nach Freiland, Lager, geschützt, Import) für mitteleuropäisches Obst und Gemüse als `season:harvest`, `season:storage` Claims erfassen.
+- **Files:**
+  - Create: `src/atlas/ingest/season_bzfe.py`
+  - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (`SRC-BZFE-SAISON`)
+  - Test: `tests/test_ingest_season_bzfe.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 35: FAO Global Crop Calendar Adapter (`seasonality`)
+**Ziel:** Globale Ernte- und Aussaatfenster aus FAO GIEWS / SAGE Wisconsin für 19 Hauptkulturen und Hunderte Unterarten über 130 Länder erfassen.
+- **Files:**
+  - Create: `src/atlas/ingest/fao_crop_calendar.py`
+  - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (`SRC-FAO-CROP-CALENDAR`)
+  - Test: `tests/test_ingest_fao_calendar.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 36: EU Common Catalogue & Mansfeld Varieties (`varieties`)
+**Ziel:** Europäische Sortennamen (EU Plant Variety Portal) und Sortengruppen/infraspezifische Taxonomie (Mansfeld IPK Gatersleben) als `cultivar:name`, `cultivar:group` erfassen.
+- **Files:**
+  - Create: `src/atlas/ingest/varieties_eu.py`
+  - Modify: `src/atlas/ingest/base.py`, `src/atlas/unified/collectors.py`, `data/registry/sources.yaml` (`SRC-EU-PLANT-VARIETIES`)
+  - Test: `tests/test_ingest_varieties.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 37: Antioxidant Capacity Primär-Ingest (`bioactivity`)
+**Ziel:** Carlsen et al. 2010 (FRAP Total Antioxidant Capacity, 3.139 Lebensmittel, PMC Open Access) als quantitative Bioaktivitäts-Claims ingestieren.
+- **Files:**
+  - Create: `src/atlas/ingest/bioactivity_frap.py`
+  - Modify: `src/atlas/ingest/base.py`, `src/atlas/unified/collectors.py`, `data/registry/sources.yaml` (`SRC-CARLSEN-FRAP-2010`)
+  - Test: `tests/test_ingest_frap.py`
+- [ ] Intake → TDD → Ingest → Guard → Commit
+
+### Task 38: Welle 5 Baseline & Ratchet-Schluss
+**Ziel:** Coverage messen (Ziele: Varieties, Seasonality, Photos und Bioactivity aktiv), Baseline aktualisieren, verriegeln, Welle-5-Review.
+- **Files:**
+  - Modify: `docs/coverage/baseline.json`
+- [ ] `atlas coverage` prüfen → `--write-baseline` → `--check` → Commit & Review
+
+---
+
+## 9. Multi-Agent Orchestration & Model Role Matrix (Orca Setup)
 
 | Agent / Model | Orca Role | Primary Responsibility | Input Artifacts | Output Artifacts |
 |:---|:---|:---|:---|:---|
