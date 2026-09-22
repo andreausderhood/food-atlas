@@ -95,4 +95,6 @@ from atlas.ingest import bulk_foodatlas  # noqa: E402, F401
 from atlas.ingest import ciqual  # noqa: E402, F401
 from atlas.ingest import duke  # noqa: E402, F401
 from atlas.ingest import flavonoids  # noqa: E402, F401
+from atlas.ingest import imppat  # noqa: E402, F401
 from atlas.ingest import swiss_fcdb  # noqa: E402, F401
+from atlas.ingest import tcm  # noqa: E402, F401
