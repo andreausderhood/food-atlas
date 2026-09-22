@@ -390,12 +390,13 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Modify: `src/atlas/unified/identity.py` (Review-Blatt-Export + Approval-Anwendung)
   - Test: `tests/test_unified_review_sheet.py`
   - Modify: `data/registry/identity/edges.jsonl` (nach Freigabe)
-- [ ] **Step 1:** Failing Test für Review-Blatt-Export (Cluster sortiert nach Größe, je 5 Namens-Samples, Konflikt-Markierung wenn ein Produkt mehr als eine Art vorschlägt).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Export implementieren; Blatt nach `data/research/proposals/review/`.
-- [ ] **Step 4:** **HUMAN GATE:** Task pausiert; André approbiert/rejected Cluster (im Chat oder direkt im Blatt).
-- [ ] **Step 5:** Approvals anwenden (Cluster-level approve/reject), Kanten schreiben, Suite grün.
-- [ ] **Step 6:** Bericht: eindeutige Arten mit Nährwert-Claims vs. 108-Ziel; Guard & Commit.
+- [x] **Step 1:** Failing Test für Review-Blatt-Export (Cluster sortiert nach Größe, je 5 Namens-Samples, Konflikt-Markierung wenn ein Produkt mehr als eine Art vorschlägt).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Export implementieren; Blatt nach `data/research/proposals/review/`.
+- [x] **Step 4:** **HUMAN GATE:** Task pausiert; André approbiert/rejected Cluster (im Chat oder direkt im Blatt).
+- [x] **Step 5:** Approvals anwenden (Cluster-level approve/reject), Kanten schreiben, Suite grün.
+- [x] **Step 6:** Bericht: eindeutige Arten mit Nährwert-Claims vs. 108-Ziel; Guard & Commit.
+  *(Erledigt 2026-09-22, Commit 50b97b75 — Jev-Review übernommen: 893 Cluster, 26.606 approbierte Produkte, 216 Arten mit Nutrients-Kontext (Gate ≥108 erfüllt), 24.324 rejected; Non-Binomial-Keys 'bamboo shoot'/'black mulberry' verworfen; (product, species)-Dedup.)*
 
 ### Task 23: BLS 4.0 Streaming-Adapter (7.140 Foods × 138 Nährstoffe, DE-Namen)
 **Ziel:** BLS 4.0 (CC-BY-4.0, Max Rubner-Institut, DOI 10.25826/Data20251217-134202-0) in den Bulk-Store: Portierung des Legacy-`bls.py` auf die Task-16-Adapter-Architektur; DE-Common-Names fließen in die Identity-Proposals (P1 „Common names (DE)").
