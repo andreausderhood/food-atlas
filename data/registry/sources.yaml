@@ -231,7 +231,7 @@ SRC-USDA-POMOLOGICAL:
   license_read: true
   kind: registry
   independence: independent
-  supports: [identity]
+  supports: [identity, photos, varieties]
   attribution: "U.S. Department of Agriculture, National Agricultural Library. USDA Pomological Watercolor Collection. usdawatercolors.nal.usda.gov."
 SRC-CIQUAL-2024:
   title: "Table de composition nutritionnelle des aliments Ciqual (2024)"

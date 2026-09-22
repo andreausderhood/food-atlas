@@ -9,7 +9,7 @@ import yaml
 CLAIM_GROUPS = (
     "identity", "nutrition", "molecules", "bioactivity", "sensory", "origin",
     "geography", "growing", "season", "process", "regulatory", "narrative",
-    "traditional_use",
+    "traditional_use", "photos", "varieties",
 )
 LICENSE_CLASSES = (
     "ship", "public_domain", "open_license", "open_content", "cite", "adapter", "separate", "restricted",

@@ -498,7 +498,7 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
 **Ziel:** Die 7.497 historischen pomologischen Aquarelle des USDA (public_domain) als Visuals (`photo:url`, `photo:thumb_url`, `photo:artist`, `photo:year`) und Sorten (`cultivar:name`) in den Bulk-Store streamen.
 - **Files:**
   - Create: `src/atlas/ingest/pomological.py`
-  - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (Orchestrator: `SRC-USDA-POMOLOGICAL`)
+  - Modify: `src/atlas/ingest/base.py`, `src/atlas/registry.py`, `data/registry/sources.yaml` (Orchestrator: `SRC-USDA-POMOLOGICAL`)
   - Test: `tests/test_ingest_pomological.py`
 - [ ] Intake → TDD → Ingest → Guard → Commit
 
