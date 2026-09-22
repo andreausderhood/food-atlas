@@ -365,6 +365,30 @@ SRC-IMPPAT-2.0:
   independence: independent
   supports: [identity, molecules, bioactivity, traditional_use]
   attribution: "Mohanraj, K. et al. (2018). IMPPAT: A curated database of Indian Medicinal Plants, Phytochemistry And Therapeutics. Scientific Reports, 8, 4329. cb.imsc.res.in/imppat/."
+SRC-DUKE-2023-11:
+  title: "Dr. Duke's Phytochemical and Ethnobotanical Databases (archival release 2023-11)"
+  publisher: "USDA National Agricultural Library / Dr. James A. Duke"
+  url: "https://agdatacommons.nal.usda.gov/articles/dataset/Dr_Duke_s_Phytochemical_and_Ethnobotanical_Databases/24660351"
+  license: "CC0 1.0 (Public Domain Dedication)"
+  license_url: "https://creativecommons.org/publicdomain/zero/1.0/"
+  license_class: public_domain
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [identity, molecules, bioactivity, traditional_use]
+  attribution: "USDA-ARS. Dr. Duke's Phytochemical and Ethnobotanical Databases. phytochem.nal.usda.gov. CC0."
+SRC-USDA-FLAVONOID-EXP-1.1:
+  title: "USDA Expanded Flavonoid Database for the Assessment of Dietary Intakes, Release 1.1"
+  publisher: "USDA Agricultural Research Service (Beltsville Human Nutrition Research Center)"
+  url: "https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/methods-and-application-of-food-composition-laboratory/mafcl-site-pages/flavonoids/"
+  license: "Public domain (US Government work)"
+  license_url: "https://www.usa.gov/government-works"
+  license_class: public_domain
+  license_read: true
+  kind: compilation
+  independence: independent
+  supports: [nutrition, molecules]
+  attribution: "USDA ARS (2022): Expanded Flavonoid Database for the Assessment of Dietary Intakes, Release 1.1. ars.usda.gov."
 SRC-CINE:
   title: "CINE Traditional Food Systems of Indigenous Peoples"
   publisher: "Centre for Indigenous Peoples' Nutrition and Environment (CINE), McGill University"
