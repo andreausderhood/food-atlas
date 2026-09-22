@@ -57,3 +57,21 @@ def test_bfc_rows_have_sci_and_variety():
     assert len(sci_rows) > 0, "At least some BioFoodComp rows must have scientific names"
     variety_rows = [r for r in rows if r.get("variety")]
     assert len(variety_rows) > 0, "At least some BioFoodComp rows must have variety names"
+
+
+def test_flavonoid_rows_from_real_raw_data():
+    rows = catalog._flavonoid_rows()
+    assert len(rows) == 2927, "every FOOD_DES record of USDA Flavonoid DB R1.1 is a product record"
+    assert rows[0]["source"] == "SRC-USDA-FLAVONOID-EXP-1.1"
+    first = product_id(rows[0]["source"], rows[0]["id"])
+    assert first.startswith("prod:flav:") and first != "prod:flav:"
+
+
+def test_flavonoid_rows_have_name():
+    rows = catalog._flavonoid_rows()
+    assert all(r.get("name") for r in rows), "every flavonoid row must carry a name from FOOD_DES"
+
+
+def test_flavonoid_source_in_source_short():
+    from atlas.unified.identity import SOURCE_SHORT
+    assert SOURCE_SHORT["SRC-USDA-FLAVONOID-EXP-1.1"] == "flav"

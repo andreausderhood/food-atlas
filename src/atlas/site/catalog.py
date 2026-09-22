@@ -201,3 +201,18 @@ def _foodatlas_rows(root: Path = Path(".")) -> list[dict]:
                 for i, n in rows if i is not None]
     finally:
         con.close()
+
+
+FLAV_SOURCE = "SRC-USDA-FLAVONOID-EXP-1.1"
+
+
+def _flavonoid_rows(root: Path = Path(".")) -> list[dict]:
+    """Product records from the USDA Expanded Flavonoid Database R1.1."""
+    folder = root / "data/raw/flavonoid-exp-1.1"
+    if not folder.is_dir():
+        return []
+    rows: list[dict] = []
+    with (folder / "FOOD_DES.csv").open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            rows.append({"source": FLAV_SOURCE, "id": r["NDB_No"], "name": r["Long_Desc"]})
+    return rows

@@ -25,6 +25,7 @@ SOURCE_SHORT = {
     "SRC-COFID-2021": "cofid",
     "SRC-BFOODCOMP-4.0": "bfc",
     "SRC-FOODATLAS-V4.11": "fa",
+    "SRC-USDA-FLAVONOID-EXP-1.1": "flav",
 }
 STATUSES = ("approved", "rejected")
 AUTO_APPROVE = {"exact_binomial": 0.95}   # pre-filled "approve" in the review sheet, still reviewable
