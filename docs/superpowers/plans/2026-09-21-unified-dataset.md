@@ -316,11 +316,12 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/ingest/base.py` (Standard-Adapter-Interface & Registry)
   - Modify: `src/atlas/cli.py` (Befehl `atlas ingest <src_id> <path>` verdrahten)
   - Test: `tests/test_ingest_base.py`
-- [ ] **Step 1:** Failing Test für Ingest-CLI und Adapter-Interface schreiben (`tests/test_ingest_base.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** `BaseIngestAdapter` in `src/atlas/ingest/base.py` und `atlas ingest` in `src/atlas/cli.py` implementieren.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für Ingest-CLI und Adapter-Interface schreiben (`tests/test_ingest_base.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** `BaseIngestAdapter` in `src/atlas/ingest/base.py` und `atlas ingest` in `src/atlas/cli.py` implementieren.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
+  *(Erledigt 2026-09-22, Commit ad7d07a — via Hermes-Subagenten-Fallback nach Antigravity-Quota-Stopp.)*
 
 ### Task 17: FDC Foundation & SR Legacy Streaming Adapter (`bulk_fdc`)
 **Ziel:** Schnellen, streaming-fähigen FDC-Parser bauen, der 8.262 Produkte nach Regel 6′ (`prod:fdcf:*`, `prod:fdcs:*`, `basis="as_described"`, `food_part="product"`) in `unified.duckdb` streamt.
@@ -328,11 +329,12 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/ingest/bulk_fdc.py` (FDC Streaming Adapter)
   - Modify: `src/atlas/ingest/base.py` (Adapter registrieren)
   - Test: `tests/test_ingest_fdc_stream.py`
-- [ ] **Step 1:** Failing Test für FDC Streaming Adapter schreiben (`tests/test_ingest_fdc_stream.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** FDC Streaming Adapter implementieren und Ingest beider FDC-Quellen ausführen.
-- [ ] **Step 4:** Test grün verifizieren (Store-Zahlen & 0 Contract Rejects).
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für FDC Streaming Adapter schreiben (`tests/test_ingest_fdc_stream.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** FDC Streaming Adapter implementieren und Ingest beider FDC-Quellen ausführen.
+- [x] **Step 4:** Test grün verifizieren (Store-Zahlen & 0 Contract Rejects).
+- [x] **Step 5:** Diff Guard prüfen & committen.
+  *(Erledigt 2026-09-22, Commit 82a66e5 — 8.261 Produkte/665.551 Claims, 0 Rejects; eine Foundation-Art (fdc_id 2758999) ist im USDA-Rohfile ohne Nährwertzeilen, ehrlich leer.)*
 
 ### Task 18: European Nutrition Adapters (Ciqual & Swiss FCDB)
 **Ziel:** Ingest-Adapter für ANSES Ciqual 2024 und Swiss FCDB v7.1 implementieren und ausführen.
@@ -341,31 +343,102 @@ Die Ausführung erfolgt **strikt pro Task via Subagent**, mit Test-First (TDD), 
   - Create: `src/atlas/ingest/swiss_fcdb.py` (Swiss FCDB Adapter)
   - Modify: `src/atlas/ingest/base.py` (Adapter registrieren)
   - Test: `tests/test_ingest_european.py`
-- [ ] **Step 1:** Failing Test für europäische Adapter schreiben (`tests/test_ingest_european.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Adapter implementieren und Ingest ausführen.
-- [ ] **Step 4:** Test grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Test für europäische Adapter schreiben (`tests/test_ingest_european.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Adapter implementieren und Ingest ausführen.
+- [x] **Step 4:** Test grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
+  *(Erledigt 2026-09-22, Commit 22e6393 — Ciqual 2025 statt 2024 (ANSES hat 2024 zurückgezogen; DOI 10.57745/RDMHWY, Etalab 2.0): 3.484 Foods/151.981 Claims; Swiss FCDB 1.216/52.658; 0 Rejects. Katalog-/Identity-Registrierung nachgezogen in 21e1b48 — Produktdenominator 100.483.)*
 
 ### Task 19: Identity Cluster Proposals & Paritätsprüfung
 **Ziel:** Vorschläge für Kanten (`product -> species`) generieren, Parität der Pilot-Arten (*Malus domestica*, *Brassica oleracea*) absichern und exakte Matches ($\ge 0.95$) in `edges.jsonl` übernehmen.
 - **Files:**
   - Create: `tests/test_unified_parity.py`
   - Modify: `data/registry/identity/edges.jsonl`
-- [ ] **Step 1:** Failing Paritätstest schreiben (`tests/test_unified_parity.py`).
-- [ ] **Step 2:** Test fehlschlagen sehen.
-- [ ] **Step 3:** Cluster-Vorschläge anwenden und Kanten eintragen.
-- [ ] **Step 4:** Paritätstest grün verifizieren.
-- [ ] **Step 5:** Diff Guard prüfen & committen.
+- [x] **Step 1:** Failing Paritätstest schreiben (`tests/test_unified_parity.py`).
+- [x] **Step 2:** Test fehlschlagen sehen.
+- [x] **Step 3:** Cluster-Vorschläge anwenden und Kanten eintragen.
+- [x] **Step 4:** Paritätstest grün verifizieren.
+- [x] **Step 5:** Diff Guard prüfen & committen.
+  *(Erledigt 2026-09-22, Commits fd7365b + 1503f7f — 62.018 Proposals; 136 exakte scientific-name-Kanten approbiert (Ciqual `alim_nom_sci`; 126 species-level + 10 infraspezifische Pool-Key-Exakte), 58 Arten mit Nährwert-Anbindung. Ciqual-`sci`-Namen ergänzt, Test-Isolation-Leak behoben. Decision: nur exakte scientific-name-Identität wird auto-approbiert (André, 2026-09-22).)*
 
 ### Task 20: Welle 2 Baseline & Ratchet-Schluss
 **Ziel:** Coverage messen, Nutrients $\ge 108$ Arten und Food Hierarchy Produkte verifizieren, Baseline aktualisieren und Ratchet verriegeln.
 - **Files:**
   - Modify: `docs/coverage/baseline.json`
-- [ ] **Step 1:** `atlas coverage` ausführen und Werte prüfen (Nutrients $\ge 108$ Arten).
-- [ ] **Step 2:** `atlas coverage --write-baseline` ausführen.
-- [ ] **Step 3:** `atlas coverage --check` verifizieren.
-- [ ] **Step 4:** Commit & Welle 2 Review.
+- [x] **Step 1:** `atlas coverage` ausführen und Werte prüfen (Nutrients $\ge 108$ Arten).
+- [x] **Step 2:** `atlas coverage --write-baseline` ausführen.
+- [x] **Step 3:** `atlas coverage --check` verifizieren.
+- [x] **Step 4:** Commit & Welle 2 Review.
+  *(Erledigt 2026-09-22, Commit e0eec9c — Abweichung vom Exit-Kriterium: 58 statt ≥108 Arten. Grund: der Common-Name-Matcher erzeugt falsche Identitäten (z. B. „Peppers, bell" → *Piper nigrum*); eine Bulk-Freigabe der 546 `common_exact`-Cluster wäre Regel-13-Verstoß. André hat den ehrlichen Lock bei 58 freigegeben; ≥108 wird in Welle 3 (Tasks 21–22) erreicht.)*
+
+### Task 21: Identity-Matcher-Qualität (Multi-Word & Qualifier-Regeln)
+**Ziel:** Den Common-Name-Matcher review-fähig machen: Single-Word-Matching (Regel 3) erzeugt demonstrabel falsche Identitäten („Peppers, bell" → *Piper nigrum*; „Mushroom, lion's mane" → *Agaricus spp.*). Nach dem Cleanup sollen die `common_exact`-Cluster zum Human Gate geeignet sein.
+- **Files:**
+  - Modify: `src/atlas/unified/identity.py` (Matcher-Regeln 3–5)
+  - Modify: `tests/test_unified_parity.py`
+  - Pipeline-Output: `data/research/proposals/identity-proposals.jsonl` (regeneriert)
+- [ ] **Step 1:** Failing Regressions-Tests schreiben: „Peppers, bell, green, raw" darf *kein* *Piper nigrum*-Proposal erzeugen; „Mushroom, lion's mane" kein *Agaricus*; True Positives müssen bestehen bleiben („Almonds" → *Prunus dulcis*, „Black currant" → *Ribes nigrum*, „Apple" → *Malus domestica*).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Matcher anpassen: Multi-Word-Common-Names nur als Phrase-Exact; Single-Word-Match nur wenn das Wort im Pool eindeutig ist (genau eine Art trägt diesen Common Name) oder der Phrase-Kontext die Art disambiguiert; generische Kategorienwörter (mushroom, beans, peppers, berries …) als Single-Word-Match ausgeschlossen.
+- [ ] **Step 4:** Proposals über alle 100.483 Produkte neu generieren; Cluster-Delta gegen Vorher (546 `common_exact`-Cluster / 230 Arten / 47.838 Produkte) berichten.
+- [ ] **Step 5:** Volle Suite grün, Guard, Commit.
+
+### Task 22: Review-Blatt & Human-Gate-Runde (Common-Exact-Cluster)
+**Ziel:** Die gereinigten Cluster als Review-Blatt exportieren, André geben pro Cluster frei (Regel 13), Approvals nach `edges.jsonl`. Ziel: Nutrients $\ge 108$ Arten.
+- **Files:**
+  - Modify: `src/atlas/unified/identity.py` (Review-Blatt-Export + Approval-Anwendung)
+  - Test: `tests/test_unified_review_sheet.py`
+  - Modify: `data/registry/identity/edges.jsonl` (nach Freigabe)
+- [ ] **Step 1:** Failing Test für Review-Blatt-Export (Cluster sortiert nach Größe, je 5 Namens-Samples, Konflikt-Markierung wenn ein Produkt mehr als eine Art vorschlägt).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Export implementieren; Blatt nach `data/research/proposals/review/`.
+- [ ] **Step 4:** **HUMAN GATE:** Task pausiert; André approbiert/rejected Cluster (im Chat oder direkt im Blatt).
+- [ ] **Step 5:** Approvals anwenden (Cluster-level approve/reject), Kanten schreiben, Suite grün.
+- [ ] **Step 6:** Bericht: eindeutige Arten mit Nährwert-Claims vs. 108-Ziel; Guard & Commit.
+
+### Task 23: BLS 4.0 Streaming-Adapter (7.140 Foods × 138 Nährstoffe, DE-Namen)
+**Ziel:** BLS 4.0 (CC-BY-4.0, Max Rubner-Institut, DOI 10.25826/Data20251217-134202-0) in den Bulk-Store: Portierung des Legacy-`bls.py` auf die Task-16-Adapter-Architektur; DE-Common-Names fließen in die Identity-Proposals (P1 „Common names (DE)").
+- **Files:**
+  - Create: `src/atlas/ingest/bls_bulk.py`
+  - Modify: `src/atlas/ingest/base.py` (registrieren)
+  - Modify: `src/atlas/site/catalog.py` (`_bls_rows` auf die BLS-4.0-Struktur heben)
+  - Test: `tests/test_ingest_bls.py`
+- [ ] **Step 1:** Failing Test (Fixtures aus echten BLS-Zeilen, Regel 6′: `basis="as_described"`, `food_part="product"`, Datenherkunft-Map von `bls.py` übernehmen).
+- [ ] **Step 2:** Test fehlschlagen sehen.
+- [ ] **Step 3:** Adapter implementieren, Ingest ausführen, DE-Namen in `generate_proposals` mitschicken.
+- [ ] **Step 4:** Test grün (Store-Zahlen, 0 Contract Rejects — Logische-Null/Annahme-Derivationen ehrlich mappen).
+- [ ] **Step 5:** Guard & Commit.
+
+### Task 24: UK CoFID 2021 Intake & Adapter (W2-Nachlass)
+**Ziel:** McCance & Widdowson's CoFID 2021 (UK OGL v3.0, ~3.000 Foods) ingestieren — war in der W2-Quellenliste, fehlt im Store.
+- **Files:**
+  - Create: `src/atlas/ingest/cofid.py`
+  - Modify: `src/atlas/ingest/base.py`, `data/registry/sources.yaml` (Eintrag ergänzen — Orchestrator)
+  - Test: `tests/test_ingest_cofid.py`
+- [ ] **Step 1:** Orchestrator: Intake nach `data/raw/cofid-2021/` + SOURCE.md (URL, SHA-256) + Registry-Eintrag `SRC-COFID-2021`.
+- [ ] **Step 2:** Failing Test, `identity.py` SOURCE_SHORT ergänzen (`prod:cofid`).
+- [ ] **Step 3:** Adapter implementieren, Ingest ausführen.
+- [ ] **Step 4:** Test grün, Guard & Commit.
+
+### Task 25: FAO BioFoodComp 4.0 — Sorten-Nährwerte (Varieties-Achse)
+**Ziel:** FAO BioFoodComp 4.0 (`open_content`): Nährwerte auf Sorten- und Wildartenebene → die Varieties-Zeile der Tabelle lebt; Meilenstein „985k Zellen im Store; Sorten-Nährwerte live" (W3-Exit).
+- **Files:**
+  - Create: `src/atlas/ingest/biofoodcomp.py`
+  - Modify: `src/atlas/ingest/base.py`, `src/atlas/unified/identity.py` (SOURCE_SHORT), `data/registry/sources.yaml` (Orchestrator)
+  - Test: `tests/test_ingest_biofoodcomp.py`
+- [ ] **Step 1:** Orchestrator: Intake nach `data/raw/biofoodcomp-4.0/` + SOURCE.md + Registry `SRC-BFOODCOMP-4.0`.
+- [ ] **Step 2:** Failing Test (Fixtures aus echten Zeilen).
+- [ ] **Step 3:** Adapter implementieren, Ingest ausführen; Claims auf Wild-/Sortenebene mit ehrlicher `derivation`.
+- [ ] **Step 4:** Test grün, Guard & Commit.
+
+### Task 26: Welle 3 Baseline & Ratchet-Schluss
+**Ziel:** Coverage messen (Ziele: Nutrients $\ge 108$ Arten nach Task 22, Store-Zellen Richtung 985k), Baseline aktualisieren, Ratchet verriegeln, Welle-3-Review.
+- **Files:**
+  - Modify: `docs/coverage/baseline.json`
+- [ ] **Step 1:** `atlas coverage` + Exit-Kriterien prüfen.
+- [ ] **Step 2:** `atlas coverage --write-baseline`, `--check` grün.
+- [ ] **Step 3:** Commit & Welle 3 Review.
 
 ---
 
