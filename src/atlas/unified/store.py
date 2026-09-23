@@ -77,11 +77,12 @@ class Store:
                 bad.clear()
 
         for claim in claims:
-            gap = check(claim, sources)
-            if gap is None:
+            cr = check(claim, sources)
+            if cr.ok:
                 ok.append(_row(claim, batch))
                 accepted += 1
             else:
+                gap = cr.gap
                 bad.append((claim.subject, claim.group, claim.field, gap.rule, claim.src, batch,
                             None if gap.carried_value is None else str(gap.carried_value)))
                 rejected += 1

@@ -141,7 +141,7 @@ def test_tcm_claims_generation_and_contract(repo_root: Path, sources, tmp_tcm_fi
         assert c.derivation == "literature"
         # Verify contract compliance: no gap returned
         gap = check(c, sources)
-        assert gap is None, f"Claim {c} rejected by contract: {gap}"
+        assert gap.ok, f"Claim {c} rejected by contract: {gap}"
 
     # Verify TCM traditional_use fields
     groups = {c.field: c.v for c in claims if c.group == "traditional_use"}
@@ -189,7 +189,7 @@ def test_imppat_claims_generation_and_contract(repo_root: Path, sources, tmp_imp
         assert c.derivation == "literature"
         # Verify contract compliance: no gap returned
         gap = check(c, sources)
-        assert gap is None, f"Claim {c} rejected by contract: {gap}"
+        assert gap.ok, f"Claim {c} rejected by contract: {gap}"
 
     # Traditional use: Ayurvedic properties
     tu_claims = {c.field: c.v for c in claims if c.group == "traditional_use"}

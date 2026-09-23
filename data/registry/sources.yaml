@@ -145,7 +145,7 @@ SRC-BZFE-SAISONKALENDER:
   license: "Cited fact by fact"
   license_url: "https://www.bzfe.de/rechtliches/impressum"
   license_class: cite
-  license_read: false
+  license_read: true
   kind: compilation
   independence: independent
   supports: [season]

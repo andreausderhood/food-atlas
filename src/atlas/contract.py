@@ -9,7 +9,7 @@ from atlas.claims import BASES, DERIVATION_TIER, PRODUCT_PREFIX, Claim, Gap
 from atlas.registry import Source
 
 UNVERIFIED = "SRC-UNVERIFIED"
-PREDICTED_METHOD = re.compile(r"^model:[^@\s]+@[^@\s]+$")
+PREDICTED_METHOD = re.compile(r"^model:[^\@\s]+@[^\@\s]+$")
 HEALTH_CLAIM = [
     re.compile(p, re.IGNORECASE)
     for p in (
@@ -33,6 +33,27 @@ SETTLED_BY = {
 }
 
 
+@dataclass(frozen=True)
+class CheckResult:
+    """Return value of contract.check(): ok=True means the claim passes all rules."""
+    ok: bool
+    reason: str | None = None
+    rule: int | None = None
+    gap: Gap | None = None
+
+    def __bool__(self) -> bool:
+        """Truthy when there IS a problem, falsy when ok."""
+        return not self.ok
+
+    @classmethod
+    def passed(cls) -> "CheckResult":
+        return cls(ok=True)
+
+    @classmethod
+    def failed(cls, gap: Gap) -> "CheckResult":
+        return cls(ok=False, reason=gap.question, rule=gap.rule, gap=gap)
+
+
 @dataclass
 class ValidationResult:
     accepted: list[Claim] = field(default_factory=list)
@@ -46,54 +67,54 @@ def _gap(claim: Claim, rule: int, question: str) -> Gap:
     )
 
 
-def check(claim: Claim, sources: dict[str, Source]) -> Gap | None:
+def check(claim: Claim, sources: dict[str, Source]) -> CheckResult:
     source = sources.get(claim.src)
     if source is None:
-        return _gap(claim, 2, f"Source {claim.src!r} is not registered.")
+        return CheckResult.failed(_gap(claim, 2, f"Source {claim.src!r} is not registered."))
     if not claim.subject or not claim.field or claim.derivation not in DERIVATION_TIER:
-        return _gap(claim, 1, f"Incomplete claim or unknown derivation {claim.derivation!r}.")
+        return CheckResult.failed(_gap(claim, 1, f"Incomplete claim or unknown derivation {claim.derivation!r}."))
     if any(isinstance(v, float) and not math.isfinite(v) for v in (claim.v, claim.v_min, claim.v_max)):
-        return _gap(claim, 1, "Non-finite numeric value.")
+        return CheckResult.failed(_gap(claim, 1, "Non-finite numeric value."))
     if claim.derivation == "unverified" or claim.src == UNVERIFIED:
-        return _gap(claim, 5, "Unverified value: the source does not state how it was obtained.")
+        return CheckResult.failed(_gap(claim, 5, "Unverified value: the source does not state how it was obtained."))
     if not source.license_read:
-        return _gap(claim, 9, f"The license of {source.id} has not been read yet.")
+        return CheckResult.failed(_gap(claim, 9, f"The license of {source.id} has not been read yet."))
     if source.license_class == "cite" and not claim.curated:
-        return _gap(claim, 9, f"{source.id} may only be cited fact by fact, not imported in bulk.")
+        return CheckResult.failed(_gap(claim, 9, f"{source.id} may only be cited fact by fact, not imported in bulk."))
     if source.license_class == "cite" and not claim.ref:
-        return _gap(claim, 9, "A cited fact needs a specific reference.")
+        return CheckResult.failed(_gap(claim, 9, "A cited fact needs a specific reference."))
     ALLOWED_SHIP = ("ship", "public_domain", "open_license", "open_content")
     if source.license_class not in ALLOWED_SHIP and source.license_class != "cite":
-        return _gap(claim, 9, f"{source.id} is {source.license_class}-only and cannot ship under open terms.")
+        return CheckResult.failed(_gap(claim, 9, f"{source.id} is {source.license_class}-only and cannot ship under open terms."))
     if claim.group not in source.supports:
-        return _gap(claim, 3, f"{source.id} does not support claim group {claim.group!r}.")
+        return CheckResult.failed(_gap(claim, 3, f"{source.id} does not support claim group {claim.group!r}."))
     if claim.is_amount and (not claim.unit or claim.basis not in BASES or not claim.food_part):
-        return _gap(claim, 6, "Amount without unit, basis or food part.")
+        return CheckResult.failed(_gap(claim, 6, "Amount without unit, basis or food part."))
     if claim.is_amount and claim.subject.startswith(PRODUCT_PREFIX) != (claim.basis == "as_described"):
-        return _gap(claim, 6, "Basis as_described belongs to product records only, and a product record may use no other basis.")
+        return CheckResult.failed(_gap(claim, 6, "Basis as_described belongs to product records only, and a product record may use no other basis."))
     if claim.is_amount and claim.subject.startswith(PRODUCT_PREFIX) and claim.food_part != "product":
-        return _gap(claim, 6, "A product record describes its own sample: food_part must be 'product'.")
+        return CheckResult.failed(_gap(claim, 6, "A product record describes its own sample: food_part must be 'product'."))
     if claim.is_amount and claim.derivation == "extracted":
-        return _gap(claim, 10, "Machine-extracted amount; the primary measurement is not confirmed.")
+        return CheckResult.failed(_gap(claim, 10, "Machine-extracted amount; the primary measurement is not confirmed."))
     if "secondhand" in claim.flags:
-        return _gap(claim, 10, "Value quoted second-hand from another study.")
+        return CheckResult.failed(_gap(claim, 10, "Value quoted second-hand from another study."))
     if claim.derivation == "predicted" and not (claim.method and PREDICTED_METHOD.match(claim.method)):
-        return _gap(claim, 7, "Prediction without model name and version.")
+        return CheckResult.failed(_gap(claim, 7, "Prediction without model name and version."))
     if claim.group == "bioactivity" and "evidence_only" not in claim.flags:
-        return _gap(claim, 8, "Bioactivity claim not marked as evidence.")
+        return CheckResult.failed(_gap(claim, 8, "Bioactivity claim not marked as evidence."))
     if claim.group in TEXT_GROUPS and isinstance(claim.v, str) and any(p.search(claim.v) for p in HEALTH_CLAIM):
-        return _gap(claim, 8, "The wording reads as a health claim.")
+        return CheckResult.failed(_gap(claim, 8, "The wording reads as a health claim."))
     if claim.tier <= 3 and source.link_status == "broken":
-        return _gap(claim, 4, f"The link to {source.id} is broken.")
-    return None
+        return CheckResult.failed(_gap(claim, 4, f"The link to {source.id} is broken."))
+    return CheckResult.passed()
 
 
 def validate(claims: list[Claim], sources: dict[str, Source]) -> ValidationResult:
     result = ValidationResult()
     for claim in claims:
-        gap = check(claim, sources)
-        if gap is None:
+        cr = check(claim, sources)
+        if cr.ok:
             result.accepted.append(claim)
         else:
-            result.gaps.append(gap)
+            result.gaps.append(cr.gap)  # type: ignore[arg-type]
     return result

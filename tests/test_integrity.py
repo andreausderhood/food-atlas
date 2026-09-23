@@ -31,10 +31,10 @@ def test_nonfinite_values_are_quarantined(value):
 def test_cite_requires_specific_reference():
     c = claim(group='season', field='season:DE', v='Test', curated=True)
     assert check(c, {'S': source(license_class='cite')}).rule == 9
-    assert check(replace(c, ref='Table 1, row Test'), {'S': source(license_class='cite')}) is None
+    assert check(replace(c, ref='Table 1, row Test'), {'S': source(license_class='cite')}).ok
 
 
 def test_license_failure_does_not_redistribute_value_in_gap():
     gap = check(claim(v=12.0), {'S': source(license_read=False)})
     assert gap.rule == 9
-    assert gap.carried_value is None
+    assert gap.gap.carried_value is None

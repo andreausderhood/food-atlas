@@ -52,7 +52,7 @@ def _read(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
-def load_sources(path: Path, link_status_path: Path | None = None) -> dict[str, Source]:
+def load_sources(path: Path = Path("data/registry/sources.yaml"), link_status_path: Path | None = None) -> dict[str, Source]:
     status = _read(link_status_path) if link_status_path and link_status_path.exists() else {}
     sources: dict[str, Source] = {}
     for sid, d in _read(path).items():

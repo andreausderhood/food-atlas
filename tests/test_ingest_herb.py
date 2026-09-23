@@ -165,7 +165,7 @@ def test_herb_claims_pass_contract(tmp_herb_file: Path, sources):
 
     for c in claims:
         gap = check(c, sources)
-        assert gap is None, f"Claim rejected by contract: {c} → {gap}"
+        assert gap.ok, f"Claim rejected by contract: {c} → {gap}"
 
 
 # ---------------------------------------------------------------------------

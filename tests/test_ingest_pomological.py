@@ -82,4 +82,4 @@ def test_claims_satisfy_contract(tmp_path: Path):
 
     for claim in adapter.load(Path("."), csv_file):
         gap = check(claim, sources)
-        assert gap is None, f"Claim violated contract: {gap} for claim {claim}"
+        assert gap.ok, f"Claim violated contract: {gap} for claim {claim}"

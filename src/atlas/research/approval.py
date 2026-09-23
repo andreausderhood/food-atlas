@@ -46,9 +46,9 @@ def verify_evidence(e: Evidence, root: Path) -> None:
 
 
 def classify(claim: Claim, sources: dict[str, Source], evidence: list[Evidence], root: Path) -> Decision:
-    gap = check(claim, sources)
-    if gap:
-        return Decision("reject", gap.question, gap)
+    cr = check(claim, sources)
+    if cr:
+        return Decision("reject", cr.reason, cr.gap)
     if not evidence or not claim.ref or not any(e.ref == claim.ref for e in evidence):
         return Decision("reject", "A matching evidence record is required for the claim reference.")
     try:

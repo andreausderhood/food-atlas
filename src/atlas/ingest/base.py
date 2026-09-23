@@ -25,6 +25,11 @@ class BaseIngestAdapter:
         """Yield the raw source's claims one at a time; raise on malformed input."""
         raise NotImplementedError
 
+    def iter_claims(self, path: Path) -> Iterator[Claim]:
+        """Convenience wrapper: stream claims with root=cwd for tests and ad-hoc use."""
+        return self.load(Path("."), path)
+
+
 
 _REGISTRY: dict[str, BaseIngestAdapter] = {}
 
@@ -99,3 +104,4 @@ from atlas.ingest import imppat  # noqa: E402, F401
 from atlas.ingest import swiss_fcdb  # noqa: E402, F401
 from atlas.ingest import herb  # noqa: E402, F401
 from atlas.ingest import pomological  # noqa: E402, F401
+from atlas.ingest import season_bzfe  # noqa: E402, F401
